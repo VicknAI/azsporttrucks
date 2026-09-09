@@ -1,0 +1,223 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve, relative } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import ts from 'typescript';
+const temporary = mkdtempSync(join(tmpdir(), 'azst-designer-tests-'));
+for (const name of [
+  'manifest',
+  'render',
+  'storage',
+  'quote',
+  'studio',
+  'export',
+]) {
+  const source = readFileSync(
+    new URL(`../lib/designer/${name}.ts`, import.meta.url),
+    'utf8',
+  );
+  const output = ts
+    .transpileModule(source, {
+      compilerOptions: {
+        module: ts.ModuleKind.ESNext,
+        target: ts.ScriptTarget.ES2022,
+      },
+    })
+    .outputText.replaceAll("'./manifest'", "'./manifest.mjs'")
+    .replaceAll("'./studio'", "'./studio.mjs'");
+  writeFileSync(join(temporary, `${name}.mjs`), output);
+}
+const {
+  vehicles,
+  views,
+  normalize,
+  defaultConfiguration,
+  allowedStances,
+  wheelCatalog,
+} = await import(pathToFileURL(join(temporary, 'manifest.mjs')).href);
+const { renderSvg } = await import(
+  pathToFileURL(join(temporary, 'render.mjs')).href
+);
+const { shareHash, readShare } = await import(
+  pathToFileURL(join(temporary, 'storage.mjs')).href
+);
+const { prepareQuoteEmail, quoteRecipient } = await import(
+  pathToFileURL(join(temporary, 'quote.mjs')).href
+);
+const { embedArtwork } = await import(
+  pathToFileURL(join(temporary, 'export.mjs')).href
+);
+process.on('exit', () => {
+  const resolved = resolve(temporary);
+  const inside = relative(resolve(tmpdir()), resolved);
+  if (
+    inside &&
+    !inside.startsWith('..') &&
+    inside.startsWith('azst-designer-tests-')
+  )
+    rmSync(resolved, { recursive: true, force: true });
+});
+test('all 20 exact model years have separate manifests and four anchor packs', () => {
+  assert.equal(vehicles.length, 20);
+  assert.equal(new Set(vehicles.map((v) => v.id)).size, 20);
+  for (const [model, years] of [
+    ['C10', [1967, 1968, 1969, 1970, 1971, 1972]],
+    ['K10', [1967, 1968, 1969, 1970, 1971, 1972]],
+    ['K5', [1969, 1970, 1971, 1972]],
+    ['F-100', [1978, 1979]],
+    ['F-150', [1978, 1979]],
+  ])
+    assert.deepEqual(
+      vehicles.filter((v) => v.model === model).map((v) => v.year),
+      years,
+    );
+  for (const vehicle of vehicles)
+    for (const view of views) {
+      assert.ok(vehicle.views[view].assetRoot.includes(String(vehicle.year)));
+      assert.ok(vehicle.views[view].anchors.length >= 2);
+    }
+});
+test('incompatible ride heights are rejected across every model', () => {
+  for (const vehicle of vehicles) {
+    for (const direction of vehicle.directions) {
+      const c = normalize({
+        ...defaultConfiguration(vehicle),
+        direction,
+        stance: direction === 'Lowered' ? 'lift6' : 'drop6',
+      });
+      assert.equal(c.stance, 'stock');
+      assert.equal(
+        allowedStances(direction).length,
+        direction === 'Lowered' ? 5 : 3,
+      );
+    }
+  }
+});
+test('all configurations retain selections in all four distinct views', () => {
+  for (const vehicle of vehicles) {
+    const c = normalize({
+      ...defaultConfiguration(vehicle),
+      paintMode: 'Two-tone',
+      color: '#123abc',
+      secondaryColor: '#fedcba',
+      finish: 'Satin',
+      trimMode: 'Customize It',
+      trim: {
+        grille: 'Black',
+        headlights: 'Model-year placeholder',
+        sideMolding: 'Removed',
+        badges: 'Removed',
+        tailgate: 'Removed',
+        bumper: 'Black',
+      },
+    });
+    const before = JSON.stringify(c);
+    const outputs = views.map((v) => renderSvg(c, v, v));
+    assert.equal(new Set(outputs).size, 4);
+    assert.equal(JSON.stringify(c), before);
+    for (const [index, svg] of outputs.entries()) {
+      if (vehicle.views[views[index]].studio) {
+        assert.notEqual(
+          svg,
+          renderSvg({ ...c, color: '#ffffff' }, views[index], views[index]),
+        );
+        assert.notEqual(
+          svg,
+          renderSvg(
+            { ...c, secondaryColor: '#ffffff' },
+            views[index],
+            views[index],
+          ),
+        );
+      } else {
+        assert.ok(svg.includes('#123abc'));
+        assert.ok(svg.includes('#fedcba'));
+      }
+      assert.ok(svg.includes('data-layer="roof"'));
+    }
+  }
+});
+test('shared data is normalized and cannot inject artwork or extra contact fields', () => {
+  const c = normalize({
+    vehicleId: 'no-such-truck',
+    color: '"><script>alert(1)</script>',
+    name: 'Private name',
+    trimMode: 'Customize It',
+    trim: { grille: '<img>' },
+  });
+  assert.equal(c.color, '#bc252c');
+  assert.equal('name' in c, false);
+  assert.equal(c.trim.grille, 'Chrome');
+  assert.deepEqual(readShare(shareHash(c)), c);
+  assert.throws(() => readShare('#build=%broken'));
+});
+test('factory mode applies package and never invents verified products', () => {
+  const c = normalize({
+    trimMode: 'Match My Truck',
+    trim: { grille: 'Black' },
+  });
+  assert.equal(c.trim.grille, 'Chrome');
+  for (const v of vehicles)
+    assert.ok(v.packages.every((p) => p.verified === false));
+  for (const w of wheelCatalog) {
+    assert.equal(w.sku, null);
+    assert.equal(w.diameter, null);
+    assert.equal(w.productUrl, null);
+  }
+});
+test('K5 top-off has a distinct interior state and roof color choices', () => {
+  const v = vehicles.find((v) => v.model === 'K5');
+  const c = defaultConfiguration(v);
+  const on = renderSvg({ ...c, roof: 'White top' }, 'side');
+  const off = renderSvg({ ...c, roof: 'Top off' }, 'side');
+  assert.notEqual(on, off);
+  assert.ok(off.includes('M145 214'));
+  assert.notEqual(renderSvg({ ...c, roof: 'Black top' }, 'side'), on);
+});
+
+test('quote email retains complete selections and long customer messages without adding recipients', () => {
+  const configuration = defaultConfiguration(
+    vehicles.find((v) => v.model === 'F-150' && v.year === 1979),
+  );
+  const description =
+    'Paint & suspension = priority.\n' + 'Detailed project notes. '.repeat(150);
+  const result = prepareQuoteEmail({
+    buildNumber: 'AZST-test',
+    configuration,
+    photoCount: 2,
+    contact: { name: 'Test & Example', email: 'test@example.com', description },
+  });
+  assert.ok(result.subject.includes('1979 Ford F-150'));
+  assert.ok(result.body.includes(description));
+  assert.ok(result.body.includes('2 truck photos separately'));
+  assert.ok(result.body.includes(configuration.color));
+  const mail = new URL(result.href);
+  assert.equal(mail.pathname, quoteRecipient);
+  assert.equal(mail.searchParams.has('bcc'), false);
+  assert.equal(mail.searchParams.has('body'), false);
+  assert.ok(result.href.length < 1800);
+});
+
+test('downloaded artwork is self-contained and rejects invalid image responses', async () => {
+  const input =
+    '<svg><image href="/designer/study/body.png"/><image href="/designer/study/body.png"/></svg>';
+  let calls = 0;
+  const output = await embedArtwork(input, async () => {
+    calls++;
+    return 'data:image/png;base64,AAAA';
+  });
+  assert.equal(calls, 1);
+  assert.equal(output.includes('/designer/'), false);
+  assert.equal((output.match(/data:image\/png/g) || []).length, 2);
+  await assert.rejects(
+    embedArtwork(input, async () => '<html>Not found</html>'),
+  );
+  await assert.rejects(
+    embedArtwork(
+      '<image href="/designer/../private.png"/>',
+      async () => 'data:image/png;base64,AAAA',
+    ),
+  );
+});
