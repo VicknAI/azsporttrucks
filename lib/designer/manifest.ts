@@ -491,24 +491,30 @@ export function normalize(input: unknown): Configuration {
   c.tire = pick(raw.tire, tires, c.tire);
   c.roof = v.model === 'K5' ? pick(raw.roof, roofs, c.roof) : 'Not applicable';
   c.view = pick(raw.view, views, c.view);
+  // Unsupported customization is paused during the artwork rebuild. Apply this
+  // to restored/shared builds too, so hidden legacy options cannot alter a view.
+  c.stance = 'stock';
+  c.trimMode = 'Match My Truck';
+  c.trimPackage = 'unverified';
+  c.trim = { ...baseTrim };
+  c.wheelId = 'street-temp';
+  c.tire = 'Street performance';
   return c;
 }
 export function summary(c: Configuration): Record<string, string> {
   const v = vehicles.find((v) => v.id === c.vehicleId)!;
-  const w = wheelCatalog.find((w) => w.id === c.wheelId)!;
   return {
     Vehicle: `${v.year} ${v.manufacturer} ${v.model}`,
     Direction: c.direction,
-    'Exterior trim': c.trimMode,
-    ...Object.fromEntries(trimFields.map((k) => [trimLabels[k], c.trim[k]])),
-    'Ride height': stances.find((s) => s.id === c.stance)!.label,
+    'Exterior trim': 'As pictured; custom requests to be discussed',
+    'Ride height': 'As pictured',
     Paint: `${c.color} · ${c.finish} · ${c.paintMode}${c.paintMode === 'Two-tone' ? ` / ${c.secondaryColor}` : ''}`,
     'Two-tone pattern':
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
     'Cab paint coverage': c.contrastRoof ? c.cabPaint : 'Body color',
-    Wheels: w.name,
-    Tires: c.tire,
+    Wheels: 'As pictured; fitment to be discussed',
+    Tires: 'As pictured; size to be discussed',
     'K5 roof': v.model === 'K5' ? c.roof : 'Not applicable',
   };
 }

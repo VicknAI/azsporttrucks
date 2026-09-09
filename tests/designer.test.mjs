@@ -43,14 +43,28 @@ const { renderSvg } = await import(
 test('1967 and 1971 have complete, distinct studio packs with valid PNG assets', () => {
   const roots = new Set();
   for (const year of [1967, 1971]) {
-    const vehicle = vehicles.find(v => v.id === `Chevrolet-C10-${year}`);
+    const vehicle = vehicles.find((v) => v.id === `Chevrolet-C10-${year}`);
     for (const view of views) {
       const pack = vehicle.views[view].studio;
       assert.ok(pack);
       roots.add(pack.root);
-      for (const name of ['body.png', ...['paint','secondary','center-band','roof','cab','grille','bumper'].map(n => `${n}-mask.png`), ...pack.wheels.map(w => w.file)]) {
-        const bytes = readFileSync(new URL(`../public${pack.root}/${name}`, import.meta.url));
-        assert.equal(bytes.subarray(1,4).toString(), 'PNG');
+      for (const name of [
+        'body.png',
+        ...[
+          'paint',
+          'secondary',
+          'center-band',
+          'roof',
+          'cab',
+          'grille',
+          'bumper',
+        ].map((n) => `${n}-mask.png`),
+        ...pack.wheels.map((w) => w.file),
+      ]) {
+        const bytes = readFileSync(
+          new URL(`../public${pack.root}/${name}`, import.meta.url),
+        );
+        assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
       }
       assert.ok(pack.viewport[2] > 0 && pack.viewport[3] > 0);
     }
@@ -110,6 +124,28 @@ test('incompatible ride heights are rejected across every model', () => {
         direction === 'Lowered' ? 5 : 3,
       );
     }
+  }
+});
+test('legacy shared customization cannot change fixed reference hardware or stance', () => {
+  for (const vehicle of vehicles) {
+    const base = normalize(defaultConfiguration(vehicle));
+    const legacy = normalize({
+      ...base,
+      stance: vehicle.directions[0] === 'Lowered' ? 'drop6' : 'lift6',
+      wheelId: 'offroad-temp',
+      tire: 'Mud-terrain',
+      trimMode: 'Customize It',
+      trim: {
+        ...base.trim,
+        grille: 'Black',
+        bumper: 'Removed',
+        sideMolding: 'Removed',
+      },
+    });
+    assert.deepEqual(legacy, base);
+    assert.deepEqual(readShare(shareHash(legacy)), base);
+    for (const view of views)
+      assert.equal(renderSvg(base, view), renderSvg(legacy, view));
   }
 });
 test('all configurations retain selections in all four distinct views', () => {

@@ -23,7 +23,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  allowedStances,
   colors,
   defaultConfiguration,
   fitmentNotice,
@@ -31,13 +30,9 @@ import {
   normalize,
   roofs,
   summary,
-  tires,
-  trimFields,
-  trimLabels,
   vehicles,
   viewLabels,
   views,
-  wheelCatalog,
   type Configuration,
 } from '@/lib/designer/manifest';
 import { escapeHtml, renderSvg } from '@/lib/designer/render';
@@ -165,7 +160,6 @@ export function Designer() {
   const [quoteEmail, setQuoteEmail] = useState<QuoteEmail | null>(null);
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
   const studioView = Boolean(vehicle.views[config.view].studio);
-  const wheel = wheelCatalog.find((w) => w.id === config.wheelId)!;
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try {
@@ -413,7 +407,7 @@ export function Designer() {
           </div>
           <p className="design-note">
             {studioView
-              ? 'Studio artwork study: paint, two-tone, roof color, and ride height can be previewed. Wheel styles and some trim options are recorded in your summary but not yet shown in this view. Details are not factory-verified.'
+              ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
               : 'Schematic artwork is shared across years for this prototype. Grilles, lighting, trim, and proportions are not factory-accurate.'}
           </p>
           <div className="build-current">
@@ -532,63 +526,17 @@ export function Designer() {
                 }
               />
             </Category>
-            <Category id="trim" title="02 / Exterior trim">
-              <Choice
-                label="Trim mode"
-                value={config.trimMode}
-                options={['Match My Truck', 'Customize It']}
-                onChange={(value) =>
-                  update({ trimMode: value as Configuration['trimMode'] })
-                }
-              />
-              {config.trimMode === 'Match My Truck' ? (
-                <>
-                  <Choice
-                    label="Factory-style package"
-                    value={config.trimPackage}
-                    options={vehicle.packages.map((p) => ({
-                      id: p.id,
-                      label: p.label,
-                    }))}
-                    onChange={(value) => update({ trimPackage: value })}
-                  />
-                  <p className="design-note">
-                    Verified {vehicle.year} {vehicle.model} packages will be
-                    added later. This neutral placeholder sets all six trim
-                    treatments together.
-                  </p>
-                </>
-              ) : (
-                trimFields.map((key) => (
-                  <Choice
-                    key={key}
-                    label={trimLabels[key]}
-                    value={config.trim[key]}
-                    options={vehicle.trim[key]}
-                    onChange={(value) =>
-                      update({ trim: { ...config.trim, [key]: value } })
-                    }
-                  />
-                ))
-              )}
+            <Category id="trim" title="02 / Exterior details">
               <p className="design-note">
-                Custom treatments are visual concepts, not factory package
-                names. Headlights remain a year-specific artwork placeholder.
+                Grille, chrome bumpers, badges, and molding stay as pictured.
+                Tell Nick about any custom trim requests when requesting a
+                quote.
               </p>
             </Category>
-            <Category id="stance" title="03 / Ride height">
-              <Choice
-                label="Ride height"
-                value={config.stance}
-                options={allowedStances(config.direction).map((s) => ({
-                  id: s.id,
-                  label: s.label,
-                }))}
-                onChange={(value) => update({ stance: value })}
-              />
+            <Category id="stance" title="03 / Stance">
               <p className="design-note">
-                Stance changes illustrate direction only; dimensions and
-                suspension geometry are not simulated.
+                The preview keeps its pictured stance. Suspension changes can be
+                discussed with Nick when planning your build.
               </p>
             </Category>
             <Category id="paint" title="04 / Paint & finish">
@@ -701,27 +649,10 @@ export function Designer() {
               )}
             </Category>
             <Category id="wheels" title="05 / Wheels & tires">
-              <Choice
-                label="Wheel collection / mock product"
-                value={config.wheelId}
-                options={wheelCatalog.map((w) => ({ id: w.id, label: w.name }))}
-                onChange={(value) => update({ wheelId: value })}
-              />
-              <div className="wheel-facts">
-                <b>TEMPORARY ENTRY</b>
-                <p>{wheel.finish}</p>
-                <p>
-                  Brand, model, SKU, diameter, width, and product link: pending
-                  approved catalog.
-                </p>
-                <p>{wheel.fitmentNotes}</p>
-              </div>
-              <Choice
-                label="Tire category"
-                value={config.tire}
-                options={tires}
-                onChange={(value) => update({ tire: value })}
-              />
+              <p className="design-note">
+                Wheels and tires stay as pictured. Nick can help select sizes
+                and fitment for your build.
+              </p>
             </Category>
             {vehicle.model === 'K5' && (
               <Category id="roof" title="06 / K5 roof">
