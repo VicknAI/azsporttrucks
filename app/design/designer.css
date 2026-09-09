@@ -57,11 +57,17 @@
 }
 .truck-render {
   background: #171d25;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2.1;
+  max-height: 420px;
 }
 .truck-render svg {
   display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 .view-buttons {
   display: grid;
@@ -581,7 +587,8 @@
     margin-top: 0;
   }
   .truck-render {
-    position: static;
+    position: relative;
+    max-height: 200px;
   }
   .render-heading {
     padding: 10px 14px;

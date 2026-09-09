@@ -8,7 +8,7 @@ export const views = [
 ] as const;
 export type View = (typeof views)[number];
 export const viewLabels: Record<View, string> = {
-  side: 'Driver-side profile',
+  side: 'Side profile',
   'front-quarter': 'Front three-quarter',
   'rear-quarter': 'Rear three-quarter',
   front: 'Straight front',
@@ -242,12 +242,100 @@ if (c10Studio)
     root: '/designer/studio/chevrolet-c10-1967/front-quarter',
     width: 1536,
     height: 1024,
+    viewport: [0, 150, 1536, 720],
+    shadow: { cx: 790, cy: 825, rx: 650, ry: 30 },
+    stanceScale: 2,
     wheels: [
       { file: 'wheel-front.png', x: 1410, y: 707, width: 142, height: 208 },
       { file: 'wheel-front.png', x: 772.5, y: 688, width: 215, height: 270 },
       { file: 'wheel-rear.png', x: 229, y: 608, width: 146, height: 196 },
     ],
   };
+if (c10Studio) {
+  c10Studio.views.side.studio = {
+    root: '/designer/studio/chevrolet-c10-1967/side',
+    width: 627,
+    height: 627,
+    viewport: [12, 167, 603, 290],
+    shadow: { cx: 317, cy: 429, rx: 279, ry: 13 },
+    wheels: [
+      { file: 'wheel-rear.png', x: 152, y: 382.5, width: 102, height: 99 },
+      { file: 'wheel-front.png', x: 504.5, y: 382.5, width: 99, height: 99 },
+    ],
+  };
+  c10Studio.views.front.studio = {
+    root: '/designer/studio/chevrolet-c10-1967/front',
+    width: 627,
+    height: 627,
+    viewport: [-145, 62, 916, 448],
+    shadow: { cx: 308, cy: 474, rx: 238, ry: 19 },
+    wheels: [
+      { file: 'wheel-left.png', x: 110, y: 437.5, width: 70, height: 79 },
+      { file: 'wheel-right.png', x: 506.5, y: 436.5, width: 71, height: 79 },
+    ],
+  };
+  c10Studio.views['rear-quarter'].studio = {
+    root: '/designer/studio/chevrolet-c10-1967/rear-quarter',
+    width: 627,
+    height: 627,
+    viewport: [0, 130, 627, 307],
+    shadow: { cx: 316, cy: 417, rx: 276, ry: 22 },
+    wheels: [
+      { file: 'wheel-far-rear.png', x: 144.5, y: 392.5, width: 89, height: 53 },
+      { file: 'wheel-rear.png', x: 346.5, y: 370.5, width: 95, height: 125 },
+      { file: 'wheel-front.png', x: 555, y: 345, width: 70, height: 108 },
+    ],
+  };
+}
+const c10Reference = vehicles.find(
+  (vehicle) => vehicle.id === 'Chevrolet-C10-1971',
+)!;
+c10Reference.views['side'].studio = {
+  viewport: [7, 172, 613, 270],
+  wheels: [
+    { x: 113.5, height: 101, file: 'wheel-front.png', y: 367.5, width: 105 },
+    { x: 487, height: 102, file: 'wheel-rear.png', y: 367, width: 106 },
+  ],
+  shadow: { rx: 287, ry: 12, cx: 316, cy: 416 },
+  height: 627,
+  root: '/designer/studio/chevrolet-c10-1971/side',
+  width: 627,
+};
+c10Reference.views['front-quarter'].studio = {
+  viewport: [-86.5, 124, 800, 381],
+  wheels: [
+    { x: 246, height: 154, file: 'wheel-front.png', y: 393, width: 114 },
+    { x: 63.5, height: 109, file: 'wheel-rear.png', y: 353.5, width: 71 },
+    { x: 512, height: 50, file: 'wheel-far-front.png', y: 422, width: 112 },
+  ],
+  shadow: { rx: 290, ry: 25, cx: 311, cy: 463 },
+  height: 627,
+  root: '/designer/studio/chevrolet-c10-1971/front-quarter',
+  width: 627,
+};
+c10Reference.views['rear-quarter'].studio = {
+  viewport: [-30, 117, 695, 331],
+  wheels: [
+    { x: 407, height: 149, file: 'wheel-rear.png', y: 366.5, width: 104 },
+    { x: 572.5, height: 112, file: 'wheel-front.png', y: 338, width: 67 },
+    { x: 154.5, height: 63, file: 'wheel-far-rear.png', y: 393.5, width: 105 },
+  ],
+  shadow: { rx: 281, ry: 23, cx: 318, cy: 421 },
+  height: 627,
+  root: '/designer/studio/chevrolet-c10-1971/rear-quarter',
+  width: 627,
+};
+c10Reference.views['front'].studio = {
+  viewport: [-181, 55, 983, 468],
+  wheels: [
+    { x: 89, height: 85, file: 'wheel-left.png', y: 456.5, width: 92 },
+    { x: 524, height: 87, file: 'wheel-right.png', y: 455.5, width: 90 },
+  ],
+  shadow: { rx: 275, ry: 22, cx: 306, cy: 494 },
+  height: 627,
+  root: '/designer/studio/chevrolet-c10-1971/front',
+  width: 627,
+};
 export const wheelCatalog = [
   {
     id: 'street-temp',
@@ -299,6 +387,8 @@ export type Configuration = {
   roofColor: string;
   finish: 'Gloss' | 'Satin';
   paintMode: 'Solid' | 'Two-tone';
+  twoToneStyle: 'Center band' | 'Lower body';
+  cabPaint: 'Roof only' | 'Roof and pillars';
   contrastRoof: boolean;
   wheelId: string;
   tire: string;
@@ -319,6 +409,12 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     roofColor: '#e5e7e7',
     finish: 'Gloss',
     paintMode: 'Solid',
+    twoToneStyle: ['C10', 'K10'].includes(vehicle.model)
+      ? 'Center band'
+      : 'Lower body',
+    cabPaint: ['C10', 'K10'].includes(vehicle.model)
+      ? 'Roof and pillars'
+      : 'Roof only',
     contrastRoof: false,
     wheelId: 'street-temp',
     tire: 'Street performance',
@@ -370,6 +466,21 @@ export function normalize(input: unknown): Configuration {
   c.roofColor = hex(raw.roofColor, c.roofColor);
   c.finish = pick(raw.finish, ['Gloss', 'Satin'], c.finish);
   c.paintMode = pick(raw.paintMode, ['Solid', 'Two-tone'], c.paintMode);
+  const chevyPickup = ['C10', 'K10'].includes(v.model);
+  c.twoToneStyle = chevyPickup
+    ? pick(
+        raw.twoToneStyle,
+        ['Center band', 'Lower body'],
+        raw.vehicleId ? 'Lower body' : c.twoToneStyle,
+      )
+    : 'Lower body';
+  c.cabPaint = chevyPickup
+    ? pick(
+        raw.cabPaint,
+        ['Roof only', 'Roof and pillars'],
+        raw.vehicleId ? 'Roof only' : c.cabPaint,
+      )
+    : 'Roof only';
   c.contrastRoof =
     v.model !== 'K5' && v.contrastingRoof && raw.contrastRoof === true;
   c.wheelId = pick(
@@ -392,7 +503,10 @@ export function summary(c: Configuration): Record<string, string> {
     ...Object.fromEntries(trimFields.map((k) => [trimLabels[k], c.trim[k]])),
     'Ride height': stances.find((s) => s.id === c.stance)!.label,
     Paint: `${c.color} · ${c.finish} · ${c.paintMode}${c.paintMode === 'Two-tone' ? ` / ${c.secondaryColor}` : ''}`,
+    'Two-tone pattern':
+      c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
+    'Cab paint coverage': c.contrastRoof ? c.cabPaint : 'Body color',
     Wheels: w.name,
     Tires: c.tire,
     'K5 roof': v.model === 'K5' ? c.roof : 'Not applicable',

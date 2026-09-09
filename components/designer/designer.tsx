@@ -592,6 +592,24 @@ export function Designer() {
               </p>
             </Category>
             <Category id="paint" title="04 / Paint & finish">
+              {['C10', 'K10'].includes(vehicle.model) && (
+                <button
+                  className="design-button"
+                  onClick={() =>
+                    update({
+                      color: '#d34b20',
+                      secondaryColor: '#f1eee5',
+                      roofColor: '#f1eee5',
+                      paintMode: 'Two-tone',
+                      twoToneStyle: 'Center band',
+                      contrastRoof: true,
+                      cabPaint: 'Roof and pillars',
+                    })
+                  }
+                >
+                  Orange / white reference look
+                </button>
+              )}
               <fieldset className="paint-presets" aria-label="Paint presets">
                 {colors.map((color) => (
                   <button
@@ -628,11 +646,25 @@ export function Designer() {
                 }
               />
               {config.paintMode === 'Two-tone' && (
-                <ColorField
-                  label="Secondary color"
-                  value={config.secondaryColor}
-                  onChange={(value) => update({ secondaryColor: value })}
-                />
+                <>
+                  {['C10', 'K10'].includes(vehicle.model) && (
+                    <Choice
+                      label="Two-tone pattern"
+                      value={config.twoToneStyle}
+                      options={['Center band', 'Lower body']}
+                      onChange={(value) =>
+                        update({
+                          twoToneStyle: value as Configuration['twoToneStyle'],
+                        })
+                      }
+                    />
+                  )}
+                  <ColorField
+                    label="Secondary color"
+                    value={config.secondaryColor}
+                    onChange={(value) => update({ secondaryColor: value })}
+                  />
+                </>
               )}
               {vehicle.model !== 'K5' && vehicle.contrastingRoof && (
                 <>
@@ -645,11 +677,25 @@ export function Designer() {
                     }
                   />
                   {config.contrastRoof && (
-                    <ColorField
-                      label="Roof color"
-                      value={config.roofColor}
-                      onChange={(value) => update({ roofColor: value })}
-                    />
+                    <>
+                      {['C10', 'K10'].includes(vehicle.model) && (
+                        <Choice
+                          label="Cab paint coverage"
+                          value={config.cabPaint}
+                          options={['Roof only', 'Roof and pillars']}
+                          onChange={(value) =>
+                            update({
+                              cabPaint: value as Configuration['cabPaint'],
+                            })
+                          }
+                        />
+                      )}
+                      <ColorField
+                        label="Roof color"
+                        value={config.roofColor}
+                        onChange={(value) => update({ roofColor: value })}
+                      />
+                    </>
                   )}
                 </>
               )}
