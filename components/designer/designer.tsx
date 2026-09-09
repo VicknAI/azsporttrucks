@@ -159,6 +159,7 @@ export function Designer() {
   const [photos, setPhotos] = useState<File[]>([]);
   const [quoteEmail, setQuoteEmail] = useState<QuoteEmail | null>(null);
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
+  const fixedAppearance = Boolean(vehicle.views.side.studio?.fixedAppearance);
   const studioView = Boolean(vehicle.views[config.view].studio);
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -406,16 +407,20 @@ export function Designer() {
             <span>{vehicle.year} selected separately</span>
           </div>
           <p className="design-note">
-            {studioView
-              ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
-              : 'Schematic artwork is shared across years for this prototype. Grilles, lighting, trim, and proportions are not factory-accurate.'}
+            {fixedAppearance
+              ? '1972 K10 reference artwork, shared with the 1971 body style. Paint, chrome trim, wheels, tires, and stance stay as pictured.'
+              : studioView
+                ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
+                : 'Schematic artwork is shared across years for this prototype. Grilles, lighting, trim, and proportions are not factory-accurate.'}
           </p>
           <div className="build-current">
             <div>
               <span className="eyebrow">YOUR CURRENT BUILD</span>
               <p>
                 {vehicle.label} · {config.direction} ·{' '}
-                {config.color.toUpperCase()}
+                {fixedAppearance
+                  ? 'Red / white reference look'
+                  : config.color.toUpperCase()}
               </p>
             </div>
             <button className="design-button" onClick={() => setReview(true)}>
@@ -540,109 +545,123 @@ export function Designer() {
               </p>
             </Category>
             <Category id="paint" title="04 / Paint & finish">
-              {['C10', 'K10'].includes(vehicle.model) && (
-                <button
-                  className="design-button"
-                  onClick={() =>
-                    update({
-                      color: '#d34b20',
-                      secondaryColor: '#f1eee5',
-                      roofColor: '#f1eee5',
-                      paintMode: 'Two-tone',
-                      twoToneStyle: 'Center band',
-                      contrastRoof: true,
-                      cabPaint: 'Roof and pillars',
-                    })
-                  }
-                >
-                  Orange / white reference look
-                </button>
-              )}
-              <fieldset className="paint-presets" aria-label="Paint presets">
-                {colors.map((color) => (
-                  <button
-                    key={color.hex}
-                    title={color.name}
-                    aria-label={color.name}
-                    aria-pressed={config.color === color.hex}
-                    style={{ background: color.hex }}
-                    onClick={() => update({ color: color.hex })}
-                  >
-                    {config.color === color.hex ? '✓' : ''}
-                  </button>
-                ))}
-              </fieldset>
-              <ColorField
-                label="Body color"
-                value={config.color}
-                onChange={(value) => update({ color: value })}
-              />
-              <Choice
-                label="Finish"
-                value={config.finish}
-                options={['Gloss', 'Satin']}
-                onChange={(value) =>
-                  update({ finish: value as Configuration['finish'] })
-                }
-              />
-              <Choice
-                label="Paint layout"
-                value={config.paintMode}
-                options={['Solid', 'Two-tone']}
-                onChange={(value) =>
-                  update({ paintMode: value as Configuration['paintMode'] })
-                }
-              />
-              {config.paintMode === 'Two-tone' && (
+              {fixedAppearance ? (
+                <p className="design-note">
+                  Red body, white center band, and red cab roof stay as
+                  pictured. Custom paint previews are being refined; tell Nick
+                  your preferred colors in your build request.
+                </p>
+              ) : (
                 <>
                   {['C10', 'K10'].includes(vehicle.model) && (
-                    <Choice
-                      label="Two-tone pattern"
-                      value={config.twoToneStyle}
-                      options={['Center band', 'Lower body']}
-                      onChange={(value) =>
+                    <button
+                      className="design-button"
+                      onClick={() =>
                         update({
-                          twoToneStyle: value as Configuration['twoToneStyle'],
+                          color: '#d34b20',
+                          secondaryColor: '#f1eee5',
+                          roofColor: '#f1eee5',
+                          paintMode: 'Two-tone',
+                          twoToneStyle: 'Center band',
+                          contrastRoof: true,
+                          cabPaint: 'Roof and pillars',
                         })
                       }
-                    />
+                    >
+                      Orange / white reference look
+                    </button>
                   )}
+                  <fieldset
+                    className="paint-presets"
+                    aria-label="Paint presets"
+                  >
+                    {colors.map((color) => (
+                      <button
+                        key={color.hex}
+                        title={color.name}
+                        aria-label={color.name}
+                        aria-pressed={config.color === color.hex}
+                        style={{ background: color.hex }}
+                        onClick={() => update({ color: color.hex })}
+                      >
+                        {config.color === color.hex ? '✓' : ''}
+                      </button>
+                    ))}
+                  </fieldset>
                   <ColorField
-                    label="Secondary color"
-                    value={config.secondaryColor}
-                    onChange={(value) => update({ secondaryColor: value })}
+                    label="Body color"
+                    value={config.color}
+                    onChange={(value) => update({ color: value })}
                   />
-                </>
-              )}
-              {vehicle.model !== 'K5' && vehicle.contrastingRoof && (
-                <>
                   <Choice
-                    label="Contrasting cab roof"
-                    value={config.contrastRoof ? 'Yes' : 'No'}
-                    options={['No', 'Yes']}
+                    label="Finish"
+                    value={config.finish}
+                    options={['Gloss', 'Satin']}
                     onChange={(value) =>
-                      update({ contrastRoof: value === 'Yes' })
+                      update({ finish: value as Configuration['finish'] })
                     }
                   />
-                  {config.contrastRoof && (
+                  <Choice
+                    label="Paint layout"
+                    value={config.paintMode}
+                    options={['Solid', 'Two-tone']}
+                    onChange={(value) =>
+                      update({ paintMode: value as Configuration['paintMode'] })
+                    }
+                  />
+                  {config.paintMode === 'Two-tone' && (
                     <>
                       {['C10', 'K10'].includes(vehicle.model) && (
                         <Choice
-                          label="Cab paint coverage"
-                          value={config.cabPaint}
-                          options={['Roof only', 'Roof and pillars']}
+                          label="Two-tone pattern"
+                          value={config.twoToneStyle}
+                          options={['Center band', 'Lower body']}
                           onChange={(value) =>
                             update({
-                              cabPaint: value as Configuration['cabPaint'],
+                              twoToneStyle:
+                                value as Configuration['twoToneStyle'],
                             })
                           }
                         />
                       )}
                       <ColorField
-                        label="Roof color"
-                        value={config.roofColor}
-                        onChange={(value) => update({ roofColor: value })}
+                        label="Secondary color"
+                        value={config.secondaryColor}
+                        onChange={(value) => update({ secondaryColor: value })}
                       />
+                    </>
+                  )}
+                  {vehicle.model !== 'K5' && vehicle.contrastingRoof && (
+                    <>
+                      <Choice
+                        label="Contrasting cab roof"
+                        value={config.contrastRoof ? 'Yes' : 'No'}
+                        options={['No', 'Yes']}
+                        onChange={(value) =>
+                          update({ contrastRoof: value === 'Yes' })
+                        }
+                      />
+                      {config.contrastRoof && (
+                        <>
+                          {['C10', 'K10'].includes(vehicle.model) && (
+                            <Choice
+                              label="Cab paint coverage"
+                              value={config.cabPaint}
+                              options={['Roof only', 'Roof and pillars']}
+                              onChange={(value) =>
+                                update({
+                                  cabPaint: value as Configuration['cabPaint'],
+                                })
+                              }
+                            />
+                          )}
+                          <ColorField
+                            label="Roof color"
+                            value={config.roofColor}
+                            onChange={(value) => update({ roofColor: value })}
+                          />
+                        </>
+                      )}
                     </>
                   )}
                 </>

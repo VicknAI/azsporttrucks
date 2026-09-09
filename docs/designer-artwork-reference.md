@@ -1,5 +1,9 @@
 # Designer artwork reference
 
+## Rebuild progress — second scheduled run
+
+Created an actual K10 four-angle studio trial from the same real truck's gallery photos 6, 35, 14 and 32, after inspecting the first 36 exterior references. Master and four crops are at ../assets/k10-rebuild/; see assessment.md for exact source mapping, built-in imagegen prompt, known limitations and next steps. This is a photo-based studio edit, not a 3D model. It is materially closer in proportions and details, but not yet masked, registered in the designer, or published. Next work is paint masks and framing using this saved trial, then K5; do not repeat reference collection or control simplification.
+
 ## Rebuild progress — September 9, 2026, first scheduled run
 
 Implemented locally: removed trim recoloring/removal, wheel/tire swaps and ride-height controls. Normalization pins those unsupported fields for legacy drafts and shared links too. Summaries and quote/export descriptions now say “As pictured” rather than claiming stock height or a selected mock wheel. Paint/two-tone/roof controls remain. Fixed-hardware accordion sections were visually checked in the local browser; focused lint, all 10 tests, and production build passed. This slice is committed locally only, not pushed. Dev server was started on port 3000.
@@ -43,3 +47,7 @@ The 1971 C10 study uses the owner-supplied [Bring a Trailer listing](https://bri
 Paint layout: broad white center band between side moldings, orange upper and lower panels, and white cab roof plus painted window pillars. The designer also offers lower-body two-tone and roof-only contrast. These choices are available for C10/K10; colors are visual approximations, not factory codes.
 
 1967 and 1971 C10 each have separate generated studio artwork for all four views. Other years/models retain labeled schematics. Generated grille, trim, wheel details and bed proportions are not factory verified. In particular, the 1971 side study appears longer than the short-bed reference and needs further artwork refinement. Wheel product choices remain summary-only in studio views.
+
+## Approved K10 release (September 9, 2026)
+
+Nick approved studio-trial-v1 and requested public release. Four intact 768x512 studio frames now serve the 1971 and 1972 K10 selections; the UI identifies the 1972 reference shared with 1971. Fixed red/white center-band paint, red cab, chrome hardware, wheels and stance preserve the approved art. Paint controls are held for these packs until accurate masks are reviewed; saved/shared builds and exports retain this fixed look. These are generated artwork studies, not factory-verified geometry. No BaT source photographs are published. C10 proportional alignment and K5 artwork remain outstanding.

@@ -171,6 +171,14 @@ test('all configurations retain selections in all four distinct views', () => {
     assert.equal(new Set(outputs).size, 4);
     assert.equal(JSON.stringify(c), before);
     for (const [index, svg] of outputs.entries()) {
+      if (vehicle.views[views[index]].studio?.fixedAppearance) {
+        assert.equal(
+          svg,
+          renderSvg({ ...c, color: '#ffffff' }, views[index], views[index]),
+        );
+        assert.ok(svg.includes('data-layer="reference-artwork"'));
+        continue;
+      }
       if (vehicle.views[views[index]].studio) {
         assert.notEqual(
           svg,
@@ -273,4 +281,34 @@ test('downloaded artwork is self-contained and rejects invalid image responses',
       async () => 'data:image/png;base64,AAAA',
     ),
   );
+});
+
+test('approved K10 views load distinct complete frames and retain fixed paint in shared builds', async () => {
+  for (const year of [1971, 1972]) {
+    const c = normalize({
+      vehicleId: `Chevrolet-K10-${year}`,
+      color: '#00ff00',
+      contrastRoof: true,
+    });
+    assert.equal(c.color, '#bc252c');
+    assert.equal(c.contrastRoof, false);
+    assert.equal(c.paintMode, 'Two-tone');
+    assert.deepEqual(readShare(shareHash(c)), c);
+    const images = [];
+    for (const view of views) {
+      const svg = renderSvg(c, view);
+      const embedded = await embedArtwork(svg, async (path) => {
+        const bytes = readFileSync(
+          new URL(`../public${path}`, import.meta.url),
+        );
+        assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+        assert.equal(bytes.readUInt32BE(16), 768);
+        assert.equal(bytes.readUInt32BE(20), 512);
+        images.push(bytes.toString('base64'));
+        return `data:image/png;base64,${bytes.toString('base64')}`;
+      });
+      assert.ok(!embedded.includes('/designer/'));
+    }
+    assert.equal(new Set(images).size, 4);
+  }
 });

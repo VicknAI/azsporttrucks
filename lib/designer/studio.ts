@@ -2,6 +2,7 @@ import { stances, type Configuration, type View } from './manifest';
 
 export type StudioPack = {
   root: string;
+  fixedAppearance?: boolean;
   width: number;
   height: number;
   viewport: [number, number, number, number];
@@ -25,6 +26,9 @@ export function renderStudio(
   ariaLabel: string,
 ): string {
   const { width, height, root } = pack;
+  if (pack.fixedAppearance) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} red and white reference artwork"><image data-layer="reference-artwork" href="${root}/studio.png" width="${width}" height="${height}"/></svg>`;
+  }
   const body = `${root}/body.png`;
   const offset =
     (stances.find((s) => s.id === c.stance)?.offset || 0) *

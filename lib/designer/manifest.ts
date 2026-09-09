@@ -1,5 +1,4 @@
 import type { StudioPack } from './studio';
-
 export const views = [
   'side',
   'front-quarter',
@@ -336,6 +335,21 @@ c10Reference.views['front'].studio = {
   root: '/designer/studio/chevrolet-c10-1971/front',
   width: 627,
 };
+// The approved 1972 reference supplies the shared 1971-72 K10 body style.
+// Keep complete studio frames intact until paint masks have been reviewed.
+for (const year of [1971, 1972]) {
+  const vehicle = vehicles.find((v) => v.id === `Chevrolet-K10-${year}`)!;
+  for (const view of views)
+    vehicle.views[view].studio = {
+      root: `/designer/studio/chevrolet-k10-1972/${view}`,
+      fixedAppearance: true,
+      width: 768,
+      height: 512,
+      viewport: [0, 0, 768, 512],
+      shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
+      wheels: [],
+    };
+}
 export const wheelCatalog = [
   {
     id: 'street-temp',
@@ -404,11 +418,15 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: colors[0].hex,
+    color: vehicle.views.side.studio?.fixedAppearance
+      ? '#bc252c'
+      : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
-    paintMode: 'Solid',
+    paintMode: vehicle.views.side.studio?.fixedAppearance
+      ? 'Two-tone'
+      : 'Solid',
     twoToneStyle: ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',
@@ -499,6 +517,16 @@ export function normalize(input: unknown): Configuration {
   c.trim = { ...baseTrim };
   c.wheelId = 'street-temp';
   c.tire = 'Street performance';
+  if (v.views.side.studio?.fixedAppearance) {
+    c.color = '#bc252c';
+    c.secondaryColor = '#e5e7e7';
+    c.roofColor = c.color;
+    c.paintMode = 'Two-tone';
+    c.twoToneStyle = 'Center band';
+    c.finish = 'Gloss';
+    c.contrastRoof = false;
+    c.cabPaint = 'Roof and pillars';
+  }
   return c;
 }
 export function summary(c: Configuration): Record<string, string> {
@@ -508,7 +536,9 @@ export function summary(c: Configuration): Record<string, string> {
     Direction: c.direction,
     'Exterior trim': 'As pictured; custom requests to be discussed',
     'Ride height': 'As pictured',
-    Paint: `${c.color} · ${c.finish} · ${c.paintMode}${c.paintMode === 'Two-tone' ? ` / ${c.secondaryColor}` : ''}`,
+    Paint: v.views.side.studio?.fixedAppearance
+      ? 'Red / white center band, red cab - as pictured'
+      : `${c.color} · ${c.finish} · ${c.paintMode}${c.paintMode === 'Two-tone' ? ` / ${c.secondaryColor}` : ''}`,
     'Two-tone pattern':
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
