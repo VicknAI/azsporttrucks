@@ -337,11 +337,11 @@ c10Reference.views['front'].studio = {
 };
 // Reviewed source geometry uses intact studio scenes with separate paint layers.
 for (const model of ['C10', 'K10'])
-  for (const year of model === 'K10' ? [1969, 1970, 1971, 1972] : [1971, 1972]) {
+  for (const year of [1969, 1970, 1971, 1972]) {
     const vehicle = vehicles.find(
       (v) => v.id === `Chevrolet-${model}-${year}`,
     )!;
-    const sourceYear = model === 'C10' ? 1971 : year <= 1970 ? 1970 : 1972;
+    const sourceYear = year <= 1970 ? 1970 : model === 'C10' ? 1971 : 1972;
     for (const view of views)
       vehicle.views[view].studio = {
         root: `/designer/studio/chevrolet-${model.toLowerCase()}-${sourceYear}-color-v1/${view}`,
