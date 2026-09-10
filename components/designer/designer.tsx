@@ -644,7 +644,13 @@ export function Designer() {
                         value={config.contrastRoof ? 'Yes' : 'No'}
                         options={['No', 'Yes']}
                         onChange={(value) =>
-                          update({ contrastRoof: value === 'Yes' })
+                          update({
+                            contrastRoof: value === 'Yes',
+                            ...(value === 'Yes' &&
+                            ['C10', 'K10'].includes(vehicle.model)
+                              ? { cabPaint: 'Roof and pillars' as const }
+                              : {}),
+                          })
                         }
                       />
                       {config.contrastRoof && (
@@ -653,7 +659,7 @@ export function Designer() {
                             <Choice
                               label="Cab paint coverage"
                               value={config.cabPaint}
-                              options={['Roof only', 'Roof and pillars']}
+                              options={['Roof and pillars', 'Roof only']}
                               onChange={(value) =>
                                 update({
                                   cabPaint: value as Configuration['cabPaint'],

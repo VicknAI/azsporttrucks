@@ -495,7 +495,7 @@ export function normalize(input: unknown): Configuration {
     ? pick(
         raw.cabPaint,
         ['Roof only', 'Roof and pillars'],
-        raw.vehicleId ? 'Roof only' : c.cabPaint,
+        c.cabPaint,
       )
     : 'Roof only';
   c.contrastRoof =
