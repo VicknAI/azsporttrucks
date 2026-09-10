@@ -655,18 +655,6 @@ export function Designer() {
                       />
                       {config.contrastRoof && (
                         <>
-                          {['C10', 'K10'].includes(vehicle.model) && (
-                            <Choice
-                              label="Cab paint coverage"
-                              value={config.cabPaint}
-                              options={['Roof and pillars', 'Roof only']}
-                              onChange={(value) =>
-                                update({
-                                  cabPaint: value as Configuration['cabPaint'],
-                                })
-                              }
-                            />
-                          )}
                           <ColorField
                             label="Roof color"
                             value={config.roofColor}

@@ -491,13 +491,7 @@ export function normalize(input: unknown): Configuration {
         raw.vehicleId ? 'Lower body' : c.twoToneStyle,
       )
     : 'Lower body';
-  c.cabPaint = chevyPickup
-    ? pick(
-        raw.cabPaint,
-        ['Roof only', 'Roof and pillars'],
-        c.cabPaint,
-      )
-    : 'Roof only';
+  c.cabPaint = chevyPickup ? 'Roof and pillars' : 'Roof only';
   c.contrastRoof =
     v.model !== 'K5' && v.contrastingRoof && raw.contrastRoof === true;
   c.wheelId = pick(
