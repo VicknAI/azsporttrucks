@@ -353,6 +353,17 @@ for (const model of ['C10', 'K10'])
         wheels: [],
       };
   }
+const c10Studio1968 = vehicles.find((v) => v.id === 'Chevrolet-C10-1968')!;
+for (const view of views)
+  c10Studio1968.views[view].studio = {
+    root: `/designer/studio/chevrolet-c10-1968-color-v1/${view}`,
+    paintScene: true,
+    width: 768,
+    height: 512,
+    viewport: [0, 0, 768, 512],
+    shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
+    wheels: [],
+  };
 for (const year of [1969, 1970, 1971, 1972]) {
 const k5Studio = vehicles.find((v) => v.id === `Chevrolet-K5-${year}`)!;
 const sourceYear = year <= 1970 ? 1970 : 1972;
@@ -429,6 +440,7 @@ export type Configuration = {
   view: View;
 };
 export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
+  const blue1968 = vehicle.id === 'Chevrolet-C10-1968';
   return {
     version: 1,
     vehicleId: vehicle.id,
@@ -437,11 +449,11 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
+    color: blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
-    paintMode: vehicle.model === 'K5' && vehicle.year <= 1970 ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
+    paintMode: blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
     twoToneStyle: ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',

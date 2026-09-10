@@ -560,17 +560,17 @@ export function Designer() {
                       className="design-button"
                       onClick={() =>
                         update({
-                          color: '#d34b20',
+                          color: vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
                           secondaryColor: '#f1eee5',
                           roofColor: '#f1eee5',
-                          paintMode: 'Two-tone',
+                          paintMode: vehicle.id === 'Chevrolet-C10-1968' ? 'Solid' : 'Two-tone',
                           twoToneStyle: 'Center band',
-                          contrastRoof: true,
+                          contrastRoof: vehicle.id !== 'Chevrolet-C10-1968',
                           cabPaint: 'Roof and pillars',
                         })
                       }
                     >
-                      Orange / white reference look
+                      {vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
                     </button>
                   )}
                   <fieldset
