@@ -682,8 +682,9 @@ export function Designer() {
                   onChange={(value) => update({ roof: value })}
                 />
                 <p className="design-note">
-                  Top off uses a separate interior and bed-rail placeholder.
-                  Final seating, shadows, and roof details are pending artwork.
+                  {vehicle.views.side.studio?.openTopRoot
+                    ? 'Choose a white, black, or body-color full hardtop, or remove it to reveal the open cabin. Roll bar and interior stay as pictured.'
+                    : 'Top off uses a separate interior and bed-rail placeholder. Final seating, shadows, and roof details are pending artwork.'}
                 </p>
               </Category>
             )}

@@ -353,6 +353,18 @@ for (const model of ['C10', 'K10'])
         wheels: [],
       };
   }
+const k5Studio = vehicles.find((v) => v.id === 'Chevrolet-K5-1972')!;
+for (const view of views)
+  k5Studio.views[view].studio = {
+    root: `/designer/studio/chevrolet-k5-1972-color-v1/top-on/${view}`,
+    openTopRoot: `/designer/studio/chevrolet-k5-1972-color-v1/top-off/${view}`,
+    paintScene: true,
+    width: 768,
+    height: 512,
+    viewport: [0, 0, 768, 512],
+    shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
+    wheels: [],
+  };
 export const wheelCatalog = [
   {
     id: 'street-temp',
@@ -421,7 +433,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
+    color: vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',

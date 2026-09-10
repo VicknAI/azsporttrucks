@@ -292,6 +292,29 @@ test('downloaded artwork is self-contained and rejects invalid image responses',
   );
 });
 
+test('1972 K5 roof states retain colors and embed all four actual scene packs offline', async () => {
+  for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off']) {
+    const c = normalize({ vehicleId: 'Chevrolet-K5-1972', roof, color: '#386c47', secondaryColor: '#e8dfca', paintMode: 'Two-tone' });
+    assert.equal(c.roof, roof);
+    assert.equal(c.twoToneStyle, 'Center band');
+    assert.deepEqual(readShare(shareHash(c)), c);
+    for (const view of views) {
+      const svg = renderSvg(c, view);
+      assert.ok(svg.includes(`/${roof === 'Top off' ? 'top-off' : 'top-on'}/${view}/studio.png`));
+      assert.notEqual(svg, renderSvg({ ...c, color: '#000000' }, view));
+      assert.notEqual(svg, renderSvg({ ...c, roof: roof === 'Top off' ? 'White top' : 'Top off' }, view));
+      const embedded = await embedArtwork(svg, async (path) => {
+        const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+        assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+        assert.equal(bytes.readUInt32BE(16), 768);
+        assert.equal(bytes.readUInt32BE(20), 512);
+        return `data:image/png;base64,${bytes.toString('base64')}`;
+      });
+      assert.ok(!embedded.includes('/designer/'));
+    }
+  }
+});
+
 test('approved pickup scenes preserve editable paints across shares and offline exports', async () => {
   for (const model of ['C10', 'K10'])
     for (const year of [1971, 1972]) {
