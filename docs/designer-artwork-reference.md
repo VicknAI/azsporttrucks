@@ -95,3 +95,15 @@ Release fdb3b4f verified public: served designer-CoHHGQgz.js matches build; live
 ## K5 interior standard requested by Nick
 
 All K5 years now use a black dash and roll bar, gray/black patterned seat centers, and retained light outer upholstery. Updated the eight 1972 studio frames and neutral paint masks deterministically from the approved masters using interior material selections, preserving geometry and exterior colors. Versioned color-v2 assets avoid stale image caches. The earlier 1969–1971 schematic previews use the same interior palette/pattern. Build summaries/quotes include this fixed interior treatment. Carry this standard into all future K5 artwork, including the pending 1970. Twelve tests, lint and production build passed; top-on/off diagnostic color sheets inspected. Small generated shading and glass reflections remain illustrative.
+
+17e1703 was verified live before Nick said the current update was good for now: served designer-JpgSGPou.js and new color-v2 image assets returned successfully. Do not repeat that release.
+
+## 1970 K5 next local trial
+
+Prepared ../assets/k5-1970-rebuild/ with 32 inspected reference frames from the stock-style grille listing, full-size front/grille inspection, and an actual generated 1970 front-end edit of the approved black-interior four-view sheet. Broad CHEVROLET grille bar, clear grille parking lamps, plain chrome bumper and hood badge replace 1972 eggcrate/amber bumper lamps. Built matching top-on sheet from the approved hardtop upper regions and new body. Both sheets and eight crops were visually inspected; see assessment.md and exact prompt there. Slight front/arch geometry changes mean masks require adjustment before registration. No public change; next step is color layers and QA using these saved trials, then review/release when ready.
+
+## 1970 K5 color integration — September 10 follow-up
+
+Registered separate 1970 color-v1 scenes, retaining the stock-style grille reference and plain chrome bumper, black dash/bar and neutral patterned inserts. Authoring masks now accommodate its changed front-quarter arch/lamps, preserve the black hood badge without a blue rectangle, recolor windshield cowl/frame boundaries and fully cover the side hardtop rear corner. Silver solid paint is the fresh 1970 default; existing saved color selections still win. Center-band two-tone and all four hardtop states remain supported. 1969/1971 K5 still use schematics.
+
+Local browser checked all four silver top-off views and black hardtop views; diagnostic multicolor sheets inspected. Twelve tests cover 1970 and 1972 roof states, share round trips and all actual offline images. Focused lint and production build passed. This is a generated reference study; minor glass/edge highlights and trim details remain approximate. Nick's keep-it-rolling instruction and existing publishing authorization apply.

@@ -292,9 +292,10 @@ test('downloaded artwork is self-contained and rejects invalid image responses',
   );
 });
 
-test('1972 K5 roof states retain colors and embed all four actual scene packs offline', async () => {
+test('1970 and 1972 K5 roof states retain colors and embed all four actual scene packs offline', async () => {
+  for (const year of [1970, 1972]) {
   for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off']) {
-    const c = normalize({ vehicleId: 'Chevrolet-K5-1972', roof, color: '#386c47', secondaryColor: '#e8dfca', paintMode: 'Two-tone' });
+    const c = normalize({ vehicleId: `Chevrolet-K5-${year}`, roof, color: '#386c47', secondaryColor: '#e8dfca', paintMode: 'Two-tone' });
     assert.equal(c.roof, roof);
     assert.equal(c.twoToneStyle, 'Center band');
     assert.deepEqual(readShare(shareHash(c)), c);
@@ -312,6 +313,7 @@ test('1972 K5 roof states retain colors and embed all four actual scene packs of
       });
       assert.ok(!embedded.includes('/designer/'));
     }
+  }
   }
 });
 

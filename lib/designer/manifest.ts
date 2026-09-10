@@ -353,11 +353,13 @@ for (const model of ['C10', 'K10'])
         wheels: [],
       };
   }
-const k5Studio = vehicles.find((v) => v.id === 'Chevrolet-K5-1972')!;
+for (const year of [1970, 1972]) {
+const k5Studio = vehicles.find((v) => v.id === `Chevrolet-K5-${year}`)!;
+const k5Root = `/designer/studio/chevrolet-k5-${year}-color-v${year === 1972 ? 2 : 1}`;
 for (const view of views)
   k5Studio.views[view].studio = {
-    root: `/designer/studio/chevrolet-k5-1972-color-v2/top-on/${view}`,
-    openTopRoot: `/designer/studio/chevrolet-k5-1972-color-v2/top-off/${view}`,
+    root: `${k5Root}/top-on/${view}`,
+    openTopRoot: `${k5Root}/top-off/${view}`,
     paintScene: true,
     width: 768,
     height: 512,
@@ -365,6 +367,7 @@ for (const view of views)
     shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
     wheels: [],
   };
+}
 export const wheelCatalog = [
   {
     id: 'street-temp',
@@ -433,11 +436,11 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
+    color: vehicle.id === 'Chevrolet-K5-1970' ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
-    paintMode: vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
+    paintMode: vehicle.id === 'Chevrolet-K5-1970' ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
     twoToneStyle: ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',
