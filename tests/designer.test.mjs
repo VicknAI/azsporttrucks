@@ -243,7 +243,8 @@ test('K5 top-off has a distinct interior state and roof color choices', () => {
   const on = renderSvg({ ...c, roof: 'White top' }, 'side');
   const off = renderSvg({ ...c, roof: 'Top off' }, 'side');
   assert.notEqual(on, off);
-  assert.ok(off.includes('M145 214'));
+  assert.ok(off.includes('/top-off/side/studio.png'));
+  assert.ok(on.includes('/top-on/side/studio.png'));
   assert.notEqual(renderSvg({ ...c, roof: 'Black top' }, 'side'), on);
 });
 
@@ -292,8 +293,8 @@ test('downloaded artwork is self-contained and rejects invalid image responses',
   );
 });
 
-test('1970 and 1972 K5 roof states retain colors and embed all four actual scene packs offline', async () => {
-  for (const year of [1970, 1972]) {
+test('all K5 years retain colors and embed the paired studio artwork offline', async () => {
+  for (const year of [1969, 1970, 1971, 1972]) {
   for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off']) {
     const c = normalize({ vehicleId: `Chevrolet-K5-${year}`, roof, color: '#386c47', secondaryColor: '#e8dfca', paintMode: 'Two-tone' });
     assert.equal(c.roof, roof);
@@ -301,6 +302,7 @@ test('1970 and 1972 K5 roof states retain colors and embed all four actual scene
     assert.deepEqual(readShare(shareHash(c)), c);
     for (const view of views) {
       const svg = renderSvg(c, view);
+      assert.ok(svg.includes(`chevrolet-k5-${year <= 1970 ? 1970 : 1972}-color-v`));
       assert.ok(svg.includes(`/${roof === 'Top off' ? 'top-off' : 'top-on'}/${view}/studio.png`));
       assert.notEqual(svg, renderSvg({ ...c, color: '#000000' }, view));
       assert.notEqual(svg, renderSvg({ ...c, roof: roof === 'Top off' ? 'White top' : 'Top off' }, view));
