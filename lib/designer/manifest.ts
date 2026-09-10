@@ -335,21 +335,24 @@ c10Reference.views['front'].studio = {
   root: '/designer/studio/chevrolet-c10-1971/front',
   width: 627,
 };
-// The approved 1972 reference supplies the shared 1971-72 K10 body style.
-// Keep complete studio frames intact until paint masks have been reviewed.
-for (const year of [1971, 1972]) {
-  const vehicle = vehicles.find((v) => v.id === `Chevrolet-K10-${year}`)!;
-  for (const view of views)
-    vehicle.views[view].studio = {
-      root: `/designer/studio/chevrolet-k10-1972/${view}`,
-      fixedAppearance: true,
-      width: 768,
-      height: 512,
-      viewport: [0, 0, 768, 512],
-      shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
-      wheels: [],
-    };
-}
+// Reviewed source geometry uses intact studio scenes with separate paint layers.
+for (const model of ['C10', 'K10'])
+  for (const year of [1971, 1972]) {
+    const vehicle = vehicles.find(
+      (v) => v.id === `Chevrolet-${model}-${year}`,
+    )!;
+    const sourceYear = model === 'C10' ? 1971 : 1972;
+    for (const view of views)
+      vehicle.views[view].studio = {
+        root: `/designer/studio/chevrolet-${model.toLowerCase()}-${sourceYear}-color-v1/${view}`,
+        paintScene: true,
+        width: 768,
+        height: 512,
+        viewport: [0, 0, 768, 512],
+        shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
+        wheels: [],
+      };
+  }
 export const wheelCatalog = [
   {
     id: 'street-temp',
@@ -418,15 +421,11 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: vehicle.views.side.studio?.fixedAppearance
-      ? '#bc252c'
-      : colors[0].hex,
+    color: vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
-    paintMode: vehicle.views.side.studio?.fixedAppearance
-      ? 'Two-tone'
-      : 'Solid',
+    paintMode: vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
     twoToneStyle: ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',
@@ -517,16 +516,7 @@ export function normalize(input: unknown): Configuration {
   c.trim = { ...baseTrim };
   c.wheelId = 'street-temp';
   c.tire = 'Street performance';
-  if (v.views.side.studio?.fixedAppearance) {
-    c.color = '#bc252c';
-    c.secondaryColor = '#e5e7e7';
-    c.roofColor = c.color;
-    c.paintMode = 'Two-tone';
-    c.twoToneStyle = 'Center band';
-    c.finish = 'Gloss';
-    c.contrastRoof = false;
-    c.cabPaint = 'Roof and pillars';
-  }
+  if (v.views.side.studio?.paintScene) c.twoToneStyle = 'Center band';
   return c;
 }
 export function summary(c: Configuration): Record<string, string> {

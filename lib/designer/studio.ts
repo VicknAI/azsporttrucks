@@ -3,6 +3,7 @@ import { stances, type Configuration, type View } from './manifest';
 export type StudioPack = {
   root: string;
   fixedAppearance?: boolean;
+  paintScene?: boolean;
   width: number;
   height: number;
   viewport: [number, number, number, number];
@@ -26,6 +27,17 @@ export function renderStudio(
   ariaLabel: string,
 ): string {
   const { width, height, root } = pack;
+  if (pack.paintScene) {
+    const masks = ['paint', 'center-band', 'cab', 'roof'];
+    const tint = (name: string, color: string) => {
+      const channels = [1, 3, 5].map(
+        (i) => Number.parseInt(color.slice(i, i + 2), 16) / 255,
+      );
+      const filter = `<filter id="${prefix}-${name}-tint" color-interpolation-filters="sRGB"><feComponentTransfer>${channels.map((n, i) => `<feFunc${['R', 'G', 'B'][i]} type="table" tableValues="0 ${n / 3} ${(n * 2) / 3} ${n} ${c.finish === 'Gloss' ? 1 : n + (1 - n) * 0.45}"/>`).join('')}</feComponentTransfer></filter>`;
+      return `${filter}<g mask="url(#${prefix}-${name}-mask)"><use href="#${prefix}-texture" filter="url(#${prefix}-${name}-tint)"/></g>`;
+    };
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} customizable studio artwork"><defs><image id="${prefix}-texture" href="${root}/paint-texture.png" width="${width}" height="${height}"/>${masks.map((name) => `<mask id="${prefix}-${name}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}" style="mask-type:alpha"><image href="${root}/${name}-mask.png" width="${width}" height="${height}"/></mask>`).join('')}</defs><image data-layer="reference-artwork" href="${root}/studio.png" width="${width}" height="${height}"/><g data-layer="paint-mask">${tint('paint', c.color)}${c.paintMode === 'Two-tone' ? tint('center-band', c.secondaryColor) : ''}</g><g data-layer="roof">${c.contrastRoof ? tint(c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', c.roofColor) : ''}</g></svg>`;
+  }
   if (pack.fixedAppearance) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} red and white reference artwork"><image data-layer="reference-artwork" href="${root}/studio.png" width="${width}" height="${height}"/></svg>`;
   }

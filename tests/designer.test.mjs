@@ -48,19 +48,28 @@ test('1967 and 1971 have complete, distinct studio packs with valid PNG assets',
       const pack = vehicle.views[view].studio;
       assert.ok(pack);
       roots.add(pack.root);
-      for (const name of [
-        'body.png',
-        ...[
-          'paint',
-          'secondary',
-          'center-band',
-          'roof',
-          'cab',
-          'grille',
-          'bumper',
-        ].map((n) => `${n}-mask.png`),
-        ...pack.wheels.map((w) => w.file),
-      ]) {
+      for (const name of pack.paintScene
+        ? [
+            'studio.png',
+            'paint-texture.png',
+            'paint-mask.png',
+            'center-band-mask.png',
+            'cab-mask.png',
+            'roof-mask.png',
+          ]
+        : [
+            'body.png',
+            ...[
+              'paint',
+              'secondary',
+              'center-band',
+              'roof',
+              'cab',
+              'grille',
+              'bumper',
+            ].map((n) => `${n}-mask.png`),
+            ...pack.wheels.map((w) => w.file),
+          ]) {
         const bytes = readFileSync(
           new URL(`../public${pack.root}/${name}`, import.meta.url),
         );
@@ -283,32 +292,43 @@ test('downloaded artwork is self-contained and rejects invalid image responses',
   );
 });
 
-test('approved K10 views load distinct complete frames and retain fixed paint in shared builds', async () => {
-  for (const year of [1971, 1972]) {
-    const c = normalize({
-      vehicleId: `Chevrolet-K10-${year}`,
-      color: '#00ff00',
-      contrastRoof: true,
-    });
-    assert.equal(c.color, '#bc252c');
-    assert.equal(c.contrastRoof, false);
-    assert.equal(c.paintMode, 'Two-tone');
-    assert.deepEqual(readShare(shareHash(c)), c);
-    const images = [];
-    for (const view of views) {
-      const svg = renderSvg(c, view);
-      const embedded = await embedArtwork(svg, async (path) => {
-        const bytes = readFileSync(
-          new URL(`../public${path}`, import.meta.url),
-        );
-        assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
-        assert.equal(bytes.readUInt32BE(16), 768);
-        assert.equal(bytes.readUInt32BE(20), 512);
-        images.push(bytes.toString('base64'));
-        return `data:image/png;base64,${bytes.toString('base64')}`;
+test('approved pickup scenes preserve editable paints across shares and offline exports', async () => {
+  for (const model of ['C10', 'K10'])
+    for (const year of [1971, 1972]) {
+      const c = normalize({
+        vehicleId: `Chevrolet-${model}-${year}`,
+        color: '#00ff00',
+        contrastRoof: true,
       });
-      assert.ok(!embedded.includes('/designer/'));
+      assert.equal(c.color, '#00ff00');
+      assert.equal(c.contrastRoof, true);
+      assert.equal(c.paintMode, 'Two-tone');
+      assert.deepEqual(readShare(shareHash(c)), c);
+      const images = [];
+      for (const view of views) {
+        const svg = renderSvg(c, view);
+        const embedded = await embedArtwork(svg, async (path) => {
+          const bytes = readFileSync(
+            new URL(`../public${path}`, import.meta.url),
+          );
+          assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+          assert.equal(bytes.readUInt32BE(16), 768);
+          assert.equal(bytes.readUInt32BE(20), 512);
+          images.push(bytes.toString('base64'));
+          return `data:image/png;base64,${bytes.toString('base64')}`;
+        });
+        assert.ok(!embedded.includes('/designer/'));
+      }
+      assert.ok(new Set(images).size >= 4);
+      for (const view of views) {
+        const base = renderSvg(c, view);
+        assert.notEqual(base, renderSvg({ ...c, color: '#000000' }, view));
+        assert.notEqual(
+          base,
+          renderSvg({ ...c, secondaryColor: '#0000ff' }, view),
+        );
+        assert.notEqual(base, renderSvg({ ...c, roofColor: '#ff00ff' }, view));
+        assert.notEqual(base, renderSvg({ ...c, contrastRoof: false }, view));
+      }
     }
-    assert.equal(new Set(images).size, 4);
-  }
 });

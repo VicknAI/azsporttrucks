@@ -118,6 +118,7 @@ function ColorField({
         id={id}
         type="color"
         value={value}
+        onInput={(e) => onChange(e.currentTarget.value)}
         onChange={(e) => onChange(e.target.value)}
       />
       <span>{value.toUpperCase()}</span>
@@ -160,6 +161,7 @@ export function Designer() {
   const [quoteEmail, setQuoteEmail] = useState<QuoteEmail | null>(null);
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
   const fixedAppearance = Boolean(vehicle.views.side.studio?.fixedAppearance);
+  const paintScene = Boolean(vehicle.views.side.studio?.paintScene);
   const studioView = Boolean(vehicle.views[config.view].studio);
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -615,7 +617,11 @@ export function Designer() {
                         <Choice
                           label="Two-tone pattern"
                           value={config.twoToneStyle}
-                          options={['Center band', 'Lower body']}
+                          options={
+                            paintScene
+                              ? ['Center band']
+                              : ['Center band', 'Lower body']
+                          }
                           onChange={(value) =>
                             update({
                               twoToneStyle:
