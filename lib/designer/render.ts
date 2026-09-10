@@ -81,13 +81,13 @@ export function renderSvg(
   const roofFront =
     k5 && isFront
       ? c.roof === 'Top off'
-        ? '<path d="M299 176V160H335V176 M466 176V160H502V176" fill="#303741" stroke="#89939d" stroke-width="3"/>'
+        ? `<path d="M283 182V151H517V182" fill="none" stroke="#141414" stroke-width="7"/><path d="M299 176V160H335V176 M466 176V160H502V176" fill="url(#${prefix}-seat-fabric)" stroke="#d5d5d2" stroke-width="3"/>`
         : `<path d="M255 142 L266 126 L528 126 L540 142Z" fill="${roofColor}" stroke="#151c24" stroke-width="3"/>`
       : '';
   const roof =
     k5 && !isFront
       ? c.roof === 'Top off'
-        ? '<path d="M119 218 L267 218" stroke="#b9c2cb" stroke-width="8"/><path d="M145 214 L145 181 L174 181 L181 214 M208 214 L208 181 L240 181 L248 214" fill="#353b42" stroke="#89939d" stroke-width="4"/>'
+        ? `<path d="M119 218 L267 218" stroke="#b9c2cb" stroke-width="8"/><path d="M133 213V160H211L255 213" fill="none" stroke="#141414" stroke-width="7"/><path d="M145 214 L145 181 L174 181 L181 214 M208 214 L208 181 L240 181 L248 214" fill="url(#${prefix}-seat-fabric)" stroke="#d5d5d2" stroke-width="4"/>`
         : `<path d="M116 220 L129 145 L300 140 L285 222Z" fill="${roofColor}" stroke="#151c24" stroke-width="4"/><path d="M146 163 L266 160 L255 204 L138 204Z" fill="#405767"/>`
       : roofFront;
   const wheelCutouts = a.anchors
@@ -105,6 +105,7 @@ export function renderSvg(
  ${layer('paint-mask', a.paintMask ? `<mask id="${prefix}-paint"><image href="${escapeHtml(a.paintMask)}" width="800" height="460"/></mask><rect width="800" height="460" fill="${c.color}" mask="url(#${prefix}-paint)"/>` : `<g clip-path="url(#${prefix}-body)" mask="url(#${prefix}-arches)">${c.paintMode === 'Two-tone' ? `<rect y="${c.twoToneStyle === 'Center band' ? 250 : 290}" width="800" height="${c.twoToneStyle === 'Center band' ? 40 : 45}" fill="${c.secondaryColor}"/>` : ''}<rect width="800" height="460" fill="url(#${prefix}-gloss)"/></g>`)}
  ${fullCab ? `<path d="${g.cab}" fill="${roofColor}"/>` : ''}
  ${layer('glass', `<path d="${g.glass}" fill="#415b70" stroke="#1b2735" stroke-width="5"/><path d="M345 158 L357 202" stroke="#b1c6d5" stroke-width="3" opacity=".4"/>`)}
+ ${k5 ? `<defs><pattern id="${prefix}-seat-fabric" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#777"/><path d="M0 2H8 M2 0V8" stroke="#171717" stroke-width="3"/></pattern><clipPath id="${prefix}-interior-glass"><path d="${g.glass}"/></clipPath></defs><g data-layer="interior" clip-path="url(#${prefix}-interior-glass)"><path d="M285 211V177H536V214" fill="none" stroke="#161616" stroke-width="7"/><path d="M317 220V186H351V220 M462 220V186H496V220" fill="url(#${prefix}-seat-fabric)" stroke="#d5d5d2" stroke-width="5"/><path d="M245 215H570" stroke="#141414" stroke-width="12"/></g>` : ''}
  ${layer('roof', asset(k5 && c.roof === 'Top off' ? a.topOffInterior : a.roof, roof + (!k5 && c.contrastRoof && !fullCab ? `<path d="${g.cab}" fill="${roofColor}" clip-path="inset(0 0 65% 0)"/>` : '')))}
  ${layer('front-end', asset(a.frontEnd, `${(rear ? c.trim.tailgate : c.trim.grille) !== 'Removed' ? `<path d="${g.front}" fill="${rear ? finish(c.trim.tailgate) : finish(c.trim.grille)}" stroke="#19232e" stroke-width="3"/>` : ''}${!rear ? `<path d="${g.front}" fill="none" stroke="#6e7780" stroke-width="1"/>${isFront ? '<rect x="236" y="270" width="44" height="27" rx="10" fill="#fff1c9"/><rect x="518" y="270" width="44" height="27" rx="10" fill="#fff1c9"/>' : view === 'side' ? '<rect x="685" y="263" width="12" height="19" fill="#fff1c9"/>' : '<rect x="603" y="266" width="23" height="23" rx="8" fill="#fff1c9"/><rect x="693" y="278" width="23" height="23" rx="8" fill="#fff1c9"/>'}` : ''}`))}
  ${layer('trim', asset(a.trim, `${c.trim.sideMolding !== 'Removed' && !isFront ? `<path d="M112 279 L570 292" stroke="${finish(c.trim.sideMolding)}" stroke-width="5"/>` : ''}${c.trim.badges !== 'Removed' ? '<rect x="475" y="254" width="20" height="8" fill="#d1d7de"/>' : ''}${rear && c.trim.tailgate !== 'Removed' ? `<path d="M95 283 L196 271" stroke="${finish(c.trim.tailgate)}" stroke-width="9"/>` : ''}${c.trim.bumper !== 'Removed' ? `<path d="${isFront ? 'M204 324H595' : rear ? 'M77 318L215 338' : 'M597 327L734 316'}" stroke="${finish(c.trim.bumper)}" stroke-width="10"/>` : ''}`))}</g>

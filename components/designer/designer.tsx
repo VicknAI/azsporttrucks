@@ -683,7 +683,7 @@ export function Designer() {
                 />
                 <p className="design-note">
                   {vehicle.views.side.studio?.openTopRoot
-                    ? 'Choose a white, black, or body-color full hardtop, or remove it to reveal the open cabin. Roll bar and interior stay as pictured.'
+                    ? 'Choose a white, black, or body-color full hardtop, or remove it to reveal the open cabin. Black dash and roll bar, with gray/black patterned seat centers.'
                     : 'Top off uses a separate interior and bed-rail placeholder. Final seating, shadows, and roof details are pending artwork.'}
                 </p>
               </Category>

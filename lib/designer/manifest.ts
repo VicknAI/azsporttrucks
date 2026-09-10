@@ -356,8 +356,8 @@ for (const model of ['C10', 'K10'])
 const k5Studio = vehicles.find((v) => v.id === 'Chevrolet-K5-1972')!;
 for (const view of views)
   k5Studio.views[view].studio = {
-    root: `/designer/studio/chevrolet-k5-1972-color-v1/top-on/${view}`,
-    openTopRoot: `/designer/studio/chevrolet-k5-1972-color-v1/top-off/${view}`,
+    root: `/designer/studio/chevrolet-k5-1972-color-v2/top-on/${view}`,
+    openTopRoot: `/designer/studio/chevrolet-k5-1972-color-v2/top-off/${view}`,
     paintScene: true,
     width: 768,
     height: 512,
@@ -542,6 +542,7 @@ export function summary(c: Configuration): Record<string, string> {
     Wheels: 'As pictured; fitment to be discussed',
     Tires: 'As pictured; size to be discussed',
     'K5 roof': v.model === 'K5' ? c.roof : 'Not applicable',
+    ...(v.model === 'K5' ? { Interior: 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),
   };
 }
 export const fitmentNotice =
