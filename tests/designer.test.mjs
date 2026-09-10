@@ -321,7 +321,7 @@ test('all K5 years retain colors and embed the paired studio artwork offline', a
 
 test('approved pickup scenes preserve editable paints across shares and offline exports', async () => {
   for (const model of ['C10', 'K10'])
-    for (const year of model === 'C10' ? [1968, 1971, 1972] : [1971, 1972]) {
+    for (const year of model === 'C10' ? [1968, 1971, 1972] : [1969, 1970, 1971, 1972]) {
       const c = normalize({
         vehicleId: `Chevrolet-${model}-${year}`,
         color: '#00ff00',
