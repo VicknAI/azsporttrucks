@@ -356,7 +356,7 @@ for (const model of ['C10', 'K10'])
 const c10Studio1968 = vehicles.find((v) => v.id === 'Chevrolet-C10-1968')!;
 for (const view of views)
   c10Studio1968.views[view].studio = {
-    root: `/designer/studio/chevrolet-c10-1968-color-v1/${view}`,
+    root: `/designer/studio/chevrolet-c10-1968-color-v2/${view}`,
     paintScene: true,
     width: 768,
     height: 512,
