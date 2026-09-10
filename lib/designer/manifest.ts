@@ -344,7 +344,7 @@ for (const model of ['C10', 'K10'])
     const sourceYear = year <= 1970 ? 1970 : model === 'C10' ? 1971 : 1972;
     for (const view of views)
       vehicle.views[view].studio = {
-        root: `/designer/studio/chevrolet-${model.toLowerCase()}-${sourceYear}-color-v1/${view}`,
+        root: `/designer/studio/chevrolet-${model.toLowerCase()}-${sourceYear}-color-v${model === 'C10' ? 2 : 1}/${view}`,
         paintScene: true,
         width: 768,
         height: 512,
