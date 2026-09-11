@@ -277,3 +277,7 @@ Releaseeefd4a5 VERIFIEDPUBLIC designer-CjzvqCa0.js;publicHTML confirmsPaint02,Ex
 ## 1971/1972 C10 rear-view cleanup
 
 User1972screenshot phantomcab outlines/whitepaint leaks and mismatchedexhaust. Shared1971source corrected onlyrearview: cleanup-rear-v3.py replaces overbroad cabmask with traced silhouette,excludes glass/seals/cargo light,extends bodypaint onwhite strip undertrim andretainschromehandle. Eliminates outlyingpolygon/ghosttriangle. Built-in image edit exhaust outputrear-exhaust-edit.png supplies matching single-round tip eachside;only2underbumper regionscomposited intooriginalstudio,restgeometryunchanged. SolidOrange,whitecab,green/whitetwo-tone diagnosticscreated. Versioned1971color-v3 shared1971/72;other3viewsidenticalassets.13tests,lint,buildpass. Publicationpending.
+
+Releaseed4484e VERIFIEDPUBLIC designer-wbZpBO-q.js;public1972C10 SolidOrange+whitecab4viewreview inspected. Rearghostoutlinesremoved,paintcoverageimproved,matching1outleteachside. Shared1971C10 also receivescorrectedrear. Preserve otherartworkandUIVehicle/Paint02 changes.
+
+1971/72C10 side-view phantomline cleanup: useryellowroof/redbody screenshot. Existingtab7 was stale(oldDirection summary);freshsource alreadylesssevere. cleanup-side-v4.py tightenssidecab silhouette,restrictsupperhood/bed paint to actualredpigment/cab,removes wheelcenterpaintleaks. Checkedred-white-yellow andsolidgreen diagnostics. Versioned1971color-v4 for1971/72,keepsrear-v3exhaustcleanup andallotherviews.13tests/buildpass. Needfreshpublictabafterpublish;browserlabelPaint02.
