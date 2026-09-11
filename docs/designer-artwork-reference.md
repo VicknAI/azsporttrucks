@@ -281,3 +281,7 @@ User1972screenshot phantomcab outlines/whitepaint leaks and mismatchedexhaust. S
 Releaseed4484e VERIFIEDPUBLIC designer-wbZpBO-q.js;public1972C10 SolidOrange+whitecab4viewreview inspected. Rearghostoutlinesremoved,paintcoverageimproved,matching1outleteachside. Shared1971C10 also receivescorrectedrear. Preserve otherartworkandUIVehicle/Paint02 changes.
 
 1971/72C10 side-view phantomline cleanup: useryellowroof/redbody screenshot. Existingtab7 was stale(oldDirection summary);freshsource alreadylesssevere. cleanup-side-v4.py tightenssidecab silhouette,restrictsupperhood/bed paint to actualredpigment/cab,removes wheelcenterpaintleaks. Checkedred-white-yellow andsolidgreen diagnostics. Versioned1971color-v4 for1971/72,keepsrear-v3exhaustcleanup andallotherviews.13tests/buildpass. Needfreshpublictabafterpublish;browserlabelPaint02.
+
+Release8513d65 VERIFIEDPUBLIC designer-DHy3WMsa.js;freshpublictab1972C10 red-white-yellow all4views inspected,sidephantomoverhang absent. Useroldtab7 remainsstale;freshupdatedtabopened. Keep1971color-v4infuturechanges.
+`n1969/1970 K10 front-quarter color-v2: fixed missed original red on roof/cowl and white front-wheel arch/body coverage; cab contrast follows actual roof/pillars. Preserved chrome, lights and badges. Other three views unchanged. Authoring: assets/k10-1970-rebuild/cleanup-front-quarter-v2.py. Solid green, yellow contrasting cab and blue/white two-tone reviewed. Release validation pending.
+Validation: all 13 tests, focused lint and production build passed. Expected public bundle designer-CwxgxGoI.js.
