@@ -236,7 +236,7 @@ export const vehicles: Vehicle[] = [
 const c10Studio = vehicles.find((v) => v.id === 'Chevrolet-C10-1967')!;
 for (const view of views)
   c10Studio.views[view].studio = {
-    root: `/designer/studio/chevrolet-c10-1967-color-v1/${view}`,
+    root: `/designer/studio/chevrolet-c10-1967-color-v2/${view}`,
     paintScene: true,
     width: 768,
     height: 512,

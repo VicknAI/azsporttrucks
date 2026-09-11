@@ -219,3 +219,23 @@ Reviewed dedicated gallery139 URLs/32 images,six selected references. Created ..
 ## 1967 K10 integration
 
 Registered1967K10 color-v1 four-view pack with blue-green Solid default/reset preset and editable center-band/roof-and-pillars. Final solid-red diagnostics show corrected painted side pillar; white-letter/glass/wheel sample checks pass. Twelve tests include all C10/K10 years with actual offline PNG embedding and shares; tests/lint/build/diff checks pass. Build designer-BSekuepS.js. Local browser inspected blue-green reference and green/white two-tone with contrasting cab across all four views. Preserved Rally wheels and white lettering. Fine image details remain illustrative. Ready for existing GitHub main/Cloudflare release. This completes the Chevy artwork set once verified live; next saved Ford references, Patina deferred.
+
+Release8a3ef2c VERIFIED PUBLIC: designer-BSekuepS.js matches tested build; public browser selected1967K10,preset and all four views inspected. All requested Chevy model years now have refreshed color-editable studio artwork: C10/K10 1967-72,K5 1969-72. Preserve these; next Ford1978/79 F100/F150 references. Patina deferred.
+
+## Ford work started after Chevy completion
+
+Prepared1979F100 gallery:291 URLs,32images/contactsheet inspected,selected six reference collage saved in ../assets/ford-f100-1979-rebuild. Silver/dark-blue center-band paint,bright trim/hood/tailgate Ford letters,rectangular headlights/amber lamps below,stock-style2WD stance and steel hubcap wheels. Blue cloth interior. No generated Ford scene yet; next generate1979F100 with consistent studio cameras using these refs. Research located original1978Ford pickup brochure at https://xr793.us/wp-content/uploads/2020/06/1978-Ford-Pickups.pdf ; indexed Ranger text mentions rectangular headlights,but fullweb fetch failed18.46MB size. Read originalscan before making1978/79 grouping claim; conflicting forum summaries not accepted as evidence. Public8a3ef2c unchanged; allChevys preserved.
+
+## 1979 F100 studio preview
+
+Created ../assets/ford-f100-1979-rebuild/studio-trial-v1.png from selected actual Ford photos,with existing studio sheet as camera/layout guide only. Four nativecrops saved;silver/navy short-bed Ranger,normal2WD stance,steel/hubcap wheels,rectangular headlights,blue interior,FORD lettering and clean roof inspected. No Chevy wheels copied. Preview candidate,notlive. Next author silver/body/blue-band/cab masks with strict chrome/glass/lettering exclusions,then color diagnostics/integration/checks.1978year grouping still needs originalbrochure verification. AllChevys remain live8a3ef2c.
+
+1979F100 paint work: authored first side-view draft in ../assets/ford-f100-1979-rebuild/side-draft using prepare-side-layers.py. Solid/two-tone diagnostics exposed excess silver around rectangular hardware exclusions and highlight/arch-boundary cleanup. Added dark-pixel gate to navy layer to avoid tinting silver reflections. Next refine side draft,then other3views; not release-ready. Public8a3ef2c unchanged.
+
+F100 side-paint refinement completed: small hardware contours and glyph-based badge exclusion remove rectangular silver artifacts;isolated navy paint from silver reflections and protected amber lamp. Regenerated two-scheme diagnostics inspected. Next remaining3view masks and combined QA;side draft not yet integrated. AllChevys/public8a3ef2c unchanged.
+
+## 1967 C10 proportions and stance correction
+
+User asked to match the approved 1968 C10 dimensions and stance. Prioritized this correction before Ford. Built studio-trial-v6.png in ../assets/c10-1967-rebuild from the actual approved 1968 studio sheet, retaining its cab silhouette, wheelbase, short bed, ride height and Rally wheels/white-letter tires. Kept 1967 marker-free body, plain early grille/hood, small rear glass and white CHEVROLET tailgate lettering using the saved user reference collage. Built-in image generator; exact prompt saved as edit-prompt-v6.txt. No other model pack changed.
+
+Prepared color-v2 masks with matching small-window exclusion, tightened contrasting cab boundaries to exclude cowl/door paint, and protected mirrors. Inspected solid-red, green/yellow/white and seafoam/white diagnostics. Existing default/reset colors and saved selections preserved. Local four-view review inspected with green/white two-tone. All 12 tests pass including saved/shared configurations and actual offline artwork embedding; lint and production build pass. Registered versioned chevrolet-c10-1967-color-v2 pack. Publication verification pending.
