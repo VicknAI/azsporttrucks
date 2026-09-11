@@ -398,6 +398,16 @@ export const wheelCatalog = [
     >,
   },
 ];
+const f100Studio1979 = vehicles.find((v) => v.id === 'Ford-F-100-1979')!;
+for (const view of views) f100Studio1979.views[view].studio = {
+  root: `/designer/studio/ford-f100-1979-solid-v1/${view}`,
+  paintScene: true,
+  solidOnly: true,
+  width: 768, height: 512, viewport: [0, 0, 768, 512],
+  shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
+};
+f100Studio1979.contrastingRoof = false;
+
 export type Configuration = {
   version: 1;
   vehicleId: string;
@@ -432,11 +442,11 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
+    color: vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
-    paintMode: blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
+    paintMode: vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
     twoToneStyle: ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',
@@ -522,6 +532,10 @@ export function normalize(input: unknown): Configuration {
   c.wheelId = 'street-temp';
   c.tire = 'Street performance';
   if (v.views.side.studio?.paintScene) c.twoToneStyle = 'Center band';
+  if (v.views.side.studio?.solidOnly) {
+    c.paintMode = 'Solid';
+    c.contrastRoof = false;
+  }
   return c;
 }
 export function summary(c: Configuration): Record<string, string> {

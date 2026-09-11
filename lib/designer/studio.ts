@@ -4,6 +4,7 @@ export type StudioPack = {
   root: string;
   fixedAppearance?: boolean;
   paintScene?: boolean;
+  solidOnly?: boolean;
   openTopRoot?: string;
   width: number;
   height: number;

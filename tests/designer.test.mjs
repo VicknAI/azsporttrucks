@@ -193,14 +193,11 @@ test('all configurations retain selections in all four distinct views', () => {
           svg,
           renderSvg({ ...c, color: '#ffffff' }, views[index], views[index]),
         );
-        assert.notEqual(
-          svg,
-          renderSvg(
-            { ...c, secondaryColor: '#ffffff' },
-            views[index],
-            views[index],
-          ),
+        const secondaryChanged = renderSvg(
+          { ...c, secondaryColor: '#ffffff' }, views[index], views[index],
         );
+        if (vehicle.views[views[index]].studio.solidOnly) assert.equal(svg, secondaryChanged);
+        else assert.notEqual(svg, secondaryChanged);
       } else {
         assert.ok(svg.includes('#123abc'));
         assert.ok(svg.includes('#fedcba'));
@@ -317,6 +314,30 @@ test('all K5 years retain colors and embed the paired studio artwork offline', a
     }
   }
   }
+});
+
+test('1979 F-100 solid release preserves colors and exports while rejecting unfinished paint options', async () => {
+  const vehicle = vehicles.find((v) => v.id === 'Ford-F-100-1979');
+  assert.equal(defaultConfiguration(vehicle).paintMode, 'Solid');
+  const c = normalize({ vehicleId: vehicle.id, color: '#226644', finish: 'Satin', paintMode: 'Two-tone', contrastRoof: true });
+  assert.equal(c.paintMode, 'Solid');
+  assert.equal(c.contrastRoof, false);
+  assert.equal(c.color, '#226644');
+  assert.deepEqual(readShare(shareHash(c)), c);
+  for (const view of views) {
+    const svg = renderSvg(c, view);
+    assert.ok(svg.includes('/ford-f100-1979-solid-v1/'));
+    assert.notEqual(svg, renderSvg({ ...c, color: '#ff0000' }, view));
+    const embedded = await embedArtwork(svg, async (path) => {
+      const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+      assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+      assert.equal(bytes.readUInt32BE(16), 768);
+      assert.equal(bytes.readUInt32BE(20), 512);
+      return `data:image/png;base64,${bytes.toString('base64')}`;
+    });
+    assert.ok(!embedded.includes('/designer/'));
+  }
+  assert.equal(vehicles.find((v) => v.id === 'Ford-F-100-1978').views.side.studio, undefined);
 });
 
 test('approved pickup scenes preserve editable paints across shares and offline exports', async () => {

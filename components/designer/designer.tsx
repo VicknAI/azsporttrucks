@@ -411,6 +411,8 @@ export function Designer() {
           <p className="design-note">
             {fixedAppearance
               ? '1972 K10 reference artwork, shared with the 1971 body style. Paint, chrome trim, wheels, tires, and stance stay as pictured.'
+              : vehicle.views.side.studio?.solidOnly
+                ? 'Preview single-color paint in gloss or satin. Two-tone finishes are coming later. Trim, wheels, tires, and stance stay as pictured.'
               : studioView
                 ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
                 : 'Schematic artwork is shared across years for this prototype. Grilles, lighting, trim, and proportions are not factory-accurate.'}
@@ -606,7 +608,7 @@ export function Designer() {
                   <Choice
                     label="Paint layout"
                     value={config.paintMode}
-                    options={['Solid', 'Two-tone']}
+                    options={vehicle.views.side.studio?.solidOnly ? ['Solid'] : ['Solid', 'Two-tone']}
                     onChange={(value) =>
                       update({ paintMode: value as Configuration['paintMode'] })
                     }
