@@ -97,7 +97,7 @@ export function renderSvg(
     )
     .join('');
   const fullCab = !k5 && c.contrastRoof && c.cabPaint === 'Roof and pillars';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" role="img" aria-label="${escapeHtml(v.label)} ${view} schematic prototype"><defs><linearGradient id="${prefix}-gloss" x2="0" y2="1"><stop stop-color="white" stop-opacity="${c.finish === 'Gloss' ? '.38' : '.12'}"/><stop offset=".5" stop-color="white" stop-opacity="0"/><stop offset="1" stop-color="black" stop-opacity=".3"/></linearGradient><clipPath id="${prefix}-body"><path d="${g.body}"/><path d="${g.cab}"/></clipPath><mask id="${prefix}-arches"><rect width="800" height="460" fill="white"/>${wheelCutouts}</mask></defs>
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" role="img" aria-label="${escapeHtml(v.label)} ${view} schematic preview"><defs><linearGradient id="${prefix}-gloss" x2="0" y2="1"><stop stop-color="white" stop-opacity="${c.finish === 'Gloss' ? '.38' : '.12'}"/><stop offset=".5" stop-color="white" stop-opacity="0"/><stop offset="1" stop-color="black" stop-opacity=".3"/></linearGradient><clipPath id="${prefix}-body"><path d="${g.body}"/><path d="${g.cab}"/></clipPath><mask id="${prefix}-arches"><rect width="800" height="460" fill="white"/>${wheelCutouts}</mask></defs>
  ${layer('background', asset(a.background, '<rect width="800" height="460" fill="#171d25"/><path d="M35 375H765 M100 390H700" stroke="#3a414b" stroke-width="1"/>'))}
  ${layer('shadows', '<ellipse cx="402" cy="376" rx="300" ry="16" fill="#03060b" opacity=".6"/>')}
  ${layer('tires-and-wheels', tires)}

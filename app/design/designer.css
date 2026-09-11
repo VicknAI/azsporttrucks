@@ -49,7 +49,7 @@
   font-size: 0.75rem;
   line-height: 1.6;
 }
-.prototype-tag {
+.preview-tag {
   border: 1px solid #4a515b;
   padding: 4px 7px;
   font-size: 0.7rem !important;
@@ -537,7 +537,7 @@
   .render-heading h2 {
     font-size: 1.4rem;
   }
-  .prototype-tag {
+  .preview-tag {
     font-size: 0.625rem !important;
   }
   .design-summary > div {
@@ -560,6 +560,69 @@
 .designer button,
 .designer select {
   scroll-margin-block: 100px;
+}
+.designer-guide {
+  margin: 32px 0 40px;
+  padding: 36px 0 0;
+  border-top: 1px solid #383838;
+}
+.designer-guide-intro {
+  max-width: 850px;
+}
+.designer-guide h2 {
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  line-height: 1.1;
+  margin: 16px 0;
+}
+.designer-guide h3 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+  margin-bottom: 14px;
+}
+.designer-guide p,
+.designer-guide li {
+  color: #bfc5cd;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+.designer-guide .eyebrow {
+  font-size: 0.75rem;
+}
+.designer-guide-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  margin: 30px 0 24px;
+}
+.designer-guide-columns p {
+  margin: 0 0 16px;
+}
+.designer-guide ol {
+  list-style: decimal;
+  padding-left: 22px;
+  margin: 0;
+}
+.designer-guide li {
+  padding-left: 5px;
+  margin-bottom: 8px;
+}
+.designer-guide .designer-guide-note {
+  padding-top: 22px;
+  border-top: 1px solid #303030;
+  font-size: 0.8125rem;
+}
+.designer-guide a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: #eee;
+}
+@media (max-width: 780px) {
+  .designer-guide-columns {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 .truck-render svg {
   max-height: 420px;

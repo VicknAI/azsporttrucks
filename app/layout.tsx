@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'AZ Sport Trucks | Old-school soul. Built to perform.',
   description: 'Classic trucks built to be driven hard. AZ Sport Trucks pairs old-school character with modern powertrains, dialed-in suspension, and confident braking for pro-touring and off-road builds.',
 };

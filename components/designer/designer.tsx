@@ -143,7 +143,7 @@ const actions = {
   quote: 'Request a Quote',
 };
 type Action = keyof typeof actions;
-export function Designer() {
+export function Designer({ children }: { children?: ReactNode }) {
   const [config, setConfig] = useState<Configuration>(defaultConfiguration());
   const [ready, setReady] = useState(false);
   const [notice, setNotice] = useState('');
@@ -283,7 +283,7 @@ export function Designer() {
           `<tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>`,
       )
       .join('');
-    const html = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${lead.buildNumber} — AZ Sport Trucks</title><style>body{font:16px Arial;margin:32px auto;max-width:1000px;padding:20px;color:#222}h1{font-size:32px}th,td{text-align:left;padding:8px;border-bottom:1px solid #ddd}svg{width:100%;height:auto}article{break-inside:avoid}p{line-height:1.6}@media print{button{display:none}}</style><h1>AZ SPORT TRUCKS</h1><h2>${lead.buildNumber}</h2><p>PHASE 1 PROTOTYPE — no quote submitted. Placeholder artwork and wheels are not technically verified.</p><table>${lines}</table>${exportStates.map((r) => `<article><h2>${escapeHtml(viewLabels[r.view as keyof typeof viewLabels])}</h2>${r.svg}</article>`).join('')}<p>${fitmentNotice}</p><p>Contact Nick: Aztruckshootout@gmail.com</p></html>`;
+    const html = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${lead.buildNumber} — AZ Sport Trucks</title><style>body{font:16px Arial;margin:32px auto;max-width:1000px;padding:20px;color:#222}h1{font-size:32px}th,td{text-align:left;padding:8px;border-bottom:1px solid #ddd}svg{width:100%;height:auto}article{break-inside:avoid}p{line-height:1.6}@media print{button{display:none}}</style><h1>AZ SPORT TRUCKS</h1><h2>${lead.buildNumber}</h2><p>Build preview — no quote submitted. Artwork and fitment are illustrative and must be confirmed with AZ Sport Trucks.</p><table>${lines}</table>${exportStates.map((r) => `<article><h2>${escapeHtml(viewLabels[r.view as keyof typeof viewLabels])}</h2>${r.svg}</article>`).join('')}<p>${fitmentNotice}</p><p>Contact Nick: Aztruckshootout@gmail.com</p></html>`;
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -358,7 +358,7 @@ export function Designer() {
     <main id="main" className="designer">
       <div className="design-heading">
         <div>
-          <p className="eyebrow">AZ SPORT TRUCKS / PHASE 1 PROTOTYPE</p>
+          <p className="eyebrow">CLASSIC TRUCK COLOR VISUALIZER</p>
           <h1>
             DESIGN YOUR <em>BUILD.</em>
           </h1>
@@ -378,7 +378,7 @@ export function Designer() {
                     : ''}
                 </span>
               </div>
-              <span className="prototype-tag">
+              <span className="preview-tag">
                 {studioView ? 'STUDIO STUDY' : 'MOCK ARTWORK'}
               </span>
             </div>
@@ -415,7 +415,7 @@ export function Designer() {
                 ? 'Preview single-color paint in gloss or satin. Two-tone finishes are coming later. Trim, wheels, tires, and stance stay as pictured.'
               : studioView
                 ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
-                : 'Schematic artwork is shared across years for this prototype. Grilles, lighting, trim, and proportions are not factory-accurate.'}
+                : 'Schematic preview artwork is shared across these years. Grilles, lighting, trim, and proportions are not factory-accurate.'}
           </p>
           <div className="build-current">
             <div>
@@ -465,8 +465,8 @@ export function Designer() {
                 onFocus={(e) => e.target.select()}
               />
               <small>
-                Local prototype links open only where this preview server is
-                available.
+                Anyone with this link can view your selected colors and
+                configuration. Contact details are not included.
               </small>
             </label>
           )}
@@ -716,6 +716,7 @@ export function Designer() {
           Download prepared build sheet <Download size={17} />
         </a>
       )}
+      {children}
       <div className="designer-actions">
         <div>
           <strong>{vehicle.label}</strong>

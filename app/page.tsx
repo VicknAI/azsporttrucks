@@ -1,13 +1,38 @@
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { pageMetadata, siteUrl } from '@/lib/seo';
+
+export const metadata = pageMetadata({
+  path: '/',
+  title: 'Classic Truck Builds & Color Visualizer | AZ Sport Trucks',
+  description: 'Classic trucks with modern powertrains, suspension, and braking. Explore pro-touring and off-road builds, or try the AZ Sport Trucks color visualizer.',
+});
 
 export default function Home() {
   return <>
     <main id="main">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          { '@type': 'Organization', '@id': `${siteUrl}/#organization`, name: 'AZ Sport Trucks', url: `${siteUrl}/`, logo: `${siteUrl}/az-sport-trucks-logo.png`, email: 'Aztruckshootout@gmail.com' },
+          { '@type': 'WebSite', '@id': `${siteUrl}/#website`, name: 'AZ Sport Trucks', url: `${siteUrl}/`, publisher: { '@id': `${siteUrl}/#organization` } },
+        ],
+      }) }} />
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-top"><span className="eyebrow"><i /> AZ SPORT TRUCKS</span><span className="hero-location">TRACK / STREET / OFF-ROAD</span></div>
         <div className="hero-copy"><h1 id="hero-title">CLASSIC TRUCKS.<br />BUILT TO BE<br /><em>DRIVEN HARD.</em></h1><div className="hero-aside"><p>Old-school soul.<br />Built to perform.</p><a className="action" href="#builds">Explore the builds <ArrowDown size={19} aria-hidden="true" /></a></div></div>
         <figure className="hero-image"><img src="/truck-concept.png" alt="Concept illustration of a charcoal pro-touring classic pickup beside a red off-road classic pickup in the Arizona desert" width="1536" height="1024" /><figcaption>BUILD DIRECTION / CONCEPT IMAGE</figcaption></figure>
         <div className="hero-caption"><span>POWER. SUSPENSION. BRAKING.</span><span>BUILT WITH PURPOSE.</span></div>
+      </section>
+      <section className="visualizer-intro section" aria-labelledby="visualizer-title">
+        <div>
+          <span className="eyebrow">YOUR TRUCK. YOUR COLORS.</span>
+          <h2 id="visualizer-title">PICTURE YOUR<br /><span>NEXT BUILD.</span></h2>
+        </div>
+        <div>
+          <p>Explore paint colors for classic Chevrolet C10 and K10 pickups, K5 Blazers, and Ford trucks. Try solid and two-tone finishes, compare four angles, and share your vision with Nick.</p>
+          {/* Native navigation keeps this entry point reliable on the Worker runtime. */}
+          <a className="action" href="/design">Design your build <ArrowUpRight size={19} aria-hidden="true" /></a>
+        </div>
       </section>
       <section className="builds section" id="builds" aria-labelledby="builds-title">
         <div className="section-heading"><span className="eyebrow">01 / WHAT WE BUILD</span><h2 id="builds-title">TWO DIRECTIONS.<br /><span>ONE OBSESSION.</span></h2><p>Push the limits of what an old truck can do.</p></div>
