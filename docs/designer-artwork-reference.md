@@ -263,3 +263,7 @@ F100 futuretwo-tone now ported onto clean publishedsolidbase using prepare-solid
 ## F100 mirror-mount color correction
 
 User circled blue patch on1979F100 front-quarter door near mirror. prepare-solid-layers-v2.py narrows broad hardware exclusion to actual mirror head;door and mount surround now recolor,chrome remains. Inspected enlarged red diagnostic mirror-fix-QA-v2.png. Versioned ford-f100-1979-solid-v2,13tests and build passed. Other views/geometry unchanged. Preserve newmask for futuretwo-tone. Publication pending.
+
+Releaseb48a6fa VERIFIEDPUBLIC designer-Ceuu-EQM.js;liveF100 gray#424b54 all4views inspected;front-quarter mirror-mount bluepatch resolved. Keep solid-v2 masks in futuretwo-tone work.
+
+Vehicle section UI cleanup: user requested Vehicle heading and removal of Build direction dropdown. Renamed01/Vehicle,removed dropdown and direction labels fromcurrentbuild,stickyfooter,review and summaryusedbydownloads/quotes. Internal legacy direction data retained for compatibility;noartworkchange.13tests,lint,build pass. Publicationpending.

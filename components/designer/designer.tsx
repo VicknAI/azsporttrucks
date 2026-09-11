@@ -421,7 +421,7 @@ export function Designer() {
             <div>
               <span className="eyebrow">YOUR CURRENT BUILD</span>
               <p>
-                {vehicle.label} · {config.direction} ·{' '}
+                {vehicle.label} ·{' '}
                 {fixedAppearance
                   ? 'Red / white reference look'
                   : config.color.toUpperCase()}
@@ -477,7 +477,7 @@ export function Designer() {
             <span>Selections stay with your build</span>
           </div>
           <Accordion defaultValue={['vehicle']} multiple>
-            <Category id="vehicle" title="01 / Vehicle & direction">
+            <Category id="vehicle" title="01 / Vehicle">
               <Choice
                 label="Manufacturer"
                 value={vehicle.manufacturer}
@@ -526,14 +526,6 @@ export function Designer() {
                   fitment is confirmed.
                 </p>
               )}
-              <Choice
-                label="Build direction"
-                value={config.direction}
-                options={vehicle.directions}
-                onChange={(value) =>
-                  update({ direction: value as Configuration['direction'] })
-                }
-              />
             </Category>
             <Category id="trim" title="02 / Exterior details">
               <p className="design-note">
@@ -713,7 +705,7 @@ export function Designer() {
         <div>
           <strong>{vehicle.label}</strong>
           <span>
-            {config.direction} · {summary(config)['Ride height']}
+            {summary(config)['Ride height']}
           </span>
         </div>
         <button className="design-button" onClick={() => begin('save')}>
@@ -778,7 +770,7 @@ export function Designer() {
               : 'Save this build on your device. Nothing is sent to AZ Sport Trucks.'}
           </DialogDescription>
           <div className="lead-build">
-            {vehicle.label} · {config.direction} ·{' '}
+            {vehicle.label} ·{' '}
             {summary(config)['Ride height']}
             <small>
               Your build sheet includes the full configuration and all four

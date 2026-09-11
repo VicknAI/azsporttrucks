@@ -542,7 +542,6 @@ export function summary(c: Configuration): Record<string, string> {
   const v = vehicles.find((v) => v.id === c.vehicleId)!;
   return {
     Vehicle: `${v.year} ${v.manufacturer} ${v.model}`,
-    Direction: c.direction,
     'Exterior trim': 'As pictured; custom requests to be discussed',
     'Ride height': 'As pictured',
     Paint: v.views.side.studio?.fixedAppearance
