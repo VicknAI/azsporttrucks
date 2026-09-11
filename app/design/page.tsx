@@ -20,7 +20,7 @@ export default function DesignPage() {
         <div className="designer-guide-columns">
           <div>
             <h3>Choose your classic truck</h3>
-            <p>Explore studio previews for 1967–1972 Chevrolet C10 two-wheel-drive and K10 four-wheel-drive pickups, 1969–1972 Chevrolet K5 Blazers, and the 1979 Ford F-100 and F-150. Both 1979 Fords support solid and two-tone paint in gloss or satin, plus a contrasting cab roof and pillars. The 1978 Ford options use schematic previews while their artwork is being updated.</p>
+            <p>Explore studio previews for 1967–1972 Chevrolet C10 two-wheel-drive and K10 four-wheel-drive pickups, 1969–1972 Chevrolet K5 Blazers, and 1978–1979 Ford F-100 and F-150 pickups. Both Ford models support solid and two-tone paint in gloss or satin, plus a contrasting cab roof and pillars. The 1978 previews show the Custom-style round-headlight front end; the 1979 previews use rectangular headlights.</p>
             <p>On C10 and K10 pickups, a contrasting cab color covers the roof and pillars. K5 options include different hardtop colors and a top-off view. Available paint and exterior options follow the selected vehicle.</p>
           </div>
           <div>

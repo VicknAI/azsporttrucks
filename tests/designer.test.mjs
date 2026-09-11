@@ -350,7 +350,6 @@ test('1979 F-100 finishes preserve two-tone and cab colors across shares and exp
     });
     assert.ok(!embedded.includes('/designer/'));
   }
-  assert.equal(vehicles.find((v) => v.id === 'Ford-F-100-1978').views.side.studio, undefined);
 });
 
 test('1979 F-150 finishes preserve two-tone and cab colors without changing approved solid artwork', async () => {
@@ -397,7 +396,46 @@ test('1979 F-150 finishes preserve two-tone and cab colors without changing appr
     assert.ok(!embedded.includes('/designer/'));
   }
   assert.equal(sources.size, 4);
-  assert.equal(vehicles.find((v) => v.id === 'Ford-F-150-1978').views.side.studio, undefined);
+});
+
+test('1978 Ford studio variants preserve finishes, shares and offline artwork', async () => {
+  for (const [model, asset] of [['F-100', 'f100'], ['F-150', 'f150']]) {
+    const vehicle = vehicles.find((v) => v.id === `Ford-${model}-1978`);
+    const initial = defaultConfiguration(vehicle);
+    assert.equal(initial.color, '#1678ba');
+    assert.equal(initial.paintMode, 'Solid');
+    assert.equal(initial.contrastRoof, false);
+    const c = normalize({ vehicleId: vehicle.id, color: '#2c6648', secondaryColor: '#eee3d1', roofColor: '#dfbe28', finish: 'Satin', paintMode: 'Two-tone', contrastRoof: true, cabPaint: 'Roof only' });
+    assert.equal(c.cabPaint, 'Roof and pillars');
+    assert.equal(c.twoToneStyle, 'Center band');
+    assert.deepEqual(readShare(shareHash(c)), c);
+    const scenes = new Set();
+    for (const view of views) {
+      const svg = renderSvg(c, view);
+      assert.ok(svg.includes(`/ford-${asset}-1978-color-v1/`));
+      for (const change of [{ color: '#ff0000' }, { secondaryColor: '#0000ff' }, { roofColor: '#ffffff' }, { finish: 'Gloss' }])
+        assert.notEqual(svg, renderSvg({ ...c, ...change }, view));
+      const solid = normalize({ ...c, paintMode: 'Solid', contrastRoof: false });
+      assert.equal(renderSvg(solid, view), renderSvg({ ...solid, secondaryColor: '#ff00ff', roofColor: '#000000' }, view));
+      for (const file of ['studio.png', 'paint-texture.png', 'paint-mask.png', 'center-band-mask.png', 'cab-mask.png', 'roof-mask.png']) {
+        const bytes = readFileSync(new URL(`../public/designer/studio/ford-${asset}-1978-color-v1/${view}/${file}`, import.meta.url));
+        const previous = readFileSync(new URL(`../public/designer/studio/ford-${asset}-1979-color-v1/${view}/${file}`, import.meta.url));
+        if (view === 'side' || view === 'rear-quarter' || file === 'paint-texture.png') assert.deepEqual(bytes, previous);
+        if ((view === 'front' || view === 'front-quarter') && file === 'studio.png') assert.notDeepEqual(bytes, previous);
+      }
+      const embedded = await embedArtwork(svg, async (path) => {
+        const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+        assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+        assert.equal(bytes.readUInt32BE(16), 768);
+        assert.equal(bytes.readUInt32BE(20), 512);
+        if (path.endsWith('/studio.png')) scenes.add(bytes.toString('base64'));
+        return `data:image/png;base64,${bytes.toString('base64')}`;
+      });
+      assert.ok(!embedded.includes('/designer/'));
+    }
+    assert.equal(scenes.size, 4);
+  }
+  assert.ok(vehicles.every((vehicle) => views.every((view) => vehicle.views[view].studio?.paintScene)));
 });
 
 test('approved pickup scenes preserve editable paints across shares and offline exports', async () => {

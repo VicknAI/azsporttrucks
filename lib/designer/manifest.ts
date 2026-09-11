@@ -398,21 +398,16 @@ export const wheelCatalog = [
     >,
   },
 ];
-const f100Studio1979 = vehicles.find((v) => v.id === 'Ford-F-100-1979')!;
-for (const view of views) f100Studio1979.views[view].studio = {
-  root: `/designer/studio/ford-f100-1979-color-v1/${view}`,
-  paintScene: true,
-  width: 768, height: 512, viewport: [0, 0, 768, 512],
-  shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
-};
-
-const f150Studio1979 = vehicles.find((v) => v.id === 'Ford-F-150-1979')!;
-for (const view of views) f150Studio1979.views[view].studio = {
-  root: `/designer/studio/ford-f150-1979-color-v1/${view}`,
-  paintScene: true,
-  width: 768, height: 512, viewport: [0, 0, 768, 512],
-  shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
-};
+for (const [model, assetModel] of [['F-100', 'f100'], ['F-150', 'f150']])
+  for (const year of [1978, 1979]) {
+    const fordStudio = vehicles.find((v) => v.id === `Ford-${model}-${year}`)!;
+    for (const view of views) fordStudio.views[view].studio = {
+      root: `/designer/studio/ford-${assetModel}-${year}-color-v1/${view}`,
+      paintScene: true,
+      width: 768, height: 512, viewport: [0, 0, 768, 512],
+      shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
+    };
+  }
 
 export type Configuration = {
   version: 1;
@@ -440,7 +435,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
   const greenK10 = vehicle.id === 'Chevrolet-K10-1968';
   const seafoam1967 = vehicle.id === 'Chevrolet-C10-1967';
   const blue1968 = vehicle.id === 'Chevrolet-C10-1968';
-  const ford1979 = vehicle.manufacturer === 'Ford' && vehicle.year === 1979;
+  const fordStudio = vehicle.manufacturer === 'Ford' && vehicle.views.side.studio?.paintScene;
   return {
     version: 1,
     vehicleId: vehicle.id,
@@ -449,15 +444,15 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: ford1979 || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
+    color: fordStudio || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
-    paintMode: ford1979 || vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
-    twoToneStyle: ford1979 || ['C10', 'K10'].includes(vehicle.model)
+    paintMode: fordStudio || vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
+    twoToneStyle: fordStudio || ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',
-    cabPaint: ford1979 || ['C10', 'K10'].includes(vehicle.model)
+    cabPaint: fordStudio || ['C10', 'K10'].includes(vehicle.model)
       ? 'Roof and pillars'
       : 'Roof only',
     contrastRoof: seafoam1967,
@@ -519,7 +514,7 @@ export function normalize(input: unknown): Configuration {
         raw.vehicleId ? 'Lower body' : c.twoToneStyle,
       )
     : 'Lower body';
-  c.cabPaint = chevyPickup || (v.manufacturer === 'Ford' && v.year === 1979) ? 'Roof and pillars' : 'Roof only';
+  c.cabPaint = chevyPickup || (v.manufacturer === 'Ford' && v.views.side.studio?.paintScene) ? 'Roof and pillars' : 'Roof only';
   c.contrastRoof =
     v.model !== 'K5' && v.contrastingRoof && raw.contrastRoof === true;
   c.wheelId = pick(

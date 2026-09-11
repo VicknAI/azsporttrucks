@@ -554,7 +554,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                       {vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
                     </button>
                   )}
-                  {vehicle.id === 'Ford-F-100-1979' && (
+                  {vehicle.manufacturer === 'Ford' && vehicle.model === 'F-100' && (
                     <button
                       className="design-button"
                       onClick={() => update({
