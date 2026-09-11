@@ -353,6 +353,35 @@ test('1979 F-100 finishes preserve two-tone and cab colors across shares and exp
   assert.equal(vehicles.find((v) => v.id === 'Ford-F-100-1978').views.side.studio, undefined);
 });
 
+test('1979 F-150 solid paint survives shared builds and exports without unfinished options', async () => {
+  const vehicle = vehicles.find((v) => v.id === 'Ford-F-150-1979');
+  const c = normalize({ vehicleId: vehicle.id, color: '#226644', finish: 'Satin', paintMode: 'Two-tone', contrastRoof: true });
+  assert.equal(c.paintMode, 'Solid');
+  assert.equal(c.contrastRoof, false);
+  assert.equal(c.color, '#226644');
+  assert.equal(c.finish, 'Satin');
+  assert.deepEqual(readShare(shareHash(c)), c);
+  const sources = new Set();
+  for (const view of views) {
+    const svg = renderSvg(c, view);
+    assert.ok(svg.includes('/ford-f150-1979-solid-v1/'));
+    assert.notEqual(svg, renderSvg({ ...c, color: '#ff0000' }, view));
+    assert.notEqual(svg, renderSvg({ ...c, finish: 'Gloss' }, view));
+    assert.equal(svg, renderSvg({ ...c, secondaryColor: '#ff00ff', roofColor: '#ffff00' }, view));
+    const embedded = await embedArtwork(svg, async (path) => {
+      const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+      assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+      assert.equal(bytes.readUInt32BE(16), 768);
+      assert.equal(bytes.readUInt32BE(20), 512);
+      if (path.endsWith('/studio.png')) sources.add(bytes.toString('base64'));
+      return `data:image/png;base64,${bytes.toString('base64')}`;
+    });
+    assert.ok(!embedded.includes('/designer/'));
+  }
+  assert.equal(sources.size, 4);
+  assert.equal(vehicles.find((v) => v.id === 'Ford-F-150-1978').views.side.studio, undefined);
+});
+
 test('approved pickup scenes preserve editable paints across shares and offline exports', async () => {
   for (const model of ['C10', 'K10'])
     for (const year of model === 'C10' ? [1967, 1968, 1969, 1970, 1971, 1972] : [1967, 1968, 1969, 1970, 1971, 1972]) {

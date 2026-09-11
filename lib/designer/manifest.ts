@@ -406,6 +406,15 @@ for (const view of views) f100Studio1979.views[view].studio = {
   shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
 };
 
+const f150Studio1979 = vehicles.find((v) => v.id === 'Ford-F-150-1979')!;
+f150Studio1979.contrastingRoof = false;
+for (const view of views) f150Studio1979.views[view].studio = {
+  root: `/designer/studio/ford-f150-1979-solid-v1/${view}`,
+  paintScene: true, solidOnly: true,
+  width: 768, height: 512, viewport: [0, 0, 768, 512],
+  shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
+};
+
 export type Configuration = {
   version: 1;
   vehicleId: string;
