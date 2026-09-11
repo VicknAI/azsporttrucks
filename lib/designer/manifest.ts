@@ -302,7 +302,7 @@ for (const model of ['C10', 'K10'])
     const sourceYear = year <= 1970 ? 1970 : model === 'C10' ? 1971 : 1972;
     for (const view of views)
       vehicle.views[view].studio = {
-        root: `/designer/studio/chevrolet-${model.toLowerCase()}-${sourceYear}-color-v${model === 'C10' ? sourceYear === 1971 ? 5 : 3 : sourceYear === 1970 ? 3 : 2}/${view}`,
+        root: `/designer/studio/chevrolet-${model.toLowerCase()}-${sourceYear}-color-v${model === 'C10' ? sourceYear === 1971 ? 6 : 4 : sourceYear === 1970 ? 4 : 3}/${view}`,
         paintScene: true,
         width: 768,
         height: 512,
@@ -347,7 +347,7 @@ for (const view of views)
 for (const year of [1969, 1970, 1971, 1972]) {
 const k5Studio = vehicles.find((v) => v.id === `Chevrolet-K5-${year}`)!;
 const sourceYear = year <= 1970 ? 1970 : 1972;
-const k5Root = `/designer/studio/chevrolet-k5-${sourceYear}-color-v4`;
+const k5Root = `/designer/studio/chevrolet-k5-${sourceYear}-color-v5`;
 for (const view of views)
   k5Studio.views[view].studio = {
     root: `${k5Root}/top-on/${view}`,
