@@ -347,7 +347,7 @@ for (const view of views)
 for (const year of [1969, 1970, 1971, 1972]) {
 const k5Studio = vehicles.find((v) => v.id === `Chevrolet-K5-${year}`)!;
 const sourceYear = year <= 1970 ? 1970 : 1972;
-const k5Root = `/designer/studio/chevrolet-k5-${sourceYear}-color-v${sourceYear === 1970 ? 3 : 2}`;
+const k5Root = `/designer/studio/chevrolet-k5-${sourceYear}-color-v3`;
 for (const view of views)
   k5Studio.views[view].studio = {
     root: `${k5Root}/top-on/${view}`,
