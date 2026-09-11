@@ -353,21 +353,39 @@ test('1979 F-100 finishes preserve two-tone and cab colors across shares and exp
   assert.equal(vehicles.find((v) => v.id === 'Ford-F-100-1978').views.side.studio, undefined);
 });
 
-test('1979 F-150 solid paint survives shared builds and exports without unfinished options', async () => {
+test('1979 F-150 finishes preserve two-tone and cab colors without changing approved solid artwork', async () => {
   const vehicle = vehicles.find((v) => v.id === 'Ford-F-150-1979');
-  const c = normalize({ vehicleId: vehicle.id, color: '#226644', finish: 'Satin', paintMode: 'Two-tone', contrastRoof: true });
-  assert.equal(c.paintMode, 'Solid');
-  assert.equal(c.contrastRoof, false);
+  const initial = defaultConfiguration(vehicle);
+  assert.equal(initial.paintMode, 'Solid');
+  assert.equal(initial.contrastRoof, false);
+  assert.equal(initial.color, '#1678ba');
+  const c = normalize({ vehicleId: vehicle.id, color: '#226644', secondaryColor: '#ddeeff', roofColor: '#eeddaa', finish: 'Satin', paintMode: 'Two-tone', contrastRoof: true });
+  assert.equal(c.paintMode, 'Two-tone');
+  assert.equal(c.contrastRoof, true);
+  assert.equal(c.cabPaint, 'Roof and pillars');
+  assert.equal(c.twoToneStyle, 'Center band');
   assert.equal(c.color, '#226644');
   assert.equal(c.finish, 'Satin');
+  assert.equal(c.secondaryColor, '#ddeeff');
+  assert.equal(c.roofColor, '#eeddaa');
   assert.deepEqual(readShare(shareHash(c)), c);
   const sources = new Set();
   for (const view of views) {
     const svg = renderSvg(c, view);
-    assert.ok(svg.includes('/ford-f150-1979-solid-v1/'));
+    assert.ok(svg.includes('/ford-f150-1979-color-v1/'));
     assert.notEqual(svg, renderSvg({ ...c, color: '#ff0000' }, view));
     assert.notEqual(svg, renderSvg({ ...c, finish: 'Gloss' }, view));
-    assert.equal(svg, renderSvg({ ...c, secondaryColor: '#ff00ff', roofColor: '#ffff00' }, view));
+    assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#ff00ff' }, view));
+    assert.notEqual(svg, renderSvg({ ...c, roofColor: '#ffff00' }, view));
+    const solid = normalize({ ...c, paintMode: 'Solid', contrastRoof: false });
+    assert.equal(solid.paintMode, 'Solid');
+    assert.equal(solid.contrastRoof, false);
+    assert.equal(renderSvg(solid, view), renderSvg({ ...solid, secondaryColor: '#ff00ff', roofColor: '#ffff00' }, view));
+    for (const file of ['studio.png', 'paint-texture.png', 'paint-mask.png']) {
+      const previous = readFileSync(new URL(`../public/designer/studio/ford-f150-1979-solid-v1/${view}/${file}`, import.meta.url));
+      const current = readFileSync(new URL(`../public/designer/studio/ford-f150-1979-color-v1/${view}/${file}`, import.meta.url));
+      assert.deepEqual(current, previous, `Existing solid appearance must be preserved: ${view}/${file}`);
+    }
     const embedded = await embedArtwork(svg, async (path) => {
       const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
       assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
