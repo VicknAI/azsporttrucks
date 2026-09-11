@@ -527,20 +527,7 @@ export function Designer() {
                 </p>
               )}
             </Category>
-            <Category id="trim" title="02 / Exterior details">
-              <p className="design-note">
-                Grille, chrome bumpers, badges, and molding stay as pictured.
-                Tell Nick about any custom trim requests when requesting a
-                quote.
-              </p>
-            </Category>
-            <Category id="stance" title="03 / Stance">
-              <p className="design-note">
-                The preview keeps its pictured stance. Suspension changes can be
-                discussed with Nick when planning your build.
-              </p>
-            </Category>
-            <Category id="paint" title="04 / Paint & finish">
+            <Category id="paint" title="02 / Paint & finish">
               {fixedAppearance ? (
                 <p className="design-note">
                   Red body, white center band, and red cab roof stay as
@@ -660,6 +647,19 @@ export function Designer() {
                   )}
                 </>
               )}
+            </Category>
+            <Category id="trim" title="03 / Exterior details">
+              <p className="design-note">
+                Grille, chrome bumpers, badges, and molding stay as pictured.
+                Tell Nick about any custom trim requests when requesting a
+                quote.
+              </p>
+            </Category>
+            <Category id="stance" title="04 / Stance">
+              <p className="design-note">
+                The preview keeps its pictured stance. Suspension changes can be
+                discussed with Nick when planning your build.
+              </p>
             </Category>
             <Category id="wheels" title="05 / Wheels & tires">
               <p className="design-note">

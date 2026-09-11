@@ -267,3 +267,7 @@ User circled blue patch on1979F100 front-quarter door near mirror. prepare-solid
 Releaseb48a6fa VERIFIEDPUBLIC designer-Ceuu-EQM.js;liveF100 gray#424b54 all4views inspected;front-quarter mirror-mount bluepatch resolved. Keep solid-v2 masks in futuretwo-tone work.
 
 Vehicle section UI cleanup: user requested Vehicle heading and removal of Build direction dropdown. Renamed01/Vehicle,removed dropdown and direction labels fromcurrentbuild,stickyfooter,review and summaryusedbydownloads/quotes. Internal legacy direction data retained for compatibility;noartworkchange.13tests,lint,build pass. Publicationpending.
+
+Releaseff1eb73 VERIFIEDPUBLIC designer-DXBgu4B8.js;publicHTML has01/Vehicle, nooldVehicle&direction heading andnoBuilddirectiondropdown. PreserveUIcleanupinfutureartworkreleases.
+
+UI ordering request: Paint&finish moved directly afterVehicle andrenumbered02. Exterior details03,Stance04,Wheels05,K5roof06. Noartwork/statechange. Lint/buildpass. Publicationpending.
