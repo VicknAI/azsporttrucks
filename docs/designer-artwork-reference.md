@@ -271,3 +271,9 @@ Vehicle section UI cleanup: user requested Vehicle heading and removal of Build 
 Releaseff1eb73 VERIFIEDPUBLIC designer-DXBgu4B8.js;publicHTML has01/Vehicle, nooldVehicle&direction heading andnoBuilddirectiondropdown. PreserveUIcleanupinfutureartworkreleases.
 
 UI ordering request: Paint&finish moved directly afterVehicle andrenumbered02. Exterior details03,Stance04,Wheels05,K5roof06. Noartwork/statechange. Lint/buildpass. Publicationpending.
+
+Releaseeefd4a5 VERIFIEDPUBLIC designer-CjzvqCa0.js;publicHTML confirmsPaint02,Exterior03,Stance04. Futurebrowserautomation must use02 / Paint & finish label.
+
+## 1971/1972 C10 rear-view cleanup
+
+User1972screenshot phantomcab outlines/whitepaint leaks and mismatchedexhaust. Shared1971source corrected onlyrearview: cleanup-rear-v3.py replaces overbroad cabmask with traced silhouette,excludes glass/seals/cargo light,extends bodypaint onwhite strip undertrim andretainschromehandle. Eliminates outlyingpolygon/ghosttriangle. Built-in image edit exhaust outputrear-exhaust-edit.png supplies matching single-round tip eachside;only2underbumper regionscomposited intooriginalstudio,restgeometryunchanged. SolidOrange,whitecab,green/whitetwo-tone diagnosticscreated. Versioned1971color-v3 shared1971/72;other3viewsidenticalassets.13tests,lint,buildpass. Publicationpending.
