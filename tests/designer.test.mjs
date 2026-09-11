@@ -326,7 +326,7 @@ test('1979 F-100 solid release preserves colors and exports while rejecting unfi
   assert.deepEqual(readShare(shareHash(c)), c);
   for (const view of views) {
     const svg = renderSvg(c, view);
-    assert.ok(svg.includes('/ford-f100-1979-solid-v1/'));
+    assert.ok(svg.includes('/ford-f100-1979-solid-v2/'));
     assert.notEqual(svg, renderSvg({ ...c, color: '#ff0000' }, view));
     const embedded = await embedArtwork(svg, async (path) => {
       const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));

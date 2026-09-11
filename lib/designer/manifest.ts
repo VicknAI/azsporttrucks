@@ -400,7 +400,7 @@ export const wheelCatalog = [
 ];
 const f100Studio1979 = vehicles.find((v) => v.id === 'Ford-F-100-1979')!;
 for (const view of views) f100Studio1979.views[view].studio = {
-  root: `/designer/studio/ford-f100-1979-solid-v1/${view}`,
+  root: `/designer/studio/ford-f100-1979-solid-v2/${view}`,
   paintScene: true,
   solidOnly: true,
   width: 768, height: 512, viewport: [0, 0, 768, 512],
