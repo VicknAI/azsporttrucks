@@ -233,59 +233,17 @@ export const vehicles: Vehicle[] = [
 }));
 // Only reviewed raster packs are registered here. Keep every other model/year
 // on its explicitly labelled schematic until its own artwork is available.
-const c10Studio = vehicles.find(
-  (vehicle) => vehicle.id === 'Chevrolet-C10-1967',
-);
-if (c10Studio)
-  c10Studio.views['front-quarter'].studio = {
-    root: '/designer/studio/chevrolet-c10-1967/front-quarter',
-    width: 1536,
-    height: 1024,
-    viewport: [0, 150, 1536, 720],
-    shadow: { cx: 790, cy: 825, rx: 650, ry: 30 },
-    stanceScale: 2,
-    wheels: [
-      { file: 'wheel-front.png', x: 1410, y: 707, width: 142, height: 208 },
-      { file: 'wheel-front.png', x: 772.5, y: 688, width: 215, height: 270 },
-      { file: 'wheel-rear.png', x: 229, y: 608, width: 146, height: 196 },
-    ],
+const c10Studio = vehicles.find((v) => v.id === 'Chevrolet-C10-1967')!;
+for (const view of views)
+  c10Studio.views[view].studio = {
+    root: `/designer/studio/chevrolet-c10-1967-color-v1/${view}`,
+    paintScene: true,
+    width: 768,
+    height: 512,
+    viewport: [0, 0, 768, 512],
+    shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
+    wheels: [],
   };
-if (c10Studio) {
-  c10Studio.views.side.studio = {
-    root: '/designer/studio/chevrolet-c10-1967/side',
-    width: 627,
-    height: 627,
-    viewport: [12, 167, 603, 290],
-    shadow: { cx: 317, cy: 429, rx: 279, ry: 13 },
-    wheels: [
-      { file: 'wheel-rear.png', x: 152, y: 382.5, width: 102, height: 99 },
-      { file: 'wheel-front.png', x: 504.5, y: 382.5, width: 99, height: 99 },
-    ],
-  };
-  c10Studio.views.front.studio = {
-    root: '/designer/studio/chevrolet-c10-1967/front',
-    width: 627,
-    height: 627,
-    viewport: [-145, 62, 916, 448],
-    shadow: { cx: 308, cy: 474, rx: 238, ry: 19 },
-    wheels: [
-      { file: 'wheel-left.png', x: 110, y: 437.5, width: 70, height: 79 },
-      { file: 'wheel-right.png', x: 506.5, y: 436.5, width: 71, height: 79 },
-    ],
-  };
-  c10Studio.views['rear-quarter'].studio = {
-    root: '/designer/studio/chevrolet-c10-1967/rear-quarter',
-    width: 627,
-    height: 627,
-    viewport: [0, 130, 627, 307],
-    shadow: { cx: 316, cy: 417, rx: 276, ry: 22 },
-    wheels: [
-      { file: 'wheel-far-rear.png', x: 144.5, y: 392.5, width: 89, height: 53 },
-      { file: 'wheel-rear.png', x: 346.5, y: 370.5, width: 95, height: 125 },
-      { file: 'wheel-front.png', x: 555, y: 345, width: 70, height: 108 },
-    ],
-  };
-}
 const c10Reference = vehicles.find(
   (vehicle) => vehicle.id === 'Chevrolet-C10-1971',
 )!;
@@ -440,6 +398,7 @@ export type Configuration = {
   view: View;
 };
 export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
+  const seafoam1967 = vehicle.id === 'Chevrolet-C10-1967';
   const blue1968 = vehicle.id === 'Chevrolet-C10-1968';
   return {
     version: 1,
@@ -449,18 +408,18 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
+    color: seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
-    paintMode: blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
+    paintMode: seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
     twoToneStyle: ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',
     cabPaint: ['C10', 'K10'].includes(vehicle.model)
       ? 'Roof and pillars'
       : 'Roof only',
-    contrastRoof: false,
+    contrastRoof: seafoam1967,
     wheelId: 'street-temp',
     tire: 'Street performance',
     roof: 'White top',

@@ -560,17 +560,17 @@ export function Designer() {
                       className="design-button"
                       onClick={() =>
                         update({
-                          color: vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
+                          color: vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
                           secondaryColor: '#f1eee5',
                           roofColor: '#f1eee5',
-                          paintMode: vehicle.id === 'Chevrolet-C10-1968' ? 'Solid' : 'Two-tone',
+                          paintMode: ['Chevrolet-C10-1967', 'Chevrolet-C10-1968'].includes(vehicle.id) ? 'Solid' : 'Two-tone',
                           twoToneStyle: 'Center band',
                           contrastRoof: vehicle.id !== 'Chevrolet-C10-1968',
                           cabPaint: 'Roof and pillars',
                         })
                       }
                     >
-                      {vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
+                      {vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
                     </button>
                   )}
                   <fieldset
