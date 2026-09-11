@@ -207,3 +207,15 @@ Continued after verified f6116c4 C10 release. Reviewed Nick's dedicated 1968 K10
 ## 1968 K10 integration
 
 Registered 1968 K10 color-v1 four-view pack with green Solid default/reset preset and optional center-band and roof-and-pillars colors. Preserves approved Rally wheel style, lifted stance and white lettering. Mask checks pass for white letters, glass and wheel samples. Twelve tests include 1968 K10 share/state/actual offline PNG embedding and pass; focused lint, diff check and production build pass (designer-DDWTznx5.js). Local browser inspected all four green Solid reference views and blue/white Two-tone with contrasting cab. Ready for existing GitHub main/Cloudflare release. Remaining Chevy target is 1967 K10; no need to regenerate completed1968.
+
+Release074a71d VERIFIED PUBLIC: designer-DDWTznx5.js matches validated build; public browser selected1968K10, applied Green reference look and reviewed all four updated views. 1968K10 color-v1 is live. Remaining Chevy target1967K10. Preserve completed models; no repeat release.
+
+## 1967 K10 studio trial
+
+Reviewed dedicated gallery139 URLs/32 images,six selected references. Created ../assets/k10-1967-rebuild/studio-trial-v1.png by adapting existing1968K10 studio sheet with blue-green paint,small bright-trim rear window,no side markers,no hood letters and small-red-bowtie early grille. Preserved short-bed/Rally-wheel/lifted studio direction and requested white tailgate lettering; actual reference long bed/plain wheels/lower side molding intentionally not copied. Four native crops saved and visually inspected. No integration yet; next adapt paint helper with newly traced small-glass exclusion,then diagnostics/tests/browser/export. Public074a71d unchanged. This is last pending Chevy artwork; Ford references next after release.
+
+1967K10 draftpaint layers ready in ../assets/k10-1967-rebuild/{view}. Adapted1968 helper with traced small rear glass and widened roof-edge cab mask; red/two-tone diagnostics reviewed. Side-pillar detail exposed windshield exclusion crossing painted trim, narrowed and regenerated. Next finaldiagnostic/sample check and local integration/tests/browser/export. No public change;074a71d remains live.
+
+## 1967 K10 integration
+
+Registered1967K10 color-v1 four-view pack with blue-green Solid default/reset preset and editable center-band/roof-and-pillars. Final solid-red diagnostics show corrected painted side pillar; white-letter/glass/wheel sample checks pass. Twelve tests include all C10/K10 years with actual offline PNG embedding and shares; tests/lint/build/diff checks pass. Build designer-BSekuepS.js. Local browser inspected blue-green reference and green/white two-tone with contrasting cab across all four views. Preserved Rally wheels and white lettering. Fine image details remain illustrative. Ready for existing GitHub main/Cloudflare release. This completes the Chevy artwork set once verified live; next saved Ford references, Patina deferred.
