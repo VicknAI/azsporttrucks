@@ -520,7 +520,7 @@ export function Designer() {
                   .map((v) => ({ id: v.id, label: v.label }))}
                 onChange={changeVehicle}
               />
-              {vehicle.manufacturer === 'Ford' && (
+              {vehicle.manufacturer === 'Ford' && !vehicle.views.side.studio && (
                 <p className="design-note">
                   F-100 / F-150 coverage is still to be selected. No badge or
                   fitment is confirmed.
@@ -552,6 +552,21 @@ export function Designer() {
                       }
                     >
                       {vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
+                    </button>
+                  )}
+                  {vehicle.id === 'Ford-F-100-1979' && (
+                    <button
+                      className="design-button"
+                      onClick={() => update({
+                        color: '#b3b3b3',
+                        secondaryColor: '#17355b',
+                        paintMode: 'Two-tone',
+                        twoToneStyle: 'Center band',
+                        contrastRoof: false,
+                        cabPaint: 'Roof and pillars',
+                      })}
+                    >
+                      Silver / navy reference look
                     </button>
                   )}
                   <fieldset

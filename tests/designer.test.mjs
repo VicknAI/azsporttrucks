@@ -316,18 +316,31 @@ test('all K5 years retain colors and embed the paired studio artwork offline', a
   }
 });
 
-test('1979 F-100 solid release preserves colors and exports while rejecting unfinished paint options', async () => {
+test('1979 F-100 finishes preserve two-tone and cab colors across shares and exports', async () => {
   const vehicle = vehicles.find((v) => v.id === 'Ford-F-100-1979');
   assert.equal(defaultConfiguration(vehicle).paintMode, 'Solid');
-  const c = normalize({ vehicleId: vehicle.id, color: '#226644', finish: 'Satin', paintMode: 'Two-tone', contrastRoof: true });
-  assert.equal(c.paintMode, 'Solid');
-  assert.equal(c.contrastRoof, false);
+  const c = normalize({ vehicleId: vehicle.id, color: '#226644', secondaryColor: '#ddeeff', roofColor: '#eeddaa', finish: 'Satin', paintMode: 'Two-tone', contrastRoof: true });
+  assert.equal(c.paintMode, 'Two-tone');
+  assert.equal(c.contrastRoof, true);
+  assert.equal(c.cabPaint, 'Roof and pillars');
+  assert.equal(c.twoToneStyle, 'Center band');
   assert.equal(c.color, '#226644');
   assert.deepEqual(readShare(shareHash(c)), c);
   for (const view of views) {
     const svg = renderSvg(c, view);
-    assert.ok(svg.includes('/ford-f100-1979-solid-v2/'));
+    assert.ok(svg.includes('/ford-f100-1979-color-v1/'));
     assert.notEqual(svg, renderSvg({ ...c, color: '#ff0000' }, view));
+    assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#000000' }, view));
+    assert.notEqual(svg, renderSvg({ ...c, roofColor: '#000000' }, view));
+    const solid = normalize({ ...c, paintMode: 'Solid', contrastRoof: false });
+    assert.equal(solid.paintMode, 'Solid');
+    assert.equal(solid.contrastRoof, false);
+    assert.equal(renderSvg(solid, view), renderSvg({ ...solid, secondaryColor: '#000000', roofColor: '#000000' }, view));
+    for (const file of ['studio.png', 'paint-texture.png', 'paint-mask.png']) {
+      const previous = readFileSync(new URL(`../public/designer/studio/ford-f100-1979-solid-v2/${view}/${file}`, import.meta.url));
+      const current = readFileSync(new URL(`../public/designer/studio/ford-f100-1979-color-v1/${view}/${file}`, import.meta.url));
+      assert.deepEqual(current, previous, `Existing solid appearance must be preserved: ${view}/${file}`);
+    }
     const embedded = await embedArtwork(svg, async (path) => {
       const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
       assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
