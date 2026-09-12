@@ -114,24 +114,26 @@ test('Baja wheels remain selected across 4WD years, paint layouts, K5 roof state
   const supported = vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model));
   assert.equal(supported.length, 12);
   for (const v of supported)
+  for (const wheelId of ['baja-polished', 'baja-black'])
   for (const roof of v.model === 'K5' ? ['White top', 'Black top', 'Body-color top', 'Top off'] : ['Not applicable'])
   for (const paintMode of ['Solid', 'Two-tone']) {
-    const c = normalize({ vehicleId: v.id, wheelId: 'baja-polished', roof, paintMode, color: '#3c6254', secondaryColor: '#eeeeee', stance: 'lift6' });
-    assert.equal(c.wheelId, 'baja-polished');
+    const c = normalize({ vehicleId: v.id, wheelId, roof, paintMode, color: '#3c6254', secondaryColor: '#eeeeee', stance: 'lift6' });
+    assert.equal(c.wheelId, wheelId);
     assert.equal(c.stance, 'stock');
     assert.equal(c.paintMode, paintMode);
     assert.deepEqual(readShare(shareHash(c)), c);
-    assert.equal(summary(c).Wheels, 'American Racing Baja · Polished');
+    assert.equal(summary(c).Wheels, wheelId === 'baja-black' ? 'American Racing Baja - Black' : 'American Racing Baja · Polished');
     for (const view of views) {
       const pack = v.views[view].studio;
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
       const svg = renderSvg(c, view);
-      assert.ok(svg.includes(scenes['baja-polished'].stock));
+      assert.ok(svg.includes(scenes[wheelId].stock));
       assert.ok(svg.includes(`${root}/paint-mask.png`));
       const stock = renderSvg(normalize({ ...c, wheelId: 'street-temp' }), view);
       assert.ok(stock.includes(`${root}/studio.png`));
       assert.ok(!stock.includes('-baja-v1'));
+      assert.ok(!stock.includes('-baja-black-v1'));
       const embedded = await embedArtwork(svg, async (path) => {
         const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
         assert.equal(bytes.readUInt32BE(16), 768);
@@ -143,6 +145,7 @@ test('Baja wheels remain selected across 4WD years, paint layouts, K5 roof state
   }
   for (const v of vehicles.filter((v) => ['C10', 'F-100'].includes(v.model))) {
     assert.equal(normalize({ vehicleId: v.id, wheelId: 'baja-polished' }).wheelId, 'street-temp');
+    assert.equal(normalize({ vehicleId: v.id, wheelId: 'baja-black' }).wheelId, 'street-temp');
   }
 });
 test('1967 and 1971 have complete, distinct studio packs with valid PNG assets', () => {

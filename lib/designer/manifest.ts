@@ -445,11 +445,14 @@ for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.m
   const family = vehicle.model === 'F-150' ? 'ford-f150' : `chevrolet-${vehicle.model.toLowerCase()}`;
   for (const view of views) {
     const wheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-v1`;
+    const blackWheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-black-v1`;
     vehicle.views[view].studio!.wheelScenes = {
       'baja-polished': { stock: `${wheelRoot}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png` },
+      'baja-black': { stock: `${blackWheelRoot}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png` },
     };
     if (vehicle.model === 'K5') vehicle.views[view].studio!.openTopWheelScenes = {
       'baja-polished': { stock: `${wheelRoot}/top-off/${view}.png` },
+      'baja-black': { stock: `${blackWheelRoot}/top-off/${view}.png` },
     };
   }
 }
@@ -604,7 +607,9 @@ export function summary(c: Configuration): Record<string, string> {
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
     'Cab paint coverage': c.contrastRoof ? c.cabPaint : 'Body color',
-    Wheels: c.wheelId === 'baja-polished'
+    Wheels: c.wheelId === 'baja-black'
+      ? 'American Racing Baja - Black'
+      : c.wheelId === 'baja-polished'
       ? 'American Racing Baja · Polished'
       : v.views.side.studio?.wheelScenes && c.wheelId.startsWith('torq-thrust-')
       ? `American Racing Torq Thrust II · ${c.wheelId.endsWith('20') ? '20' : '18'}″`

@@ -696,7 +696,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                   label="Wheel style"
                   value={config.wheelId.startsWith('torq-thrust-') ? 'torq-thrust' : config.wheelId}
                   options={[{ id: 'street-temp', label: 'Stock' }, ...(vehicle.views.side.studio?.wheelScenes?.['baja-polished']
-                    ? [{ id: 'baja-polished', label: 'American Racing Baja — Polished' }]
+                    ? [{ id: 'baja-polished', label: 'American Racing Baja — Polished' }, { id: 'baja-black', label: 'American Racing Baja - Black' }]
                     : [{ id: 'torq-thrust', label: 'Torq Thrust II' }]) ]}
                   onChange={(style) => update({ wheelId: style === 'torq-thrust' ? 'torq-thrust-18' : style })}
                 />
@@ -708,7 +708,7 @@ export function Designer({ children }: { children?: ReactNode }) {
               )}
               <p className="design-note">
                 {vehicle.views.side.studio?.wheelScenes?.['baja-polished']
-                  ? 'Compare Stock with the polished American Racing Baja. Tire size and ride height stay as pictured.'
+                  ? 'Compare Stock with American Racing Baja in Polished or Black. Tire size and ride height stay as pictured.'
                   : vehicle.views.side.studio?.wheelScenes
                   ? 'Compare Stock with Torq Thrust II in 18″ or 20″. Nick will help confirm tire sizes and fitment for your build.'
                   : 'Wheels and tires stay as pictured. Nick can help select sizes and fitment for your build.'}

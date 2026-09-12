@@ -451,3 +451,11 @@ Validation: all 17 tests pass, covering eight model years × three wheel choices
 Assets: `public/designer/wheels/c10-1971-torq-v1/{18,20}/{stock,drop2,drop4,frame}/{view}.png`. Each scene composites wheel pixels into the previously approved body artwork. Existing aligned paint textures and masks are reused. The 18-inch rim is scaled within the same tire envelope; stance and ground contact remain fixed. Straight-front scenes retain the edge-on tires. All 32 scenes have automated outside-wheel-mask pixel invariance checks. Authoring sources, prompt, QA renders and verification are in the workspace `assets/c10-1971-torq-thrust` directory.
 
 Validation: 17 tests pass, including wheel selection sharing, summaries, complete local image embedding, all stance/view combinations and restriction to the 1971 C10. Production build and focused lint pass. Browser preview confirmed the 20-inch selection at the 4-inch drop.
+
+# Black American Racing Baja option — September 12, 2026
+
+Added the requested `American Racing Baja - Black` choice alongside Stock and Polished on all 1967–1972 K10, 1969–1972 K5 and 1978–1979 F-150 years. K5 top-on and top-off both have complete four-view scenes. Existing pictured tire sizes and ride heights remain unchanged.
+
+40 new scenes in `public/designer/wheels/{family}-{sourceYear}-baja-black-v1` apply a satin-black luminance curve only to the approved Baja rim regions. The manufacturer's black Baja reference informed the finish. Retained front hub centers, circular openings, rim depth and directional shading; the far Ford wheel mask includes its full lower rim lip. Stock, Polished, paint masks, tires, body, trim and interior source assets are unchanged. Recipe and visual reviews are in workspace `assets/baja-wheel-expansion/build-black.py` and `black-review`; `black-pixel-verification.json` confirms every pixel outside the rim masks is preserved.
+
+Validation includes all supported model years, both wheel finishes, all four views, solid/two-tone paint, every K5 roof setting, share restoration, summaries and self-contained artwork downloads. 18 tests and focused lint pass. Production build passes.
