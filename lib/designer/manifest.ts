@@ -24,6 +24,12 @@ export const stances = [
   { id: 'lift3', label: '3-inch lift', direction: 'Lifted', offset: -20 },
   { id: 'lift6', label: '6-inch lift', direction: 'Lifted', offset: -38 },
 ];
+export const c10StanceOptions = [
+  { id: 'stock', label: 'Stock' },
+  { id: 'drop2', label: '2″ lower' },
+  { id: 'drop4', label: '4″ lower' },
+  { id: 'frame', label: 'Laying frame' },
+];
 export const trimFields = [
   'grille',
   'headlights',
@@ -304,6 +310,9 @@ for (const model of ['C10', 'K10'])
       vehicle.views[view].studio = {
         root: `/designer/studio/chevrolet-${model.toLowerCase()}-${sourceYear}-color-v${model === 'C10' ? sourceYear === 1971 ? 6 : 4 : sourceYear === 1970 ? 4 : 3}/${view}`,
         paintScene: true,
+        ...(model === 'C10' && year === 1971 ? {
+          stanceRoots: Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/chevrolet-c10-1971-stance-v1/${stance}/${view}`])),
+        } : {}),
         width: 768,
         height: 512,
         viewport: [0, 0, 768, 512],
@@ -527,7 +536,9 @@ export function normalize(input: unknown): Configuration {
   c.view = pick(raw.view, views, c.view);
   // Unsupported customization is paused during the artwork rebuild. Apply this
   // to restored/shared builds too, so hidden legacy options cannot alter a view.
-  c.stance = 'stock';
+  c.stance = v.id === 'Chevrolet-C10-1971'
+    ? pick(raw.stance, c10StanceOptions.map((s) => s.id), 'stock')
+    : 'stock';
   c.trimMode = 'Match My Truck';
   c.trimPackage = 'unverified';
   c.trim = { ...baseTrim };
@@ -545,7 +556,9 @@ export function summary(c: Configuration): Record<string, string> {
   return {
     Vehicle: `${v.year} ${v.manufacturer} ${v.model}`,
     'Exterior trim': 'As pictured; custom requests to be discussed',
-    'Ride height': 'As pictured',
+    'Ride height': v.id === 'Chevrolet-C10-1971'
+      ? c10StanceOptions.find((s) => s.id === c.stance)?.label || 'Stock'
+      : 'As pictured',
     Paint: v.views.side.studio?.fixedAppearance
       ? 'Red / white center band, red cab - as pictured'
       : `${c.color} · ${c.finish} · ${c.paintMode}${c.paintMode === 'Two-tone' ? ` / ${c.secondaryColor}` : ''}`,

@@ -36,10 +36,40 @@ const {
   defaultConfiguration,
   allowedStances,
   wheelCatalog,
+  summary,
 } = await import(pathToFileURL(join(temporary, 'manifest.mjs')).href);
 const { renderSvg } = await import(
   pathToFileURL(join(temporary, 'render.mjs')).href
 );
+test('1971 C10 ride heights survive sharing and select matching color layers in every view', async () => {
+  const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
+  const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
+  for (const [stance, label] of [['stock', 'Stock'], ['drop2', '2″ lower'], ['drop4', '4″ lower'], ['frame', 'Laying frame']]) {
+    const c = normalize({ vehicleId: 'Chevrolet-C10-1971', stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true, roofColor: '#ffffff' });
+    assert.equal(c.stance, stance);
+    assert.equal(summary(c)['Ride height'], label);
+    assert.deepEqual(readShare(shareHash(c)), c);
+    for (const view of views) {
+      const svg = renderSvg(c, view);
+      const root = stance === 'stock' ? `chevrolet-c10-1971-color-v6/${view}` : `chevrolet-c10-1971-stance-v1/${stance}/${view}`;
+      assert.ok(svg.includes(`${root}/studio.png`));
+      assert.ok(svg.includes(`${root}/paint-mask.png`));
+      assert.ok(svg.includes(`${root}/cab-mask.png`));
+      const embedded = await embedArtwork(svg, async (path) => {
+        const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+        assert.equal(bytes.readUInt32BE(16), 768);
+        assert.equal(bytes.readUInt32BE(20), 512);
+        return `data:image/png;base64,${bytes.toString('base64')}`;
+      });
+      assert.ok(!embedded.includes('/designer/'));
+    }
+  }
+  assert.equal(normalize({ vehicleId: 'Chevrolet-C10-1971', stance: 'lift6' }).stance, 'stock');
+  for (const vehicle of vehicles.filter((v) => v.id !== 'Chevrolet-C10-1971')) {
+    assert.equal(normalize({ vehicleId: vehicle.id, stance: 'frame' }).stance, 'stock');
+    assert.ok(views.every((view) => !vehicle.views[view].studio.stanceRoots));
+  }
+});
 test('1967 and 1971 have complete, distinct studio packs with valid PNG assets', () => {
   const roots = new Set();
   for (const year of [1967, 1971]) {

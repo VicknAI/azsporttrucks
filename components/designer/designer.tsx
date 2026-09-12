@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
   colors,
+  c10StanceOptions,
   defaultConfiguration,
   fitmentNotice,
   manufacturers,
@@ -413,6 +414,8 @@ export function Designer({ children }: { children?: ReactNode }) {
               ? '1972 K10 reference artwork, shared with the 1971 body style. Paint, chrome trim, wheels, tires, and stance stay as pictured.'
               : vehicle.views.side.studio?.solidOnly
                 ? 'Preview single-color paint in gloss or satin. Two-tone finishes are coming later. Trim, wheels, tires, and stance stay as pictured.'
+              : vehicle.id === 'Chevrolet-C10-1971'
+                ? 'Preview paint, two-tone, roof color, and four ride heights. OEM wheels and chrome trim stay with your build.'
               : studioView
                 ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
                 : 'Schematic preview artwork is shared across these years. Grilles, lighting, trim, and proportions are not factory-accurate.'}
@@ -671,10 +674,24 @@ export function Designer({ children }: { children?: ReactNode }) {
               </p>
             </Category>
             <Category id="stance" title="04 / Stance">
-              <p className="design-note">
+              {vehicle.id === 'Chevrolet-C10-1971' ? (
+                <>
+                  <Choice
+                    label="Ride height"
+                    value={config.stance}
+                    options={c10StanceOptions}
+                    onChange={(stance) => update({ stance })}
+                  />
+                  <p className="design-note">
+                    {config.stance === 'frame'
+                      ? 'Laying frame shows the truck parked with air suspension fully lowered.'
+                      : 'Compare ride heights with the same OEM wheels and tires.'}
+                  </p>
+                </>
+              ) : <p className="design-note">
                 The preview keeps its pictured stance. Suspension changes can be
                 discussed with Nick when planning your build.
-              </p>
+              </p>}
             </Category>
             <Category id="wheels" title="05 / Wheels & tires">
               <p className="design-note">

@@ -5,6 +5,7 @@ export type StudioPack = {
   fixedAppearance?: boolean;
   paintScene?: boolean;
   solidOnly?: boolean;
+  stanceRoots?: Record<string, string>;
   openTopRoot?: string;
   width: number;
   height: number;
@@ -29,7 +30,7 @@ export function renderStudio(
   ariaLabel: string,
 ): string {
   const { width, height } = pack;
-  const root = c.roof === 'Top off' && pack.openTopRoot ? pack.openTopRoot : pack.root;
+  const root = pack.stanceRoots?.[c.stance] ?? (c.roof === 'Top off' && pack.openTopRoot ? pack.openTopRoot : pack.root);
   if (pack.paintScene) {
     const masks = ['paint', 'center-band', 'cab', 'roof'];
     const roofColor = pack.openTopRoot
