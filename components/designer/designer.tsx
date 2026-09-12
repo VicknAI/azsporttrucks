@@ -415,7 +415,9 @@ export function Designer({ children }: { children?: ReactNode }) {
               : vehicle.views.side.studio?.solidOnly
                 ? 'Preview single-color paint in gloss or satin. Two-tone finishes are coming later. Trim, wheels, tires, and stance stay as pictured.'
               : vehicle.views.side.studio?.stanceRoots
-                ? 'Preview paint, two-tone, roof color, and four ride heights. OEM wheels and chrome trim stay with your build.'
+                ? vehicle.views.side.studio?.wheelScenes
+                  ? 'Preview paint, two-tone, roof color, four ride heights, and wheel options.'
+                  : 'Preview paint, two-tone, roof color, and four ride heights. OEM wheels and chrome trim stay with your build.'
               : studioView
                 ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
                 : 'Schematic preview artwork is shared across these years. Grilles, lighting, trim, and proportions are not factory-accurate.'}
@@ -678,7 +680,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                   <p className="design-note">
                     {config.stance === 'frame'
                       ? 'Laying frame shows the truck parked with air suspension fully lowered.'
-                      : 'Compare ride heights with the same OEM wheels and tires.'}
+                      : 'Compare ride heights with your selected wheels and tires.'}
                   </p>
                 </>
               ) : <p className="design-note">
@@ -690,14 +692,20 @@ export function Designer({ children }: { children?: ReactNode }) {
               {vehicle.model === 'C10' && (
                 <Choice
                   label="Wheel style"
-                  value={config.wheelId}
-                  options={[{ id: 'street-temp', label: 'Stock' }]}
-                  onChange={(wheelId) => update({ wheelId })}
+                  value={config.wheelId.startsWith('torq-thrust-') ? 'torq-thrust' : 'street-temp'}
+                  options={[{ id: 'street-temp', label: 'Stock' }, ...(vehicle.views.side.studio?.wheelScenes ? [{ id: 'torq-thrust', label: 'Torq Thrust II' }] : [])]}
+                  onChange={(style) => update({ wheelId: style === 'torq-thrust' ? 'torq-thrust-18' : 'street-temp' })}
                 />
               )}
+              {vehicle.views.side.studio?.wheelScenes && config.wheelId.startsWith('torq-thrust-') && (
+                <Choice label="Wheel size" value={config.wheelId}
+                  options={[{ id: 'torq-thrust-18', label: '18″' }, { id: 'torq-thrust-20', label: '20″' }]}
+                  onChange={(wheelId) => update({ wheelId })} />
+              )}
               <p className="design-note">
-                Wheels and tires stay as pictured. Nick can help select sizes
-                and fitment for your build.
+                {vehicle.views.side.studio?.wheelScenes
+                  ? 'Compare Stock with Torq Thrust II in 18″ or 20″. Nick will help confirm tire sizes and fitment for your build.'
+                  : 'Wheels and tires stay as pictured. Nick can help select sizes and fitment for your build.'}
               </p>
             </Category>
             {vehicle.model === 'K5' && (

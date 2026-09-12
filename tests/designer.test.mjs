@@ -74,6 +74,37 @@ test('all C10 and F-100 ride heights survive sharing and select matching color l
     assert.ok(views.every((view) => !vehicle.views[view].studio.stanceRoots));
   }
 });
+test('1971 C10 wheel sizes survive sharing and preserve aligned paint at every stance and angle', async () => {
+  const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
+  const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
+  const vehicle = vehicles.find((v) => v.id === 'Chevrolet-C10-1971');
+  for (const wheelId of ['street-temp', 'torq-thrust-18', 'torq-thrust-20'])
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame']) {
+    const c = normalize({ vehicleId: vehicle.id, wheelId, stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true });
+    assert.equal(c.wheelId, wheelId);
+    assert.deepEqual(readShare(shareHash(c)), c);
+    assert.ok(summary(c).Wheels.includes(wheelId === 'street-temp' ? 'Stock' : wheelId.slice(-2)));
+    for (const view of views) {
+      const pack = vehicle.views[view].studio;
+      const root = pack.stanceRoots[stance] ?? pack.root;
+      const svg = renderSvg(c, view);
+      assert.ok(svg.includes(`${root}/paint-mask.png`));
+      assert.ok(svg.includes(`${root}/cab-mask.png`));
+      assert.ok(svg.includes(wheelId === 'street-temp' ? `${root}/studio.png` : pack.wheelScenes[wheelId][stance]));
+      const embedded = await embedArtwork(svg, async (path) => {
+        const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+        assert.equal(bytes.readUInt32BE(16), 768);
+        assert.equal(bytes.readUInt32BE(20), 512);
+        return `data:image/png;base64,${bytes.toString('base64')}`;
+      });
+      assert.ok(!embedded.includes('/designer/'));
+    }
+  }
+  for (const other of vehicles.filter((v) => v.id !== vehicle.id)) {
+    assert.equal(normalize({ vehicleId: other.id, wheelId: 'torq-thrust-20' }).wheelId, 'street-temp');
+    assert.ok(views.every((view) => !other.views[view].studio.wheelScenes));
+  }
+});
 test('1967 and 1971 have complete, distinct studio packs with valid PNG assets', () => {
   const roots = new Set();
   for (const year of [1967, 1971]) {

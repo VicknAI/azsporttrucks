@@ -428,6 +428,15 @@ for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F
   }
 }
 
+// Wheel scenes retain the approved body and aligned paint layers.
+for (const view of views) {
+  vehicles.find((v) => v.id === 'Chevrolet-C10-1971')!.views[view].studio!.wheelScenes = Object.fromEntries(
+    ['18', '20'].map((size) => [`torq-thrust-${size}`, Object.fromEntries(
+      ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/wheels/c10-1971-torq-v1/${size}/${stance}/${view}.png`]),
+    )]),
+  );
+}
+
 export type Configuration = {
   version: 1;
   vehicleId: string;
@@ -552,7 +561,9 @@ export function normalize(input: unknown): Configuration {
   c.trimMode = 'Match My Truck';
   c.trimPackage = 'unverified';
   c.trim = { ...baseTrim };
-  c.wheelId = 'street-temp';
+  c.wheelId = v.views.side.studio?.wheelScenes
+    ? pick(raw.wheelId, ['street-temp', 'torq-thrust-18', 'torq-thrust-20'], 'street-temp')
+    : 'street-temp';
   c.tire = 'Street performance';
   if (v.views.side.studio?.paintScene) c.twoToneStyle = 'Center band';
   if (v.views.side.studio?.solidOnly) {
@@ -576,7 +587,9 @@ export function summary(c: Configuration): Record<string, string> {
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
     'Cab paint coverage': c.contrastRoof ? c.cabPaint : 'Body color',
-    Wheels: v.model === 'C10' ? 'Stock' : 'As pictured; fitment to be discussed',
+    Wheels: v.views.side.studio?.wheelScenes && c.wheelId.startsWith('torq-thrust-')
+      ? `American Racing Torq Thrust II · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
+      : v.model === 'C10' ? 'Stock' : 'As pictured; fitment to be discussed',
     Tires: 'As pictured; size to be discussed',
     'K5 roof': v.model === 'K5' ? c.roof : 'Not applicable',
     ...(v.model === 'K5' ? { Interior: 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),
