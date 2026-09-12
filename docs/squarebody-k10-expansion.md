@@ -12,7 +12,7 @@ Nick selected these year groups on September 12, 2026, using the [CJ Pony Parts 
 | 1983–1984 | Updated two-level grille |
 | 1985–1987 | Final grille family |
 
-Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The first implemented group is 1973–1974; the remaining six groups are not yet implemented. Existing 1967–1972 K10s keep their existing selections.
+Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The first implemented group is 1973–1974; the remaining six groups are not yet implemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
 
 ## Integration direction
 
@@ -79,3 +79,11 @@ Nick found the original tires oversized and selected the 1972 K10 as the proport
 The body silhouette, glass, lights, bumpers, trim and editable paint layers are retained. All five wheel selections use the same new geometry; earlier vehicle packs are unchanged. Original v1 assets remain available. Reproducible authoring and body-pixel preservation checks: `assets/squarebody-k10-expansion/1974/refine-tire-proportions.py`; review images and verification in `1974/tire-refinement-v2/`. The new stock studio root is `chevrolet-k10-1973-1974-color-v2`, and all four alternative wheel packs use v2.
 
 Validation: all 25 repository checks and production build pass. Local designer returns HTTP 200. Reviewed the four-angle color and wheel sheets; automated comparisons confirm protected body pixels and all paint layers match v1. Public release verification is saved in the private v2 review folder.
+
+## Earlier K10 selector grouping — September 12, 2026
+
+Nick approved combining identical preview years into `Chevrolet-K10-1969-1970` and `Chevrolet-K10-1971-1972`, with labels 1969–1970 K10 and 1971–1972 K10. The 1967 and 1968 K10s remain separate; C10, K5 and Ford selections remain unchanged. Both groups retain the existing paired studio and wheel assets, orange/white reference preset, and contrasting roof-and-pillars coverage.
+
+Normalization maps each of the four retired exact-year K10 IDs to its group before loading shared links or saved browser drafts. Colors, paint layout, finish, roof selection, wheels and selected view survive that migration. New shares and build summaries use the group name. Grouped years do not imply square-body paint or wheel packs: those choices continue to follow the truck's body generation. No artwork files are changed for this selector update.
+
+Validation: 26 repository checks pass, including migration of all four retired IDs through shared links and saved drafts, every supported wheel, both paint layouts and all four render views. Production build passes; local designer returns HTTP 200. Other models retain their individual-year selections.

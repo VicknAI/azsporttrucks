@@ -444,6 +444,25 @@ const squarebodyK10: Vehicle = {
 };
 vehicles.splice(vehicles.indexOf(squarebodyTemplate) + 1, 0, squarebodyK10);
 
+// Combine K10 years that already share a complete studio pack. Keep the old
+// exact-year IDs as input aliases so saved drafts and shared builds still load.
+const legacyVehicleGroups = new Map<string, string>();
+for (const firstYear of [1969, 1971]) {
+  const firstIndex = vehicles.findIndex((v) => v.id === `Chevrolet-K10-${firstYear}`);
+  const first = vehicles[firstIndex];
+  const lastYear = firstYear + 1;
+  const id = `Chevrolet-K10-${firstYear}-${lastYear}`;
+  for (const year of [firstYear, lastYear]) {
+    legacyVehicleGroups.set(`Chevrolet-K10-${year}`, id);
+  }
+  vehicles.splice(firstIndex, 2, {
+    ...first,
+    id,
+    yearEnd: lastYear,
+    label: `${firstYear}–${lastYear} K10`,
+  });
+}
+
 // Each 2WD body family has aligned paint layers at all four ride heights.
 for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100')) {
   const sourceYear = vehicle.model === 'C10'
@@ -468,7 +487,7 @@ for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F
 
 // Replacement wheel faces follow each 4WD body's existing tires and ride height.
 for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model))) {
-  const sourceYear = vehicle.yearEnd ? `${vehicle.year}-${vehicle.yearEnd}` : vehicle.model === 'K10' && vehicle.year >= 1969
+  const sourceYear = vehicle.model === 'K10' && vehicle.year >= 1973 && vehicle.yearEnd ? `${vehicle.year}-${vehicle.yearEnd}` : vehicle.model === 'K10' && vehicle.year >= 1969
     ? vehicle.year <= 1970 ? 1970 : 1972
     : vehicle.model === 'K5' ? vehicle.year <= 1970 ? 1970 : 1972 : vehicle.year;
   const family = vehicle.model === 'F-150' ? 'ford-f150' : `chevrolet-${vehicle.model.toLowerCase()}`;
@@ -558,7 +577,8 @@ export function allowedStances(direction: Direction) {
 export function normalize(input: unknown): Configuration {
   const raw =
     input && typeof input === 'object' ? (input as Partial<Configuration>) : {};
-  const v = vehicles.find((v) => v.id === raw.vehicleId) || vehicles[0];
+  const vehicleId = legacyVehicleGroups.get(raw.vehicleId ?? '') ?? raw.vehicleId;
+  const v = vehicles.find((v) => v.id === vehicleId) || vehicles[0];
   const c = defaultConfiguration(v);
   const pick = <T extends string>(
     value: unknown,
@@ -646,7 +666,7 @@ export function summary(c: Configuration): Record<string, string> {
     'Two-tone pattern':
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
-    'Cab paint coverage': c.contrastRoof ? v.yearEnd ? 'Roof and cab back; door window frames stay body color' : c.cabPaint : 'Body color',
+    'Cab paint coverage': c.contrastRoof ? v.model === 'K10' && v.year >= 1973 ? 'Roof and cab back; door window frames stay body color' : c.cabPaint : 'Body color',
     Wheels: kmcWheelOptions.find((wheel) => wheel.id === c.wheelId)?.label ?? (c.wheelId === 'baja-black'
       ? 'American Racing Baja - Black'
       : c.wheelId === 'baja-polished'

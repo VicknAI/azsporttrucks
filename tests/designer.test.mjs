@@ -112,7 +112,7 @@ test('Baja and KMC wheels remain selected across 4WD years, paint layouts, K5 ro
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const supported = vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model));
-  assert.equal(supported.length, 13);
+  assert.equal(supported.length, 11);
   const wheelExpectations = {
     'baja-polished': ['American Racing Baja · Polished', '-baja-v1/'],
     'baja-black': ['American Racing Baja - Black', '-baja-black-v1/'],
@@ -217,12 +217,12 @@ process.on('exit', () => {
   )
     rmSync(resolved, { recursive: true, force: true });
 });
-test('existing exact years and the square-body year group have distinct manifests and four anchor packs', () => {
-  assert.equal(vehicles.length, 21);
-  assert.equal(new Set(vehicles.map((v) => v.id)).size, 21);
+test('exact years and K10 year groups have distinct manifests and four anchor packs', () => {
+  assert.equal(vehicles.length, 19);
+  assert.equal(new Set(vehicles.map((v) => v.id)).size, 19);
   for (const [model, years] of [
     ['C10', [1967, 1968, 1969, 1970, 1971, 1972]],
-    ['K10', [1967, 1968, 1969, 1970, 1971, 1972]],
+    ['K10', [1967, 1968]],
     ['K5', [1969, 1970, 1971, 1972]],
     ['F-100', [1978, 1979]],
     ['F-150', [1978, 1979]],
@@ -534,6 +534,50 @@ test('1973–1974 K10 remains one group across shares, paint layouts and build s
       if (paintMode === 'Solid') assert.equal(svg, renderSvg({ ...c, secondaryColor: '#ff00ff', roofColor: '#ff00ff' }, view));
       else assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#ff00ff' }, view));
     }
+  }
+});
+
+test('paired K10 years load legacy shared links and saved drafts without losing customization', async () => {
+  const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
+  assert.deepEqual(vehicles.filter((v) => v.model === 'K10').map((v) => v.label), [
+    '1967 K10', '1968 K10', '1969–1970 K10', '1971–1972 K10', '1973–1974 K10',
+  ]);
+  const previousStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  let savedDraft;
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
+    getItem(key) { assert.equal(key, draftKey); return savedDraft; },
+  } });
+  try {
+    for (const year of [1969, 1970, 1971, 1972])
+    for (const wheelId of ['street-temp', 'baja-polished', 'baja-black', 'kmc-impact-monoblock-machined', 'kmc-impact-beadlock-machined'])
+    for (const paintMode of ['Solid', 'Two-tone']) {
+      const pair = year <= 1970 ? '1969-1970' : '1971-1972';
+      const oldId = `Chevrolet-K10-${year}`;
+      const selection = {
+        vehicleId: oldId, color: '#224466', secondaryColor: '#e8dcc9',
+        roofColor: '#ffeecc', contrastRoof: true, cabPaint: 'Roof and pillars',
+        finish: 'Satin', paintMode, wheelId, view: 'rear-quarter',
+      };
+      assert.ok(!vehicles.some((v) => v.id === oldId));
+      const c = readShare('#build=' + encodeURIComponent(JSON.stringify(selection)));
+      assert.equal(c.vehicleId, `Chevrolet-K10-${pair}`);
+      for (const [key, value] of Object.entries(selection)) {
+        if (key !== 'vehicleId') assert.equal(c[key], value);
+      }
+      savedDraft = JSON.stringify(selection);
+      assert.deepEqual(readDraft(), c);
+      assert.deepEqual(readShare(shareHash(c)), c);
+      assert.equal(summary(c).Vehicle, `${pair.replace('-', '–')} Chevrolet K10`);
+      assert.equal(summary(c)['Cab paint coverage'], 'Roof and pillars');
+      for (const view of views) {
+        const svg = renderSvg(c, view);
+        const source = year <= 1970 ? '1970-color-v4' : '1972-color-v3';
+        assert.ok(svg.includes(`/chevrolet-k10-${source}/${view}/paint-mask.png`));
+      }
+    }
+  } finally {
+    if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage);
+    else delete globalThis.localStorage;
   }
 });
 
