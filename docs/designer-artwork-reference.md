@@ -426,6 +426,14 @@ Release a62ab0a VERIFIED PUBLIC: designer-C6VVMo2L.js. All 48 new 1978 Ford PNGs
 - Private authoring recipe: assets/pickup-stance-expansion/build.py and generated engine.py. Uses the existing studio background plate and deterministic compositing under the user's prior image-cleanup authorization. No new image generation for this expansion.
 - Sixteen tests pass, including all eight supported model years × four heights × four views, valid local PNG layers, share persistence and restriction of unsupported models. Focused lint and production build pass. Browser checks include early C10 and both Ford front styles in lowered two-tone with contrasting cab, plus solid paint.
 - VERIFIED PUBLIC: release 7ddac08 with designer-BtSc0Ljw.js. All 360 new PNG files byte-match the tested assets. Public browser verifies the F-100 four-option Ride height menu and rendered Forest solid Laying frame view.
+# All C10 and F-100 wheel options — September 12, 2026
+
+Expanded the approved Stock / Torq Thrust II 18-inch / 20-inch choices to every 1967–1972 C10 and 1978–1979 F-100. The 1969/70 and 1971/72 paired bodies share their respective wheel packs. Other body families use individually aligned wheel scenes under `public/designer/wheels/{family}-{sourceYear}-torq-v1`. Existing 1971 scenes are retained unchanged.
+
+160 additional wheel scenes retain all pixels outside the wheel masks. Donor tires are aligned to each family's existing axle positions, and target body/paint masks protect the year-specific artwork. Hidden tire regions are filled with neutral rubber before mapping to prevent donor fender paint or fragments of the old white-letter tires appearing through a different wheel opening. All original Stock scenes and paint masks remain unchanged. Private authoring and visual checks: workspace `assets/pickup-wheel-expansion`.
+
+Validation: all 17 tests pass, covering eight model years × three wheel choices × four stances × four views, including saved/shared state, wheel size summaries and self-contained downloaded artwork. Production build and focused lint pass. Visual checks cover the early and late C10 bodies and both F-100 front ends; browser preview confirmed the new Ford controls with 20-inch wheels at a 2-inch drop.
+
 # 1971 C10 wheel options — September 12, 2026
 
 1971 C10 only: retain Stock and add American Racing Torq Thrust II with 18-inch and 20-inch visual sizes. Gray five-spoke centers and bright lips reference the official Classic Torq Thrust II product image. Wheel artwork is illustrative; exact tire sizing, backspacing, and fitment remain a build-planning decision.

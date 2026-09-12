@@ -689,7 +689,7 @@ export function Designer({ children }: { children?: ReactNode }) {
               </p>}
             </Category>
             <Category id="wheels" title="04 / Wheels & tires">
-              {vehicle.model === 'C10' && (
+              {vehicle.views.side.studio?.wheelScenes && (
                 <Choice
                   label="Wheel style"
                   value={config.wheelId.startsWith('torq-thrust-') ? 'torq-thrust' : 'street-temp'}

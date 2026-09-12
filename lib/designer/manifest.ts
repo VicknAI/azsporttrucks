@@ -425,16 +425,16 @@ for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F
     vehicle.views[view].studio!.stanceRoots = Object.fromEntries(
       ['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/${family}-${sourceYear}-stance-v1/${stance}/${view}`]),
     );
+    // Reuse the approved 1971/72 wheel pack; each other body family is aligned
+    // to its own tire positions and stance masks.
+    const wheelFamily = family === 'chevrolet-c10' && sourceYear === 1971
+      ? 'c10-1971' : `${family}-${sourceYear}`;
+    vehicle.views[view].studio!.wheelScenes = Object.fromEntries(
+      ['18', '20'].map((size) => [`torq-thrust-${size}`, Object.fromEntries(
+        ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/wheels/${wheelFamily}-torq-v1/${size}/${stance}/${view}.png`]),
+      )]),
+    );
   }
-}
-
-// Wheel scenes retain the approved body and aligned paint layers.
-for (const view of views) {
-  vehicles.find((v) => v.id === 'Chevrolet-C10-1971')!.views[view].studio!.wheelScenes = Object.fromEntries(
-    ['18', '20'].map((size) => [`torq-thrust-${size}`, Object.fromEntries(
-      ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/wheels/c10-1971-torq-v1/${size}/${stance}/${view}.png`]),
-    )]),
-  );
 }
 
 export type Configuration = {
@@ -589,7 +589,7 @@ export function summary(c: Configuration): Record<string, string> {
     'Cab paint coverage': c.contrastRoof ? c.cabPaint : 'Body color',
     Wheels: v.views.side.studio?.wheelScenes && c.wheelId.startsWith('torq-thrust-')
       ? `American Racing Torq Thrust II · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
-      : v.model === 'C10' ? 'Stock' : 'As pictured; fitment to be discussed',
+      : v.views.side.studio?.wheelScenes ? 'Stock' : 'As pictured; fitment to be discussed',
     Tires: 'As pictured; size to be discussed',
     'K5 roof': v.model === 'K5' ? c.roof : 'Not applicable',
     ...(v.model === 'K5' ? { Interior: 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),

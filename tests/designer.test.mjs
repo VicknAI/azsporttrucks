@@ -74,10 +74,12 @@ test('all C10 and F-100 ride heights survive sharing and select matching color l
     assert.ok(views.every((view) => !vehicle.views[view].studio.stanceRoots));
   }
 });
-test('1971 C10 wheel sizes survive sharing and preserve aligned paint at every stance and angle', async () => {
+test('all C10 and F-100 wheel sizes survive sharing and preserve aligned paint at every stance and angle', async () => {
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
-  const vehicle = vehicles.find((v) => v.id === 'Chevrolet-C10-1971');
+  const supported = vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100');
+  assert.equal(supported.length, 8);
+  for (const vehicle of supported)
   for (const wheelId of ['street-temp', 'torq-thrust-18', 'torq-thrust-20'])
   for (const stance of ['stock', 'drop2', 'drop4', 'frame']) {
     const c = normalize({ vehicleId: vehicle.id, wheelId, stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true });
@@ -100,7 +102,7 @@ test('1971 C10 wheel sizes survive sharing and preserve aligned paint at every s
       assert.ok(!embedded.includes('/designer/'));
     }
   }
-  for (const other of vehicles.filter((v) => v.id !== vehicle.id)) {
+  for (const other of vehicles.filter((v) => v.model !== 'C10' && v.model !== 'F-100')) {
     assert.equal(normalize({ vehicleId: other.id, wheelId: 'torq-thrust-20' }).wheelId, 'street-temp');
     assert.ok(views.every((view) => !other.views[view].studio.wheelScenes));
   }
