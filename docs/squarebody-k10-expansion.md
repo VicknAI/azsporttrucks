@@ -87,3 +87,13 @@ Nick approved combining identical preview years into `Chevrolet-K10-1969-1970` a
 Normalization maps each of the four retired exact-year K10 IDs to its group before loading shared links or saved browser drafts. Colors, paint layout, finish, roof selection, wheels and selected view survive that migration. New shares and build summaries use the group name. Grouped years do not imply square-body paint or wheel packs: those choices continue to follow the truck's body generation. No artwork files are changed for this selector update.
 
 Validation: 26 repository checks pass, including migration of all four retired IDs through shared links and saved drafts, every supported wheel, both paint layouts and all four render views. Production build passes; local designer returns HTTP 200. Other models retain their individual-year selections.
+
+## 1973–1974 upper-door and wheel-opening cleanup — September 12, 2026
+
+Nick requested that the entire upper door stay body color in two-tone configurations and flagged unnatural shadows around the wheel wells. The v3 roof/cab masks exclude the complete door window frames along the door seams. Contrast remains on the roof and cab back; body and secondary paint masks are unchanged.
+
+The tire resize now uses smooth inner-opening contours, protects the adjoining chrome lip, and retains the original stationary wheel-house texture above the tires. This removes the extra edge/shadow created when the inner fender liner was transformed with the running gear. The approved smaller tire scale and wheel positions are retained across Stock, Baja and KMC views. Existing v1/v2 files remain available; only the 1973–1974 group switches to v3.
+
+Reproducible authoring: `assets/squarebody-k10-expansion/1974/refine-edge-cleanup.py`; detailed door/arch reviews, four-view paint and wheel sheets, and mask verification are saved in `1974/edge-cleanup-v3/` outside the site checkout.
+
+Validation: all 26 repository checks and production build pass. Four-angle blue/white, solid green and red/black paint sheets were reviewed with the updated wheel scenes. Pixel comparisons confirm the body/secondary paint layers, wheel centers and straight-front scenes remain unchanged. Roof coverage only decreases where the upper doors must retain body color. Local designer returns HTTP 200.

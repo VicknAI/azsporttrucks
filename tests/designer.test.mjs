@@ -133,7 +133,7 @@ test('Baja and KMC wheels remain selected across 4WD years, paint layouts, K5 ro
       const pack = v.views[view].studio;
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
-      const expectedFolder = v.id === 'Chevrolet-K10-1973-1974' ? folder.replace('-v1/', '-v2/') : folder;
+      const expectedFolder = v.id === 'Chevrolet-K10-1973-1974' ? folder.replace('-v1/', '-v3/') : folder;
       assert.ok(scenes[wheelId].stock.includes(expectedFolder));
       const svg = renderSvg(c, view);
       assert.ok(svg.includes(scenes[wheelId].stock));
@@ -530,7 +530,7 @@ test('1973–1974 K10 remains one group across shares, paint layouts and build s
     assert.equal(summary(c).Vehicle, '1973–1974 Chevrolet K10');
     for (const view of views) {
       const svg = renderSvg(c, view);
-      assert.ok(svg.includes('/chevrolet-k10-1973-1974-color-v2/'));
+      assert.ok(svg.includes('/chevrolet-k10-1973-1974-color-v3/'));
       if (paintMode === 'Solid') assert.equal(svg, renderSvg({ ...c, secondaryColor: '#ff00ff', roofColor: '#ff00ff' }, view));
       else assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#ff00ff' }, view));
     }
