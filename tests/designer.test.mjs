@@ -41,17 +41,21 @@ const {
 const { renderSvg } = await import(
   pathToFileURL(join(temporary, 'render.mjs')).href
 );
-test('1971 C10 ride heights survive sharing and select matching color layers in every view', async () => {
+test('all C10 and F-100 ride heights survive sharing and select matching color layers in every view', async () => {
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
+  const supported = vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100');
+  assert.equal(supported.length, 8);
+  for (const vehicle of supported)
   for (const [stance, label] of [['stock', 'Stock'], ['drop2', '2″ lower'], ['drop4', '4″ lower'], ['frame', 'Laying frame']]) {
-    const c = normalize({ vehicleId: 'Chevrolet-C10-1971', stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true, roofColor: '#ffffff' });
+    const c = normalize({ vehicleId: vehicle.id, stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true, roofColor: '#ffffff' });
     assert.equal(c.stance, stance);
     assert.equal(summary(c)['Ride height'], label);
     assert.deepEqual(readShare(shareHash(c)), c);
     for (const view of views) {
       const svg = renderSvg(c, view);
-      const root = stance === 'stock' ? `chevrolet-c10-1971-color-v6/${view}` : `chevrolet-c10-1971-stance-v1/${stance}/${view}`;
+      const pack = vehicle.views[view].studio;
+      const root = stance === 'stock' ? pack.root : pack.stanceRoots[stance];
       assert.ok(svg.includes(`${root}/studio.png`));
       assert.ok(svg.includes(`${root}/paint-mask.png`));
       assert.ok(svg.includes(`${root}/cab-mask.png`));
@@ -65,7 +69,7 @@ test('1971 C10 ride heights survive sharing and select matching color layers in 
     }
   }
   assert.equal(normalize({ vehicleId: 'Chevrolet-C10-1971', stance: 'lift6' }).stance, 'stock');
-  for (const vehicle of vehicles.filter((v) => v.id !== 'Chevrolet-C10-1971')) {
+  for (const vehicle of vehicles.filter((v) => v.model !== 'C10' && v.model !== 'F-100')) {
     assert.equal(normalize({ vehicleId: vehicle.id, stance: 'frame' }).stance, 'stock');
     assert.ok(views.every((view) => !vehicle.views[view].studio.stanceRoots));
   }

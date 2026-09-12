@@ -24,7 +24,7 @@ export const stances = [
   { id: 'lift3', label: '3-inch lift', direction: 'Lifted', offset: -20 },
   { id: 'lift6', label: '6-inch lift', direction: 'Lifted', offset: -38 },
 ];
-export const c10StanceOptions = [
+export const pickupStanceOptions = [
   { id: 'stock', label: 'Stock' },
   { id: 'drop2', label: '2″ lower' },
   { id: 'drop4', label: '4″ lower' },
@@ -310,9 +310,6 @@ for (const model of ['C10', 'K10'])
       vehicle.views[view].studio = {
         root: `/designer/studio/chevrolet-${model.toLowerCase()}-${sourceYear}-color-v${model === 'C10' ? sourceYear === 1971 ? 6 : 4 : sourceYear === 1970 ? 4 : 3}/${view}`,
         paintScene: true,
-        ...(model === 'C10' && year === 1971 ? {
-          stanceRoots: Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/chevrolet-c10-1971-stance-v1/${stance}/${view}`])),
-        } : {}),
         width: 768,
         height: 512,
         viewport: [0, 0, 768, 512],
@@ -417,6 +414,19 @@ for (const [model, assetModel] of [['F-100', 'f100'], ['F-150', 'f150']])
       shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
     };
   }
+
+// Each 2WD body family has aligned paint layers at all four ride heights.
+for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100')) {
+  const sourceYear = vehicle.model === 'C10'
+    ? vehicle.year <= 1968 ? vehicle.year : vehicle.year <= 1970 ? 1970 : 1971
+    : vehicle.year;
+  const family = vehicle.model === 'C10' ? 'chevrolet-c10' : 'ford-f100';
+  for (const view of views) {
+    vehicle.views[view].studio!.stanceRoots = Object.fromEntries(
+      ['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/${family}-${sourceYear}-stance-v1/${stance}/${view}`]),
+    );
+  }
+}
 
 export type Configuration = {
   version: 1;
@@ -536,8 +546,8 @@ export function normalize(input: unknown): Configuration {
   c.view = pick(raw.view, views, c.view);
   // Unsupported customization is paused during the artwork rebuild. Apply this
   // to restored/shared builds too, so hidden legacy options cannot alter a view.
-  c.stance = v.id === 'Chevrolet-C10-1971'
-    ? pick(raw.stance, c10StanceOptions.map((s) => s.id), 'stock')
+  c.stance = v.views.side.studio?.stanceRoots
+    ? pick(raw.stance, pickupStanceOptions.map((s) => s.id), 'stock')
     : 'stock';
   c.trimMode = 'Match My Truck';
   c.trimPackage = 'unverified';
@@ -556,8 +566,8 @@ export function summary(c: Configuration): Record<string, string> {
   return {
     Vehicle: `${v.year} ${v.manufacturer} ${v.model}`,
     'Exterior trim': 'As pictured; custom requests to be discussed',
-    'Ride height': v.id === 'Chevrolet-C10-1971'
-      ? c10StanceOptions.find((s) => s.id === c.stance)?.label || 'Stock'
+    'Ride height': v.views.side.studio?.stanceRoots
+      ? pickupStanceOptions.find((s) => s.id === c.stance)?.label || 'Stock'
       : 'As pictured',
     Paint: v.views.side.studio?.fixedAppearance
       ? 'Red / white center band, red cab - as pictured'
