@@ -666,14 +666,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                 </>
               )}
             </Category>
-            <Category id="trim" title="03 / Exterior details">
-              <p className="design-note">
-                Grille, chrome bumpers, badges, and molding stay as pictured.
-                Tell Nick about any custom trim requests when requesting a
-                quote.
-              </p>
-            </Category>
-            <Category id="stance" title="04 / Stance">
+            <Category id="stance" title="03 / Stance">
               {vehicle.views.side.studio?.stanceRoots ? (
                 <>
                   <Choice
@@ -693,14 +686,14 @@ export function Designer({ children }: { children?: ReactNode }) {
                 discussed with Nick when planning your build.
               </p>}
             </Category>
-            <Category id="wheels" title="05 / Wheels & tires">
+            <Category id="wheels" title="04 / Wheels & tires">
               <p className="design-note">
                 Wheels and tires stay as pictured. Nick can help select sizes
                 and fitment for your build.
               </p>
             </Category>
             {vehicle.model === 'K5' && (
-              <Category id="roof" title="06 / K5 roof">
+              <Category id="roof" title="05 / K5 roof">
                 <Choice
                   label="K5 roof option"
                   value={config.roof}
