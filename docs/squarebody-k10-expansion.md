@@ -22,6 +22,7 @@ Nick clarified that each group should be a single selectable designer entry, rat
 - Match the approved Ford-level studio quality across side, front three-quarter, rear three-quarter and straight-front views.
 - Nick explicitly noted that square-body two-tone layouts differ from the earlier trucks. Create square-body-specific paint regions from relevant factory-layout photographs, including the correct cab/bed color boundaries and molding relationships. Do not reuse the 1967–1972 center-band shape or assume one layout applies to every square-body group/trim. Confirm the roof/pillar treatment against those references too. Preserve chrome molding, grille, lamps, glass, badges, wheels and tire edges when recoloring. Check both dark solid paint (no residual light bands) and contrasting two-tone paint in all four views before enabling a group.
 - Carry forward Stock, Baja Polished, Baja Black and both raw-machined KMC Impact choices once their wheel scenes are individually registered to the new trucks. Existing wheel controls can be reused; wheel images and masks must match the new geometry.
+- Nick selected the stock-style Rally wheels in the 1983 reference below as the starting Stock appearance for most square-body groups. Use that reference when preparing or refining their wheel faces, preserving front locking hubs. Baja and KMC remain alternatives. This preference does not assert identical factory equipment for every year/trim.
 - Keep unsupported years out of the published selector until their complete artwork is ready. Do not substitute the earlier 1967–1972 body.
 
 ## Accuracy notes
@@ -53,6 +54,14 @@ The listing specifies a 2-inch lift and 35-inch tires; its Raceline wheels are r
 
 [1976 K10 Scottsdale](https://bringatrailer.com/listing/1976-chevrolet-k10-pickup-7/) supplied for orange/white two-tone and the 1975–1976 body group. Nick explicitly noted that its taillights are modified and asked to omit the duckbill-style visor above the windshield. Use factory-style red/clear taillights and a normal unadorned windshield/roof edge. Do not reproduce the clear aftermarket lamps or the visor. The listing describes a six-inch lift; this is reference equipment, not factory stock stance. Keep the current first implementation focused on 1973–1974.
 
+## User-selected 1983–1984 body and stock-wheel reference
+
+[1983 K10 Silverado 4x4](https://bringatrailer.com/listing/1983-chevrolet-k10-pickup/), supplied by Nick for this group and the default wheel appearance. Inspected front-quarter, rear-quarter and side photos. The listing identifies 15-inch Rally wheels; the photos show silver slotted centers, bright trim rings and distinct front locking hubs. Match those details consistently across the four studio views.
+
+The dark-blue/silver truck supplies a clear center-panel two-tone reference with blue above/below and a blue cab. Preserve its molding boundaries and separate bright wheel-opening trim from paint. The front-end photos show the stacked rectangular lamps and divided grille. Side steps and bedrails are reference accessories, not additional requested options. Do not assume a measured stock suspension height from these photographs.
+
+Saved authoring references outside the site checkout at `assets/squarebody-k10-expansion/references/1983/`: `front-quarter.jpg`, `body-reference.jpg` (rear-quarter), and `stock-wheel-reference.jpg` (side). This records the reference and preference; the 1983–1984 group and updated wheel artwork are not yet implemented or published.
+
 ## First 1973–1974 implementation — September 12, 2026
 
 One selectable `Chevrolet-K10-1973-1974` entry, with the group label retained in summaries, quotes and shared builds. Existing individual-year entries remain unchanged. The new blue/white preset follows the supplied 1974 example; solid paint covers the complete body. The roof/cab-back mask leaves the door window frames in body color. Both molding strips remain visible.
@@ -62,3 +71,11 @@ New `chevrolet-k10-1973-1974-color-v1` contains four independent studio scenes a
 Deterministic preparation under the user's existing image-cleanup authorization: `assets/squarebody-k10-expansion/1974/prepare-artwork.py`. Replaced generated rim faces with the approved OEM-style K10 stock faces, then registered all four existing Baja/KMC wheel variants to this body's rims. The 16 additional wheel scenes preserve all pixels outside their rim masks, including tires, body and trim. Existing published image files were not altered.
 
 Reviewed blue/white with contrasting cab, green solid, graphite satin, white solid and all wheel choices. Secondary/cab masks are contained within body paint coverage. All 25 repository checks pass, including the grouped selection, solid/two-tone state, wheel eligibility, four-angle exports and legacy vehicle coverage. Production build passes; local designer HTTP 200. No browser interaction testing requested or performed. Publication verification is recorded in the private authoring folder after deployment.
+
+## 1973–1974 tire-proportion refinement — September 12, 2026
+
+Nick found the original tires oversized and selected the 1972 K10 as the proportion benchmark. The v2 scenes reduce the tire/wheel assemblies approximately 12%, with corresponding lower running-gear and floor-contact adjustment in all four views. The side-profile tire diameter relative to truck length now closely follows the 1972 artwork. This is a visual proportion correction, not a claim of measured tire size or suspension lift.
+
+The body silhouette, glass, lights, bumpers, trim and editable paint layers are retained. All five wheel selections use the same new geometry; earlier vehicle packs are unchanged. Original v1 assets remain available. Reproducible authoring and body-pixel preservation checks: `assets/squarebody-k10-expansion/1974/refine-tire-proportions.py`; review images and verification in `1974/tire-refinement-v2/`. The new stock studio root is `chevrolet-k10-1973-1974-color-v2`, and all four alternative wheel packs use v2.
+
+Validation: all 25 repository checks and production build pass. Local designer returns HTTP 200. Reviewed the four-angle color and wheel sheets; automated comparisons confirm protected body pixels and all paint layers match v1. Public release verification is saved in the private v2 review folder.

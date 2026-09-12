@@ -432,7 +432,7 @@ const squarebodyK10: Vehicle = {
     ...squarebodyTemplate.views[view],
     assetRoot: `/designer/final/Chevrolet/K10/1973-1974/${view}`,
     studio: {
-      root: `/designer/studio/chevrolet-k10-1973-1974-color-v1/${view}`,
+      root: `/designer/studio/chevrolet-k10-1973-1974-color-v2/${view}`,
       paintScene: true,
       width: 768,
       height: 512,
@@ -472,9 +472,10 @@ for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.m
     ? vehicle.year <= 1970 ? 1970 : 1972
     : vehicle.model === 'K5' ? vehicle.year <= 1970 ? 1970 : 1972 : vehicle.year;
   const family = vehicle.model === 'F-150' ? 'ford-f150' : `chevrolet-${vehicle.model.toLowerCase()}`;
+  const wheelVersion = vehicle.id === squarebodyK10.id ? 'v2' : 'v1';
   for (const view of views) {
-    const wheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-v1`;
-    const blackWheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-black-v1`;
+    const wheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-${wheelVersion}`;
+    const blackWheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-black-${wheelVersion}`;
     vehicle.views[view].studio!.wheelScenes = {
       'baja-polished': { stock: `${wheelRoot}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png` },
       'baja-black': { stock: `${blackWheelRoot}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png` },
@@ -484,7 +485,7 @@ for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.m
       'baja-black': { stock: `${blackWheelRoot}/top-off/${view}.png` },
     };
     for (const wheel of kmcWheelOptions) {
-      const root = `/designer/wheels/${family}-${sourceYear}-${wheel.pack}`;
+      const root = `/designer/wheels/${family}-${sourceYear}-${wheel.pack.replace(/-v1$/, `-${wheelVersion}`)}`;
       vehicle.views[view].studio!.wheelScenes![wheel.id] = {
         stock: `${root}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png`,
       };
