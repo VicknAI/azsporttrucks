@@ -437,6 +437,23 @@ for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F
   }
 }
 
+// Baja wheel faces follow each 4WD body's existing tire size and ride height.
+for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model))) {
+  const sourceYear = vehicle.model === 'K10' && vehicle.year >= 1969
+    ? vehicle.year <= 1970 ? 1970 : 1972
+    : vehicle.model === 'K5' ? vehicle.year <= 1970 ? 1970 : 1972 : vehicle.year;
+  const family = vehicle.model === 'F-150' ? 'ford-f150' : `chevrolet-${vehicle.model.toLowerCase()}`;
+  for (const view of views) {
+    const wheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-v1`;
+    vehicle.views[view].studio!.wheelScenes = {
+      'baja-polished': { stock: `${wheelRoot}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png` },
+    };
+    if (vehicle.model === 'K5') vehicle.views[view].studio!.openTopWheelScenes = {
+      'baja-polished': { stock: `${wheelRoot}/top-off/${view}.png` },
+    };
+  }
+}
+
 export type Configuration = {
   version: 1;
   vehicleId: string;
@@ -562,7 +579,7 @@ export function normalize(input: unknown): Configuration {
   c.trimPackage = 'unverified';
   c.trim = { ...baseTrim };
   c.wheelId = v.views.side.studio?.wheelScenes
-    ? pick(raw.wheelId, ['street-temp', 'torq-thrust-18', 'torq-thrust-20'], 'street-temp')
+    ? pick(raw.wheelId, ['street-temp', ...Object.keys(v.views.side.studio.wheelScenes)], 'street-temp')
     : 'street-temp';
   c.tire = 'Street performance';
   if (v.views.side.studio?.paintScene) c.twoToneStyle = 'Center band';
@@ -587,7 +604,9 @@ export function summary(c: Configuration): Record<string, string> {
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
     'Cab paint coverage': c.contrastRoof ? c.cabPaint : 'Body color',
-    Wheels: v.views.side.studio?.wheelScenes && c.wheelId.startsWith('torq-thrust-')
+    Wheels: c.wheelId === 'baja-polished'
+      ? 'American Racing Baja · Polished'
+      : v.views.side.studio?.wheelScenes && c.wheelId.startsWith('torq-thrust-')
       ? `American Racing Torq Thrust II · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
       : v.views.side.studio?.wheelScenes ? 'Stock' : 'As pictured; fitment to be discussed',
     Tires: 'As pictured; size to be discussed',

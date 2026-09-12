@@ -418,6 +418,8 @@ export function Designer({ children }: { children?: ReactNode }) {
                 ? vehicle.views.side.studio?.wheelScenes
                   ? 'Preview paint, two-tone, roof color, four ride heights, and wheel options.'
                   : 'Preview paint, two-tone, roof color, and four ride heights. OEM wheels and chrome trim stay with your build.'
+              : vehicle.views.side.studio?.wheelScenes
+                ? 'Preview paint, two-tone, roof color, and wheel options with the pictured tires and stance.'
               : studioView
                 ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
                 : 'Schematic preview artwork is shared across these years. Grilles, lighting, trim, and proportions are not factory-accurate.'}
@@ -692,9 +694,11 @@ export function Designer({ children }: { children?: ReactNode }) {
               {vehicle.views.side.studio?.wheelScenes && (
                 <Choice
                   label="Wheel style"
-                  value={config.wheelId.startsWith('torq-thrust-') ? 'torq-thrust' : 'street-temp'}
-                  options={[{ id: 'street-temp', label: 'Stock' }, ...(vehicle.views.side.studio?.wheelScenes ? [{ id: 'torq-thrust', label: 'Torq Thrust II' }] : [])]}
-                  onChange={(style) => update({ wheelId: style === 'torq-thrust' ? 'torq-thrust-18' : 'street-temp' })}
+                  value={config.wheelId.startsWith('torq-thrust-') ? 'torq-thrust' : config.wheelId}
+                  options={[{ id: 'street-temp', label: 'Stock' }, ...(vehicle.views.side.studio?.wheelScenes?.['baja-polished']
+                    ? [{ id: 'baja-polished', label: 'American Racing Baja — Polished' }]
+                    : [{ id: 'torq-thrust', label: 'Torq Thrust II' }]) ]}
+                  onChange={(style) => update({ wheelId: style === 'torq-thrust' ? 'torq-thrust-18' : style })}
                 />
               )}
               {vehicle.views.side.studio?.wheelScenes && config.wheelId.startsWith('torq-thrust-') && (
@@ -703,7 +707,9 @@ export function Designer({ children }: { children?: ReactNode }) {
                   onChange={(wheelId) => update({ wheelId })} />
               )}
               <p className="design-note">
-                {vehicle.views.side.studio?.wheelScenes
+                {vehicle.views.side.studio?.wheelScenes?.['baja-polished']
+                  ? 'Compare Stock with the polished American Racing Baja. Tire size and ride height stay as pictured.'
+                  : vehicle.views.side.studio?.wheelScenes
                   ? 'Compare Stock with Torq Thrust II in 18″ or 20″. Nick will help confirm tire sizes and fitment for your build.'
                   : 'Wheels and tires stay as pictured. Nick can help select sizes and fitment for your build.'}
               </p>

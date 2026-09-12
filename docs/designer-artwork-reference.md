@@ -426,6 +426,16 @@ Release a62ab0a VERIFIED PUBLIC: designer-C6VVMo2L.js. All 48 new 1978 Ford PNGs
 - Private authoring recipe: assets/pickup-stance-expansion/build.py and generated engine.py. Uses the existing studio background plate and deterministic compositing under the user's prior image-cleanup authorization. No new image generation for this expansion.
 - Sixteen tests pass, including all eight supported model years × four heights × four views, valid local PNG layers, share persistence and restriction of unsupported models. Focused lint and production build pass. Browser checks include early C10 and both Ford front styles in lowered two-tone with contrasting cab, plus solid paint.
 - VERIFIED PUBLIC: release 7ddac08 with designer-BtSc0Ljw.js. All 360 new PNG files byte-match the tested assets. Public browser verifies the F-100 four-option Ride height menu and rendered Forest solid Laying frame view.
+# Baja wheel option for K10, K5 and F-150 — September 12, 2026
+
+All 1967–1972 K10, 1969–1972 K5 and 1978–1979 F-150 years now offer Stock or American Racing Baja — Polished. Reference: [manufacturer's AR172 Baja page](https://www.americanracing.com/american-racing-baja), using its polished circular-hole design. This release retains the pictured rim scale, tires and stance; no new diameter selector or verified fitment specification is asserted.
+
+40 scenes under `public/designer/wheels/{family}-{sourceYear}-baja-v1` replace only masked rim pixels. The K5 has separately composited top-on and top-off scenes, selected together with its existing paint/interior pack. Existing front hub centers remain from the approved original images. All pixels outside rim masks are unchanged, including tire lettering, body, trim and lighting. Paired 1969/70 and 1971/72 Chevy bodies share the appropriate year family. Stock paths and all Torq Thrust assets remain unchanged.
+
+Authoring: workspace `assets/baja-wheel-expansion` includes the official product reference, two generated donor sheets, exact prompts, rim-registration script, visual checks and pixel verification. Built-in image generation supplied donors; deterministic masking preserved the approved vehicles. These are illustrative previews, not certified product-fitment renders.
+
+Validation: 18 tests pass, covering wheel eligibility, all 12 model years, solid/two-tone paint, every K5 roof choice, shared state, summaries and self-contained downloaded artwork, plus the existing C10/F-100 wheel and stance coverage. Focused lint passes.
+
 # All C10 and F-100 wheel options — September 12, 2026
 
 Expanded the approved Stock / Torq Thrust II 18-inch / 20-inch choices to every 1967–1972 C10 and 1978–1979 F-100. The 1969/70 and 1971/72 paired bodies share their respective wheel packs. Other body families use individually aligned wheel scenes under `public/designer/wheels/{family}-{sourceYear}-torq-v1`. Existing 1971 scenes are retained unchanged.

@@ -7,6 +7,7 @@ export type StudioPack = {
   solidOnly?: boolean;
   stanceRoots?: Record<string, string>;
   wheelScenes?: Record<string, Record<string, string>>;
+  openTopWheelScenes?: Record<string, Record<string, string>>;
   openTopRoot?: string;
   width: number;
   height: number;
@@ -33,7 +34,8 @@ export function renderStudio(
   const { width, height } = pack;
   const root = pack.stanceRoots?.[c.stance] ?? (c.roof === 'Top off' && pack.openTopRoot ? pack.openTopRoot : pack.root);
   if (pack.paintScene) {
-    const scene = pack.wheelScenes?.[c.wheelId]?.[c.stance] ?? `${root}/studio.png`;
+    const wheelScenes = c.roof === 'Top off' && pack.openTopRoot ? pack.openTopWheelScenes : pack.wheelScenes;
+    const scene = wheelScenes?.[c.wheelId]?.[c.stance] ?? `${root}/studio.png`;
     const masks = ['paint', 'center-band', 'cab', 'roof'];
     const roofColor = pack.openTopRoot
       ? c.roof === 'Body-color top' ? c.color : c.roof === 'Black top' ? '#171717' : '#e5e7e7'
