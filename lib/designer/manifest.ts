@@ -576,7 +576,7 @@ export function summary(c: Configuration): Record<string, string> {
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
     'Cab paint coverage': c.contrastRoof ? c.cabPaint : 'Body color',
-    Wheels: 'As pictured; fitment to be discussed',
+    Wheels: v.model === 'C10' ? 'Stock' : 'As pictured; fitment to be discussed',
     Tires: 'As pictured; size to be discussed',
     'K5 roof': v.model === 'K5' ? c.roof : 'Not applicable',
     ...(v.model === 'K5' ? { Interior: 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),

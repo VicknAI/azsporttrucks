@@ -687,6 +687,14 @@ export function Designer({ children }: { children?: ReactNode }) {
               </p>}
             </Category>
             <Category id="wheels" title="04 / Wheels & tires">
+              {vehicle.model === 'C10' && (
+                <Choice
+                  label="Wheel style"
+                  value={config.wheelId}
+                  options={[{ id: 'street-temp', label: 'Stock' }]}
+                  onChange={(wheelId) => update({ wheelId })}
+                />
+              )}
               <p className="design-note">
                 Wheels and tires stay as pictured. Nick can help select sizes
                 and fitment for your build.
