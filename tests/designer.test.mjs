@@ -108,13 +108,19 @@ test('all C10 and F-100 wheel sizes survive sharing and preserve aligned paint a
   }
 });
 
-test('Baja wheels remain selected across 4WD years, paint layouts, K5 roof states and exports', async () => {
+test('Baja and KMC wheels remain selected across 4WD years, paint layouts, K5 roof states and exports', async () => {
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const supported = vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model));
   assert.equal(supported.length, 12);
+  const wheelExpectations = {
+    'baja-polished': ['American Racing Baja · Polished', '-baja-v1/'],
+    'baja-black': ['American Racing Baja - Black', '-baja-black-v1/'],
+    'kmc-impact-monoblock-machined': ['KMC Impact Forged Monoblock - Raw Machined', '-kmc-impact-monoblock-v1/'],
+    'kmc-impact-beadlock-machined': ['KMC Impact Forged Beadlock - Raw Machined', '-kmc-impact-beadlock-v1/'],
+  };
   for (const v of supported)
-  for (const wheelId of ['baja-polished', 'baja-black'])
+  for (const [wheelId, [label, folder]] of Object.entries(wheelExpectations))
   for (const roof of v.model === 'K5' ? ['White top', 'Black top', 'Body-color top', 'Top off'] : ['Not applicable'])
   for (const paintMode of ['Solid', 'Two-tone']) {
     const c = normalize({ vehicleId: v.id, wheelId, roof, paintMode, color: '#3c6254', secondaryColor: '#eeeeee', stance: 'lift6' });
@@ -122,11 +128,12 @@ test('Baja wheels remain selected across 4WD years, paint layouts, K5 roof state
     assert.equal(c.stance, 'stock');
     assert.equal(c.paintMode, paintMode);
     assert.deepEqual(readShare(shareHash(c)), c);
-    assert.equal(summary(c).Wheels, wheelId === 'baja-black' ? 'American Racing Baja - Black' : 'American Racing Baja · Polished');
+    assert.equal(summary(c).Wheels, label);
     for (const view of views) {
       const pack = v.views[view].studio;
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
+      assert.ok(scenes[wheelId].stock.includes(folder));
       const svg = renderSvg(c, view);
       assert.ok(svg.includes(scenes[wheelId].stock));
       assert.ok(svg.includes(`${root}/paint-mask.png`));
@@ -134,6 +141,7 @@ test('Baja wheels remain selected across 4WD years, paint layouts, K5 roof state
       assert.ok(stock.includes(`${root}/studio.png`));
       assert.ok(!stock.includes('-baja-v1'));
       assert.ok(!stock.includes('-baja-black-v1'));
+      assert.ok(!stock.includes('-kmc-impact-'));
       const embedded = await embedArtwork(svg, async (path) => {
         const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
         assert.equal(bytes.readUInt32BE(16), 768);
@@ -144,8 +152,9 @@ test('Baja wheels remain selected across 4WD years, paint layouts, K5 roof state
     }
   }
   for (const v of vehicles.filter((v) => ['C10', 'F-100'].includes(v.model))) {
-    assert.equal(normalize({ vehicleId: v.id, wheelId: 'baja-polished' }).wheelId, 'street-temp');
-    assert.equal(normalize({ vehicleId: v.id, wheelId: 'baja-black' }).wheelId, 'street-temp');
+    for (const wheelId of Object.keys(wheelExpectations)) {
+      assert.equal(normalize({ vehicleId: v.id, wheelId }).wheelId, 'street-temp');
+    }
   }
 });
 test('1967 and 1971 have complete, distinct studio packs with valid PNG assets', () => {

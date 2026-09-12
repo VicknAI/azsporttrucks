@@ -459,3 +459,15 @@ Added the requested `American Racing Baja - Black` choice alongside Stock and Po
 40 new scenes in `public/designer/wheels/{family}-{sourceYear}-baja-black-v1` apply a satin-black luminance curve only to the approved Baja rim regions. The manufacturer's black Baja reference informed the finish. Retained front hub centers, circular openings, rim depth and directional shading; the far Ford wheel mask includes its full lower rim lip. Stock, Polished, paint masks, tires, body, trim and interior source assets are unchanged. Recipe and visual reviews are in workspace `assets/baja-wheel-expansion/build-black.py` and `black-review`; `black-pixel-verification.json` confirms every pixel outside the rim masks is preserved.
 
 Validation includes all supported model years, both wheel finishes, all four views, solid/two-tone paint, every K5 roof setting, share restoration, summaries and self-contained artwork downloads. 18 tests and focused lint pass. Production build passes.
+
+# KMC Impact raw-machined wheel options — September 12, 2026
+
+Added KMC Impact Forged Monoblock - Raw Machined and KMC Impact Forged Beadlock - Raw Machined to all 1967–1972 K10, 1969–1972 K5 and 1978–1979 F-150 years. The user requested raw machined only. Stock and both Baja finishes remain available. Pictured tire sizes and stance are retained. The Beadlock selection includes KMC's off-road-only designation; product fitment is still subject to confirmation by Nick.
+
+References: [KMC Monoblock](https://www.kmcwheels.com/kmc-impact-forged-monoblock), [KMC Forged Beadlock](https://www.kmcwheels.com/kmc-impact-forged-beadlock), and the user's [Koritas real-wheel photos](https://koritastiresinc.com/products/kmc-impact-forged-beadlock-wheels). The latter informed review of machining, spoke edges and gold-toned ring hardware. These are illustrative wheel previews rather than certified product or fitment renders.
+
+80 scenes under `public/designer/wheels/{family}-{sourceYear}-kmc-impact-{monoblock,beadlock}-v1` reuse existing tire positions and paint packs. All pixels outside the rim masks are unchanged. Front axle hub centers are preserved. Straight-front scenes retain the edge-on tread artwork. K5 top-on and top-off scenes are independently composited; paired Chevy years use their existing source families.
+
+Workspace authoring folder: `assets/kmc-wheel-expansion`. Four built-in image-generation requests produced donor sheets; the Ford Beadlock candidate was rejected for its broad spoke pattern. The accepted Chevy Beadlock faces are registered to the Ford wheel positions instead. Exact prompts, manufacturer images, Koritas photo, quality notes, registration recipe (`build.py`), solid/two-tone QA sheets and pixel invariance verification are retained there. No original Stock, Baja, Torq Thrust, body or paint assets were overwritten.
+
+All 18 tests pass, including every supported year, both KMC designs, all views, solid/two-tone, every K5 roof selection, saved/shared selections, summaries and self-contained image downloads. Focused lint passes.
