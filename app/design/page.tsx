@@ -21,12 +21,12 @@ export default function DesignPage() {
           <div>
             <h3>Choose your classic truck</h3>
             <p>Explore studio previews for 1967–1972 Chevrolet C10 two-wheel-drive and K10 four-wheel-drive pickups, 1969–1972 Chevrolet K5 Blazers, and 1978–1979 Ford F-100 and F-150 pickups. Both Ford models support solid and two-tone paint in gloss or satin, plus a contrasting cab roof and pillars. The 1978 previews show the Custom-style round-headlight front end; the 1979 previews use rectangular headlights.</p>
-            <p>On C10 and K10 pickups, a contrasting cab color covers the roof and pillars. K5 options include different hardtop colors and a top-off view. Available paint and exterior options follow the selected vehicle.</p>
+            <p>The 1973–1974 square-body K10 group adds a Cheyenne Super-style preview with its own two-tone layout, chrome molding, and wheel options. Its contrasting cab treatment colors the roof and cab back while the door window frames retain the body color. On 1967–1972 C10 and K10 pickups, contrasting cab color covers the roof and pillars. K5 options include different hardtop colors and a top-off view.</p>
           </div>
           <div>
             <h3>Design, compare, and share</h3>
             <ol>
-              <li>Choose a manufacturer, model, and year under Vehicle.</li>
+              <li>Choose a manufacturer, model, and year or year group under Vehicle.</li>
               <li>Open Paint &amp; finish to try a body color, gloss or satin finish, and a solid or two-tone layout.</li>
               <li>Compare side, front three-quarter, rear three-quarter, and straight-front views.</li>
               <li>Share your configuration, save a build on this device, or download a build sheet. Request a Quote prepares an email for you to send to Nick.</li>

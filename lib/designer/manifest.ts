@@ -179,6 +179,7 @@ export type Vehicle = {
   manufacturer: string;
   model: string;
   year: number;
+  yearEnd?: number;
   label: string;
   directions: Direction[];
   contrastingRoof: boolean;
@@ -419,6 +420,30 @@ for (const [model, assetModel] of [['F-100', 'f100'], ['F-150', 'f150']])
     };
   }
 
+// Square bodies are selected as a year group, with their own body and paint pack.
+const squarebodyTemplate = vehicles.find((v) => v.id === 'Chevrolet-K10-1972')!;
+const squarebodyK10: Vehicle = {
+  ...squarebodyTemplate,
+  id: 'Chevrolet-K10-1973-1974',
+  year: 1973,
+  yearEnd: 1974,
+  label: '1973–1974 K10',
+  views: Object.fromEntries(views.map((view) => [view, {
+    ...squarebodyTemplate.views[view],
+    assetRoot: `/designer/final/Chevrolet/K10/1973-1974/${view}`,
+    studio: {
+      root: `/designer/studio/chevrolet-k10-1973-1974-color-v1/${view}`,
+      paintScene: true,
+      width: 768,
+      height: 512,
+      viewport: [0, 0, 768, 512],
+      shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
+      wheels: [],
+    },
+  }])) as Record<View, ViewManifest>,
+};
+vehicles.splice(vehicles.indexOf(squarebodyTemplate) + 1, 0, squarebodyK10);
+
 // Each 2WD body family has aligned paint layers at all four ride heights.
 for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100')) {
   const sourceYear = vehicle.model === 'C10'
@@ -443,7 +468,7 @@ for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F
 
 // Replacement wheel faces follow each 4WD body's existing tires and ride height.
 for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model))) {
-  const sourceYear = vehicle.model === 'K10' && vehicle.year >= 1969
+  const sourceYear = vehicle.yearEnd ? `${vehicle.year}-${vehicle.yearEnd}` : vehicle.model === 'K10' && vehicle.year >= 1969
     ? vehicle.year <= 1970 ? 1970 : 1972
     : vehicle.model === 'K5' ? vehicle.year <= 1970 ? 1970 : 1972 : vehicle.year;
   const family = vehicle.model === 'F-150' ? 'ford-f150' : `chevrolet-${vehicle.model.toLowerCase()}`;
@@ -492,6 +517,7 @@ export type Configuration = {
   view: View;
 };
 export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
+  const squarebody = vehicle.id === 'Chevrolet-K10-1973-1974';
   const blueK10 = vehicle.id === 'Chevrolet-K10-1967';
   const greenK10 = vehicle.id === 'Chevrolet-K10-1968';
   const seafoam1967 = vehicle.id === 'Chevrolet-C10-1967';
@@ -505,7 +531,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: fordStudio || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
+    color: squarebody ? '#237cae' : fordStudio || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
@@ -516,7 +542,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     cabPaint: fordStudio || ['C10', 'K10'].includes(vehicle.model)
       ? 'Roof and pillars'
       : 'Roof only',
-    contrastRoof: seafoam1967,
+    contrastRoof: seafoam1967 || squarebody,
     wheelId: 'street-temp',
     tire: 'Street performance',
     roof: 'White top',
@@ -608,7 +634,7 @@ export function normalize(input: unknown): Configuration {
 export function summary(c: Configuration): Record<string, string> {
   const v = vehicles.find((v) => v.id === c.vehicleId)!;
   return {
-    Vehicle: `${v.year} ${v.manufacturer} ${v.model}`,
+    Vehicle: `${v.year}${v.yearEnd ? `–${v.yearEnd}` : ''} ${v.manufacturer} ${v.model}`,
     'Exterior trim': 'As pictured; custom requests to be discussed',
     'Ride height': v.views.side.studio?.stanceRoots
       ? pickupStanceOptions.find((s) => s.id === c.stance)?.label || 'Stock'
@@ -619,7 +645,7 @@ export function summary(c: Configuration): Record<string, string> {
     'Two-tone pattern':
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
-    'Cab paint coverage': c.contrastRoof ? c.cabPaint : 'Body color',
+    'Cab paint coverage': c.contrastRoof ? v.yearEnd ? 'Roof and cab back; door window frames stay body color' : c.cabPaint : 'Body color',
     Wheels: kmcWheelOptions.find((wheel) => wheel.id === c.wheelId)?.label ?? (c.wheelId === 'baja-black'
       ? 'American Racing Baja - Black'
       : c.wheelId === 'baja-polished'

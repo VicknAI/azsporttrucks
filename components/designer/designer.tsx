@@ -408,7 +408,7 @@ export function Designer({ children }: { children?: ReactNode }) {
             <span>
               {config.finish} · {config.paintMode}
             </span>
-            <span>{vehicle.year} selected separately</span>
+            <span>{vehicle.yearEnd ? `${vehicle.year}–${vehicle.yearEnd} group` : `${vehicle.year} selected separately`}</span>
           </div>
           <p className="design-note">
             {fixedAppearance
@@ -517,7 +517,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                 }
               />
               <Choice
-                label="Exact model year"
+                label={vehicle.model === 'K10' ? 'Year / year group' : 'Exact model year'}
                 value={vehicle.id}
                 options={vehicles
                   .filter(
@@ -549,7 +549,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                       className="design-button"
                       onClick={() =>
                         update({
-                          color: vehicle.id === 'Chevrolet-K10-1967' ? '#087ca2' : vehicle.id === 'Chevrolet-K10-1968' ? '#20584b' : vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
+                          color: vehicle.yearEnd ? '#237cae' : vehicle.id === 'Chevrolet-K10-1967' ? '#087ca2' : vehicle.id === 'Chevrolet-K10-1968' ? '#20584b' : vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
                           secondaryColor: '#f1eee5',
                           roofColor: '#f1eee5',
                           paintMode: ['Chevrolet-K10-1967', 'Chevrolet-K10-1968', 'Chevrolet-C10-1967', 'Chevrolet-C10-1968'].includes(vehicle.id) ? 'Solid' : 'Two-tone',
@@ -559,7 +559,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                         })
                       }
                     >
-                      {vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
+                      {vehicle.yearEnd ? 'Blue / white reference look' : vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
                     </button>
                   )}
                   {vehicle.manufacturer === 'Ford' && vehicle.model === 'F-100' && (
@@ -664,6 +664,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                             value={config.roofColor}
                             onChange={(value) => update({ roofColor: value })}
                           />
+                          {vehicle.yearEnd && <p className="design-note">Colors the roof and cab back. Door window frames retain the body color.</p>}
                         </>
                       )}
                     </>

@@ -112,7 +112,7 @@ test('Baja and KMC wheels remain selected across 4WD years, paint layouts, K5 ro
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const supported = vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model));
-  assert.equal(supported.length, 12);
+  assert.equal(supported.length, 13);
   const wheelExpectations = {
     'baja-polished': ['American Racing Baja · Polished', '-baja-v1/'],
     'baja-black': ['American Racing Baja - Black', '-baja-black-v1/'],
@@ -216,9 +216,9 @@ process.on('exit', () => {
   )
     rmSync(resolved, { recursive: true, force: true });
 });
-test('all 20 exact model years have separate manifests and four anchor packs', () => {
-  assert.equal(vehicles.length, 20);
-  assert.equal(new Set(vehicles.map((v) => v.id)).size, 20);
+test('existing exact years and the square-body year group have distinct manifests and four anchor packs', () => {
+  assert.equal(vehicles.length, 21);
+  assert.equal(new Set(vehicles.map((v) => v.id)).size, 21);
   for (const [model, years] of [
     ['C10', [1967, 1968, 1969, 1970, 1971, 1972]],
     ['K10', [1967, 1968, 1969, 1970, 1971, 1972]],
@@ -227,7 +227,7 @@ test('all 20 exact model years have separate manifests and four anchor packs', (
     ['F-150', [1978, 1979]],
   ])
     assert.deepEqual(
-      vehicles.filter((v) => v.model === model).map((v) => v.year),
+      vehicles.filter((v) => v.model === model && !v.yearEnd).map((v) => v.year),
       years,
     );
   for (const vehicle of vehicles)
@@ -513,6 +513,27 @@ test('1979 F-150 finishes preserve two-tone and cab colors without changing appr
     assert.ok(!embedded.includes('/designer/'));
   }
   assert.equal(sources.size, 4);
+});
+
+test('1973–1974 K10 remains one group across shares, paint layouts and build summaries', () => {
+  const group = vehicles.find((v) => v.id === 'Chevrolet-K10-1973-1974');
+  assert.equal(group.label, '1973–1974 K10');
+  assert.equal(group.yearEnd, 1974);
+  assert.ok(!vehicles.some((v) => ['Chevrolet-K10-1973', 'Chevrolet-K10-1974'].includes(v.id)));
+  const initial = defaultConfiguration(group);
+  assert.equal(initial.paintMode, 'Two-tone');
+  assert.equal(initial.contrastRoof, true);
+  for (const paintMode of ['Solid', 'Two-tone']) {
+    const c = normalize({ ...initial, paintMode, contrastRoof: paintMode === 'Two-tone', color: '#3c6254', secondaryColor: '#f1eee5' });
+    assert.deepEqual(readShare(shareHash(c)), c);
+    assert.equal(summary(c).Vehicle, '1973–1974 Chevrolet K10');
+    for (const view of views) {
+      const svg = renderSvg(c, view);
+      assert.ok(svg.includes('/chevrolet-k10-1973-1974-color-v1/'));
+      if (paintMode === 'Solid') assert.equal(svg, renderSvg({ ...c, secondaryColor: '#ff00ff', roofColor: '#ff00ff' }, view));
+      else assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#ff00ff' }, view));
+    }
+  }
 });
 
 test('1978 Ford studio variants preserve finishes, shares and offline artwork', async () => {
