@@ -54,6 +54,14 @@ The listing specifies a 2-inch lift and 35-inch tires; its Raceline wheels are r
 
 [1976 K10 Scottsdale](https://bringatrailer.com/listing/1976-chevrolet-k10-pickup-7/) supplied for orange/white two-tone and the 1975–1976 body group. Nick explicitly noted that its taillights are modified and asked to omit the duckbill-style visor above the windshield. Use factory-style red/clear taillights and a normal unadorned windshield/roof edge. Do not reproduce the clear aftermarket lamps or the visor. The listing describes a six-inch lift; this is reference equipment, not factory stock stance. The implemented preview retains the smaller tire proportions approved on the 1973–1974 truck.
 
+## User-selected 1977–1979 reference — September 13, 2026
+
+Nick supplied [this 1977 K10 Custom Deluxe listing](https://bringatrailer.com/listing/1977-chevrolet-k10-pickup-16/) for the next group. Saved and visually inspected three 1600px photos in workspace `assets/squarebody-k10-expansion/references/1977/`: `front-quarter.jpg`, `body-reference.jpg` (rear-quarter) and `wheel-reference.jpg` (full side). Exact source URLs are in that directory's `sources.json`.
+
+The photographed truck has round headlights in dark rectangular recesses with chrome outer surrounds, a black rectangular-grid grille and light-colored Chevrolet bowtie, clear/amber rectangular signal units below the headlamps, a row of small cooling slots below the grille, vertical front fender markers, smooth chrome bumpers, and Custom Deluxe badges. Tan paint surrounds a broad white center panel bounded by two black-accented chrome molding strips. The white roof/cab back leaves the complete upper door frames tan; follow that boundary and the white panel's rounded leading edge at the front fenders.
+
+Use this truck's front end, body detail and tan/white scheme to guide the representative 1977–1979 entry. Preserve the existing approved smaller tire geometry and Stock Rally wheels plus Baja/KMC alternatives. The listing's lifted suspension, 16-inch Ultra wheels and 285/75 tires are reference equipment rather than new requested options. The pictured tailgate is embossed GMC; use Chevrolet lettering for the Chevrolet designer model. The truck has been repainted and has rectangular fuel doors, so do not treat every pictured trim, fuel-filler or lamp detail as proof of original equipment across all three years; verify group-specific differences against original Chevrolet documentation.
+
 ## User-selected 1983–1984 body and stock-wheel reference
 
 [1983 K10 Silverado 4x4](https://bringatrailer.com/listing/1983-chevrolet-k10-pickup/), supplied by Nick for this group and the default wheel appearance. Inspected front-quarter, rear-quarter and side photos. The listing identifies 15-inch Rally wheels; the photos show silver slotted centers, bright trim rings and distinct front locking hubs. Match those details consistently across the four studio views.
