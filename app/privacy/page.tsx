@@ -3,7 +3,7 @@ export const metadata = pageMetadata({
   path: '/privacy',
   title: 'Privacy Notice | AZ Sport Trucks',
   description:
-    'How AZ Sport Trucks uses build inquiries, contact details, uploaded photos, and locally saved designs.',
+    'How AZ Sport Trucks uses build inquiries, contact details, emailed photos, and locally saved designs.',
 });
 export default function Privacy() {
   return (
@@ -15,14 +15,16 @@ export default function Privacy() {
       <p>
         When you send a quote request through this website, we collect the
         contact details and project information you enter, your selected build
-        and four preview images, and any truck photos you choose to include.
+        selections. Photos can be sent separately by email after submitting.
         Nick uses this information to review your project and respond to you.
       </p>
       <p>
         Direct website submissions are stored privately with Cloudflare. An
         email notification is sent to AZ Sport Trucks’ Gmail inbox, with a
-        private link to the request and its pictures. These records are separate
-        from public build-sharing links.
+        private link to the request. The saved selections generate four build
+        views using the designer’s current artwork. Emailed photos are handled
+        in our Gmail inbox. These records are separate from public build-sharing
+        links.
       </p>
       <h2>Designs saved on your device</h2>
       <p>

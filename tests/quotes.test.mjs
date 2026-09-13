@@ -40,12 +40,6 @@ const { handleQuoteRequest, privateLink, retryNotifications, verifyTurnstile } =
 const { boundedForm, MAX_REQUEST_BYTES } = await import(
   pathToFileURL(join(temp, 'services/quotes/security.mjs'))
 );
-const fixture = readFileSync(
-  new URL(
-    '../public/designer/studio/chevrolet-k5-1970-color-v6/top-on/side/roof-mask.png',
-    import.meta.url,
-  ),
-);
 const origin = 'https://azsporttrucks.com';
 function harness(options = {}) {
   const sqlite = new DatabaseSync(':memory:');
@@ -56,6 +50,7 @@ function harness(options = {}) {
     ),
   );
   let loseCommit = !!options.loseCommit;
+  let failSave = !!options.failSave;
   const db = {
     prepare(sql) {
       let params = [];
@@ -65,6 +60,10 @@ function harness(options = {}) {
           return statement;
         },
         async first() {
+          if (failSave && sql.includes('SET assets_json=?')) {
+            failSave = false;
+            throw new Error('free database quota reached');
+          }
           const value = sqlite.prepare(sql).get(...params) ?? null;
           if (loseCommit && sql.includes('SET assets_json=?')) {
             loseCommit = false;
@@ -82,25 +81,9 @@ function harness(options = {}) {
       return statement;
     },
   };
-  const blobs = new Map();
-  let puts = 0;
-  const bucket = {
-    async put(key, data) {
-      puts++;
-      if (options.failPutAt === puts) throw new Error('storage unavailable');
-      blobs.set(key, data);
-    },
-    async get(key) {
-      return blobs.has(key) ? { body: blobs.get(key) } : null;
-    },
-    async delete(keys) {
-      for (const key of Array.isArray(keys) ? keys : [keys]) blobs.delete(key);
-    },
-  };
   const env = {
     QUOTE_ENABLED: 'true',
     QUOTE_DB: db,
-    QUOTE_FILES: bucket,
     QUOTE_EMAIL: {},
     PUBLIC_ORIGIN: origin,
     QUOTE_FROM: 'quotes@azsporttrucks.com',
@@ -133,7 +116,6 @@ function harness(options = {}) {
   return {
     env,
     sqlite,
-    blobs,
     sent,
     request,
     async settle() {
@@ -172,11 +154,6 @@ function payload(extra = {}) {
     ...extra,
   };
   for (const [key, value] of Object.entries(fields)) f.set(key, value);
-  for (const view of ['side', 'front-quarter', 'rear-quarter', 'front'])
-    f.set(
-      'preview-' + view,
-      new File([fixture], view + '.png', { type: 'image/png' }),
-    );
   return f;
 }
 function post(form = payload(), key = crypto.randomUUID(), headers = {}) {
@@ -206,19 +183,14 @@ test('unconfigured quote service stays off without collecting data', async () =>
   );
   await h.close();
 });
-test('received means all four views and photos are durably saved; notification contains only the private review link', async () => {
+test('free requests save selections without an object bucket and render all four private build views', async () => {
   const h = harness();
   const f = payload();
-  f.append(
-    'photos',
-    new File([fixture], 'personal name.png', { type: 'image/png' }),
-  );
   const response = await h.request(post(f));
   assert.equal(response.status, 201);
   const data = await response.json();
   assert.equal(data.received, true);
   assert.match(data.reference, /^AZST-/);
-  assert.equal(h.blobs.size, 5);
   await h.settle();
   const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
   assert.equal(row.status, 'received');
@@ -228,7 +200,7 @@ test('received means all four views and photos are durably saved; notification c
   assert.equal(h.sent[0].replyTo, 'test.customer@example.com');
   assert.match(
     h.sent[0].text,
-    /View all four build previews and 1 truck photos/,
+    /Review the customer details and all four build views/,
   );
   assert.ok(!JSON.stringify(data).includes('token='));
   const link = await privateLink(h.env, row.id);
@@ -237,14 +209,17 @@ test('received means all four views and photos are durably saved; notification c
   const html = await review.text();
   assert.ok(html.includes('&lt;script&gt;'));
   assert.ok(!html.includes('<script>'));
-  assert.equal((html.match(/<img /g) || []).length, 5);
+  assert.equal((html.match(/<figure>/g) || []).length, 4);
+  assert.ok(html.includes('Side profile'));
+  assert.ok(html.includes('Front three-quarter'));
+  assert.match(h.sent[0].text, /photos may arrive separately/);
   assert.match(
     review.headers.get('Content-Security-Policy'),
     /default-src 'none'/,
   );
   const assetUrl = new URL(link);
   assetUrl.pathname += '/assets/0';
-  assert.equal((await h.request(new Request(assetUrl))).status, 200);
+  assert.equal((await h.request(new Request(assetUrl))).status, 404);
   assert.equal(
     (await h.request(new Request(origin + '/api/quotes/' + row.id))).status,
     404,
@@ -274,12 +249,11 @@ test('identical retries keep one request and one notification; changed payload c
   assert.equal(h.sent.length, 1);
   await h.close();
 });
-test('storage failure never confirms receipt and a retry recovers the same reservation', async () => {
-  const h = harness({ failPutAt: 2 });
+test('a free database limit never confirms receipt or sends mail; retry recovers the same reservation', async () => {
+  const h = harness({ failSave: true });
   const key = crypto.randomUUID();
   const failed = await h.request(post(payload(), key));
   assert.equal(failed.status, 503);
-  assert.equal(h.blobs.size, 0);
   assert.equal(h.sent.length, 0);
   assert.equal(
     h.sqlite.prepare('SELECT status FROM quote_requests').get().status,
@@ -287,7 +261,6 @@ test('storage failure never confirms receipt and a retry recovers the same reser
   );
   const retry = await h.request(post(payload(), key));
   assert.equal(retry.status, 201);
-  assert.equal(h.blobs.size, 4);
   await h.close();
 });
 test('lost database acknowledgement does not delete a successfully saved request', async () => {
@@ -295,7 +268,6 @@ test('lost database acknowledgement does not delete a successfully saved request
   const r = await h.request(post());
   assert.equal(r.status, 200);
   assert.equal((await r.json()).received, true);
-  assert.equal(h.blobs.size, 4);
   await h.close();
 });
 test('email failure retains the request and scheduled retry sends it later', async () => {
@@ -305,7 +277,6 @@ test('email failure retains the request and scheduled retry sends it later', asy
   const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
   assert.equal(row.status, 'received');
   assert.equal(row.email_status, 'pending');
-  assert.equal(h.blobs.size, 4);
   h.sqlite.prepare('UPDATE quote_requests SET email_next_at=0').run();
   h.setMailHealthy();
   await retryNotifications(h.env, h.deps.sendMail);
@@ -334,10 +305,9 @@ test('an interrupted final notification attempt becomes visibly failed without s
       .email_status,
     'failed',
   );
-  assert.equal(h.blobs.size, 4);
   await h.close();
 });
-test('forged origins, challenges, fields, privacy consent, and image types are rejected', async () => {
+test('forged origins, challenges, fields, consent, and all file uploads are rejected', async () => {
   const cases = [
     [payload(), { Origin: 'https://other.example' }, 403],
     [payload({ 'cf-turnstile-response': 'forged' }), {}, 400],
@@ -358,7 +328,6 @@ test('forged origins, challenges, fields, privacy consent, and image types are r
       (await h.request(post(form, crypto.randomUUID(), headers))).status,
       status,
     );
-    assert.equal(h.blobs.size, 0);
     assert.equal(h.sent.length, 0);
     await h.close();
   }

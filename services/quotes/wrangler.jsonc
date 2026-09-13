@@ -14,11 +14,24 @@
       "migrations_dir": "migrations",
     },
   ],
+  "send_email": [
+    {
+      "name": "QUOTE_EMAIL",
+      "destination_address": "aztruckshootout@gmail.com",
+    },
+  ],
+  "routes": [
+    {
+      "pattern": "azsporttrucks.com/api/quotes*",
+      "zone_name": "azsporttrucks.com",
+    },
+  ],
+  "triggers": { "crons": ["*/5 * * * *"] },
   "vars": {
     "QUOTE_ENABLED": "false",
     "PUBLIC_ORIGIN": "https://azsporttrucks.com",
     "QUOTE_FROM": "quotes@azsporttrucks.com",
     "QUOTE_TO": "Aztruckshootout@gmail.com",
-    "TURNSTILE_SITE_KEY": "",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAEyzn-YAodMqgLrs",
   },
 }

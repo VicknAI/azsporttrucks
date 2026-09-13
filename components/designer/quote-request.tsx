@@ -9,8 +9,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { NativeSelect } from '@/components/ui/native-select';
 import { Textarea } from '@/components/ui/textarea';
-import { type Configuration, summary, views } from '@/lib/designer/manifest';
-import { quotePreviews } from '@/lib/designer/quote-previews';
+import { type Configuration, summary } from '@/lib/designer/manifest';
 
 type Turnstile = {
   render: (node: HTMLElement, options: Record<string, unknown>) => string;
@@ -96,7 +95,6 @@ function QuoteForm({
   const [error, setError] = useState('');
   const [progress, setProgress] = useState('');
   const [reference, setReference] = useState('');
-  const [photos, setPhotos] = useState<File[]>([]);
   useEffect(() => {
     if (reference) return;
     let cancelled = false;
@@ -137,16 +135,12 @@ function QuoteForm({
     submitting.current = true;
     onBusy(true);
     setError('');
-    setProgress('Preparing your four build views…');
+    setProgress('Preparing your build…');
     try {
       if (!attempt.current) {
         const payload = new FormData(event.currentTarget);
         payload.set('configuration', JSON.stringify(configuration));
-        payload.delete('photos');
-        for (const photo of photos) payload.append('photos', photo);
         const key = crypto.randomUUID();
-        const previews = await quotePreviews(configuration);
-        previews.forEach((file, i) => payload.set(`preview-${views[i]}`, file));
         attempt.current = { key, payload };
       }
       const { key, payload } = attempt.current;
@@ -199,13 +193,22 @@ function QuoteForm({
       <>
         <DialogTitle>Request received</DialogTitle>
         <DialogDescription>
-          Thanks—your build details and pictures have been saved for Nick to
-          review.
+          Thanks—your build selections and contact details have been saved for
+          Nick to review.
         </DialogDescription>
         <p className="quote-reference">{reference}</p>
         <p>
           Keep this reference number. Nick will follow up using the contact
           details you provided.
+        </p>
+        <p>
+          Have photos of your truck?{' '}
+          <a
+            href={`mailto:Aztruckshootout@gmail.com?subject=${encodeURIComponent(`${reference} — Truck photos`)}`}
+          >
+            Email photos to Nick
+          </a>{' '}
+          and include this reference number.
         </p>
         <p className="design-note">
           This is a build inquiry. Pricing, parts, and fitment will be confirmed
@@ -217,8 +220,8 @@ function QuoteForm({
     <>
       <DialogTitle>Send your build to Nick</DialogTitle>
       <DialogDescription>
-        Tell us about your project. Your selected build, all four views, and any
-        truck pictures will be included.
+        Tell us about your project. Nick will receive your contact details and
+        selected build, with a link to review all four views.
       </DialogDescription>
       <div className="lead-build">
         {summary(configuration).Vehicle}
@@ -311,42 +314,9 @@ function QuoteForm({
               placeholder="How will you use the truck, and what matters most?"
             />
           </label>
-          <label htmlFor="quote-photos">
-            Current truck pictures (optional)
-            <input
-              id="quote-photos"
-              name="photos"
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              multiple
-              onChange={(event) => {
-                const files = Array.from(event.target.files || []);
-                if (
-                  files.length > 3 ||
-                  files.some(
-                    (f) =>
-                      !f.size ||
-                      f.size > 5 * 1024 * 1024 ||
-                      !['image/png', 'image/jpeg', 'image/webp'].includes(
-                        f.type,
-                      ),
-                  )
-                ) {
-                  setError(
-                    'Choose up to 3 JPG, PNG, or WebP pictures, each 5 MB or smaller.',
-                  );
-                  setPhotos([]);
-                  event.target.value = '';
-                } else {
-                  setPhotos(files);
-                  setError('');
-                }
-              }}
-            />
-          </label>
           <p className="design-note">
-            Up to 3 pictures, 5 MB each. These are sent privately with your
-            request.
+            You can email truck photos after submitting. We’ll give you a
+            reference number to include with them.
           </p>
           <div className="quote-honeypot" aria-hidden="true">
             <label>
@@ -357,8 +327,8 @@ function QuoteForm({
           <label className="quote-consent">
             <input type="checkbox" name="privacyConsent" value="yes" required />
             <span>
-              I understand that AZ Sport Trucks will use my details and pictures
-              to review and respond to this request.{' '}
+              I understand that AZ Sport Trucks will use my details and build
+              selections to review and respond to this request.{' '}
               <a href="/privacy" target="_blank" rel="noreferrer">
                 Privacy notice
               </a>
