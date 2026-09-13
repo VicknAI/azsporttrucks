@@ -575,7 +575,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                           color: vehicle.referencePaint.color,
                           secondaryColor: vehicle.referencePaint.secondaryColor,
                           roofColor: vehicle.referencePaint.secondaryColor,
-                          paintMode: 'Two-tone',
+                          paintMode: vehicle.referencePaint.paintMode ?? 'Two-tone',
                           twoToneStyle: 'Center band',
                           contrastRoof: vehicle.referencePaint.contrastRoof,
                           cabPaint: 'Roof and pillars',

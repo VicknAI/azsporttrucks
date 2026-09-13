@@ -12,7 +12,7 @@ Nick selected these year groups on September 12, 2026, using the [CJ Pony Parts 
 | 1983–1984 | Updated two-level grille |
 | 1985–1987 | Final grille family |
 
-Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The implemented groups are 1973–1974, 1975–1976 and 1983–1984; the remaining four groups are not yet implemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
+Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The implemented groups are 1973–1974, 1975–1976, 1983–1984 and 1985–1987; 1977–1979, 1980 and 1981–1982 remain unimplemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
 
 ## Integration direction
 
@@ -121,3 +121,17 @@ The Stock option uses the established Rally-style faces, aligned to the new tire
 New assets: `chevrolet-k10-1983-1984-color-v1` and four corresponding wheel packs, 40 PNGs total. Authoring source, exact prompt, original generation, `prepare-artwork.py`, paint/wheel review sheets and preservation checks are under workspace `assets/squarebody-k10-expansion/1983/`, outside the checkout. Existing published packs are unchanged. This is an illustrative Silverado-style representative, not a claim of exact factory accessories or a measured suspension/tire size for every year and trim.
 
 Validation: all 26 repository checks pass, including the new group, navy/silver preset, shares, independent paint choices and all wheel selections in four-view exports. Solid white/green, contrasting roof and alternative-wheel artwork sheets were visually inspected. Production build and public asset verification are recorded in the private review folder after deployment. Next reference-backed group is 1985–1987; 1977–1979, 1980 and 1981–1982 also remain unimplemented.
+
+## 1985–1987 Silverado-style group — September 13, 2026
+
+Added `Chevrolet-K10-1985-1987` using Nick's 1986 reference. Its silver four-row grille has a wide chrome center bar, gold bowtie and clear lower-corner signal lenses; the chrome front bumper has no vertical guards. The later body, sliding rear window, upper/lower trim, Rally-style Stock wheels, tire proportions and floor layout are carried forward from the approved 1983–1984 pack. The guide explains that the 1987 4WD designation was V10 while retaining the requested single group.
+
+The Black reference look selects solid `#17191c`, gloss and a body-color cab. Independent secondary paint, contrasting roof/cab back, gloss/satin and all five wheel choices remain available in four views. Complete upper door frames retain body color. This is a representative studio illustration with the approved shared geometry and trim, not a reproduction of the reference truck's 4-inch lift, 35-inch tires or aftermarket wheels.
+
+One built-in imagegen edit produced a donor sheet. Only bounded grille and front bumper pixels were composited over the existing scenes; the isolated hanging bumper-guard remnant in side profile was removed using adjacent studio floor pixels. Side and rear bodywork were not regenerated. All original paint and all tire/wheel pixels outside these small hardware regions are preserved. New pack `chevrolet-k10-1985-1987-color-v1` and four matching wheel packs contain 40 PNGs. Exact prompt, original donor, deterministic `prepare-artwork.py`, paint/wheel review sheets and preservation checks are saved outside the checkout under `assets/squarebody-k10-expansion/1986/`.
+
+The dedicated quote Worker must be deployed alongside the website after any new vehicle entry, because it bundles the manifest for validation and private four-view reviews. A quote regression checks the late group's saved identity, paint, KMC selection and all four artwork paths.
+
+All 39 repository tests, TypeScript validation and the production build pass. Four-view solid black/green, contrasting blue/white and KMC black/silver artwork sheets were visually inspected, and pixel comparisons confirm preservation outside the intended front hardware edits. No browser interaction testing was requested or performed.
+
+Nick enabled the hourly task follow-up `continue-square-body-k10-models` to continue this group and then 1977–1979, 1980 and 1981–1982, honoring the existing GitHub/Cloudflare setup and free-only services. Stop the follow-up once all remaining groups are verified live. Actual publication results are recorded in the private 1986 review directory when completed.

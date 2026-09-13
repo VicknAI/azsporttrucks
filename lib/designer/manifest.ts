@@ -190,6 +190,7 @@ export type Vehicle = {
     color: string;
     secondaryColor: string;
     contrastRoof: boolean;
+    paintMode?: 'Solid' | 'Two-tone';
   };
   directions: Direction[];
   contrastingRoof: boolean;
@@ -491,6 +492,29 @@ const squarebody1983: Vehicle = {
   }])) as Record<View, ViewManifest>,
 };
 vehicles.splice(vehicles.indexOf(squarebody1976) + 1, 0, squarebody1983);
+const squarebody1986: Vehicle = {
+  ...squarebody1983,
+  id: 'Chevrolet-K10-1985-1987',
+  year: 1985,
+  yearEnd: 1987,
+  label: '1985–1987 K10',
+  referencePaint: {
+    label: 'Black reference look',
+    color: '#17191c',
+    secondaryColor: '#b8bec5',
+    contrastRoof: false,
+    paintMode: 'Solid',
+  },
+  views: Object.fromEntries(views.map((view) => [view, {
+    ...squarebody1983.views[view],
+    assetRoot: `/designer/final/Chevrolet/K10/1985-1987/${view}`,
+    studio: {
+      ...squarebody1983.views[view].studio!,
+      root: `/designer/studio/chevrolet-k10-1985-1987-color-v1/${view}`,
+    },
+  }])) as Record<View, ViewManifest>,
+};
+vehicles.splice(vehicles.indexOf(squarebody1983) + 1, 0, squarebody1986);
 
 // Combine K10 years that already share a complete studio pack. Keep the old
 // exact-year IDs as input aliases so saved drafts and shared builds still load.
@@ -608,7 +632,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     secondaryColor: vehicle.referencePaint?.secondaryColor ?? '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
-    paintMode: fordStudio || vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
+    paintMode: vehicle.referencePaint?.paintMode ?? (fordStudio || vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid'),
     twoToneStyle: fordStudio || ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',

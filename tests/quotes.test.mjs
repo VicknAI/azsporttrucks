@@ -249,6 +249,31 @@ test('identical retries keep one request and one notification; changed payload c
   assert.equal(h.sent.length, 1);
   await h.close();
 });
+test('late square-body quotes preserve the year group, paint and wheel artwork', async () => {
+  const h = harness();
+  const configuration = {
+    vehicleId: 'Chevrolet-K10-1985-1987',
+    color: '#17191c',
+    secondaryColor: '#b8bec5',
+    paintMode: 'Two-tone',
+    contrastRoof: false,
+    wheelId: 'kmc-impact-beadlock-machined',
+  };
+  const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+  assert.equal(response.status, 201);
+  await h.settle();
+  const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+  const saved = JSON.parse(row.configuration_json);
+  for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
+  assert.match(h.sent[0].text, /1985–1987 Chevrolet K10/);
+  const review = await h.request(new Request(await privateLink(h.env, row.id)));
+  const html = await review.text();
+  for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+    assert.ok(html.includes(`/chevrolet-k10-1985-1987-color-v1/${view}/paint-mask.png`));
+    assert.ok(html.includes(`/chevrolet-k10-1985-1987-kmc-impact-beadlock-v1/${view}.png`));
+  }
+  await h.close();
+});
 test('a free database limit never confirms receipt or sends mail; retry recovers the same reservation', async () => {
   const h = harness({ failSave: true });
   const key = crypto.randomUUID();
