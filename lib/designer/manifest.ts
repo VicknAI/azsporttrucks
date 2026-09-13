@@ -181,6 +181,12 @@ export type Vehicle = {
   year: number;
   yearEnd?: number;
   label: string;
+  referencePaint?: {
+    label: string;
+    color: string;
+    secondaryColor: string;
+    contrastRoof: boolean;
+  };
   directions: Direction[];
   contrastingRoof: boolean;
   roofOptions: string[];
@@ -459,6 +465,28 @@ const squarebody1976: Vehicle = {
   }])) as Record<View, ViewManifest>,
 };
 vehicles.splice(vehicles.indexOf(squarebodyK10) + 1, 0, squarebody1976);
+const squarebody1983: Vehicle = {
+  ...squarebodyK10,
+  id: 'Chevrolet-K10-1983-1984',
+  year: 1983,
+  yearEnd: 1984,
+  label: '1983–1984 K10',
+  referencePaint: {
+    label: 'Navy / silver reference look',
+    color: '#263d58',
+    secondaryColor: '#b8bec5',
+    contrastRoof: false,
+  },
+  views: Object.fromEntries(views.map((view) => [view, {
+    ...squarebodyK10.views[view],
+    assetRoot: `/designer/final/Chevrolet/K10/1983-1984/${view}`,
+    studio: {
+      ...squarebodyK10.views[view].studio!,
+      root: `/designer/studio/chevrolet-k10-1983-1984-color-v1/${view}`,
+    },
+  }])) as Record<View, ViewManifest>,
+};
+vehicles.splice(vehicles.indexOf(squarebody1976) + 1, 0, squarebody1983);
 
 // Combine K10 years that already share a complete studio pack. Keep the old
 // exact-year IDs as input aliases so saved drafts and shared builds still load.
@@ -567,8 +595,8 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: squarebody ? '#237cae' : vehicle.id === squarebody1976.id ? '#d34b20' : fordStudio || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
-    secondaryColor: '#e5e7e7',
+    color: vehicle.referencePaint?.color ?? (squarebody ? '#237cae' : vehicle.id === squarebody1976.id ? '#d34b20' : fordStudio || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex),
+    secondaryColor: vehicle.referencePaint?.secondaryColor ?? '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
     paintMode: fordStudio || vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid',
@@ -578,7 +606,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     cabPaint: fordStudio || ['C10', 'K10'].includes(vehicle.model)
       ? 'Roof and pillars'
       : 'Roof only',
-    contrastRoof: seafoam1967 || squarebody,
+    contrastRoof: vehicle.referencePaint?.contrastRoof ?? (seafoam1967 || squarebody),
     wheelId: 'street-temp',
     tire: 'Street performance',
     roof: 'White top',

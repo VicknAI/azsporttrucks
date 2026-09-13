@@ -12,7 +12,7 @@ Nick selected these year groups on September 12, 2026, using the [CJ Pony Parts 
 | 1983–1984 | Updated two-level grille |
 | 1985–1987 | Final grille family |
 
-Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The implemented groups are 1973–1974 and 1975–1976; the remaining five groups are not yet implemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
+Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The implemented groups are 1973–1974, 1975–1976 and 1983–1984; the remaining four groups are not yet implemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
 
 ## Integration direction
 
@@ -60,7 +60,7 @@ The listing specifies a 2-inch lift and 35-inch tires; its Raceline wheels are r
 
 The dark-blue/silver truck supplies a clear center-panel two-tone reference with blue above/below and a blue cab. Preserve its molding boundaries and separate bright wheel-opening trim from paint. The front-end photos show the stacked rectangular lamps and divided grille. Side steps and bedrails are reference accessories, not additional requested options. Do not assume a measured stock suspension height from these photographs.
 
-Saved authoring references outside the site checkout at `assets/squarebody-k10-expansion/references/1983/`: `front-quarter.jpg`, `body-reference.jpg` (rear-quarter), and `stock-wheel-reference.jpg` (side). This records the reference and preference; the 1983–1984 group and updated wheel artwork are not yet implemented or published.
+Saved authoring references outside the site checkout at `assets/squarebody-k10-expansion/references/1983/`: `front-quarter.jpg`, `body-reference.jpg` (rear-quarter), and `stock-wheel-reference.jpg` (side). The 1983–1984 implementation below uses these body and paint references and retains the established Rally-style wheel option.
 
 ## First 1973–1974 implementation — September 12, 2026
 
@@ -109,3 +109,15 @@ Factory-style red/clear taillights, normal windshield/roof edge, stock Rally-sty
 Source, exact imagegen prompt, original donor and reproducible preparation are outside the checkout at `assets/squarebody-k10-expansion/1976/`. `prepare-artwork.py` produces six paint review sheets, all four alternative-wheel review sheets and pixel-preservation checks under `review-v1/`. Existing published groups and source assets are unchanged.
 
 Validation: all 26 repository checks pass, including both square-body groups, shared colors/roof choices, four-view artwork embedding and every wheel option. Production and public release verification are recorded in the private review folder after deployment. The 1983–1984 and 1985–1987 references are saved for the next reference-backed groups; their artwork is not implemented yet. The remaining three groups also remain unavailable.
+
+## 1983–1984 Silverado-style group — September 12, 2026
+
+Added `Chevrolet-K10-1983-1984` as one selectable group with four independent views. This is a new later-body sheet with the flatter hood/front fenders, stacked rectangular headlights, two-level grille and center-divider amber indicators, low horizontal side markers, rectangular fuel doors at the front of the bed, Silverado-style badges, and later tailgate trim. A single built-in generation used all three supplied 1983 photographs and the existing square-body studio layout/scale reference. It retains restrained all-terrain tire proportions and omits the reference's steps and bedrails. No old round-headlight body was relabeled as a later year.
+
+New paint masks follow this body's panel creases and lower molding. The navy/silver reference preset uses `#263d58` and `#b8bec5` with a body-color cab. Solid and two-tone layouts, gloss/satin, independent secondary paint and an optional contrasting roof/cab back all work across four views. Complete upper doors stay in body color. Windshield and side-glass exclusions were refined against white and green paint to avoid preserving blue body pixels beside the windows. The small malformed generated tailgate text was replaced with readable dark CHEVROLET lettering on the right side of its silver applique.
+
+The Stock option uses the established Rally-style faces, aligned to the new tire positions. Baja Polished, Baja Black, KMC Impact Monoblock and KMC Impact Beadlock retain their existing finishes. Rear-quarter wheel donors use a mirrored matching perspective with the two axles swapped; front locking hubs are retained. Pixel comparisons verify that alternative wheels change only their rim regions. All four views retain the generated body and tire geometry, without another tire-resize operation.
+
+New assets: `chevrolet-k10-1983-1984-color-v1` and four corresponding wheel packs, 40 PNGs total. Authoring source, exact prompt, original generation, `prepare-artwork.py`, paint/wheel review sheets and preservation checks are under workspace `assets/squarebody-k10-expansion/1983/`, outside the checkout. Existing published packs are unchanged. This is an illustrative Silverado-style representative, not a claim of exact factory accessories or a measured suspension/tire size for every year and trim.
+
+Validation: all 26 repository checks pass, including the new group, navy/silver preset, shares, independent paint choices and all wheel selections in four-view exports. Solid white/green, contrasting roof and alternative-wheel artwork sheets were visually inspected. Production build and public asset verification are recorded in the private review folder after deployment. Next reference-backed group is 1985–1987; 1977–1979, 1980 and 1981–1982 also remain unimplemented.

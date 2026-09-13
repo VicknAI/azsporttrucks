@@ -550,7 +550,15 @@ export function Designer({ children }: { children?: ReactNode }) {
                     <button
                       className="design-button"
                       onClick={() =>
-                        update({
+                        vehicle.referencePaint ? update({
+                          color: vehicle.referencePaint.color,
+                          secondaryColor: vehicle.referencePaint.secondaryColor,
+                          roofColor: vehicle.referencePaint.secondaryColor,
+                          paintMode: 'Two-tone',
+                          twoToneStyle: 'Center band',
+                          contrastRoof: vehicle.referencePaint.contrastRoof,
+                          cabPaint: 'Roof and pillars',
+                        }) : update({
                           color: blueSquarebodyK10 ? '#237cae' : vehicle.id === 'Chevrolet-K10-1967' ? '#087ca2' : vehicle.id === 'Chevrolet-K10-1968' ? '#20584b' : vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
                           secondaryColor: '#f1eee5',
                           roofColor: '#f1eee5',
@@ -561,7 +569,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                         })
                       }
                     >
-                      {blueSquarebodyK10 ? 'Blue / white reference look' : vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
+                      {vehicle.referencePaint?.label ?? (blueSquarebodyK10 ? 'Blue / white reference look' : vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look')}
                     </button>
                   )}
                   {vehicle.manufacturer === 'Ford' && vehicle.model === 'F-100' && (
