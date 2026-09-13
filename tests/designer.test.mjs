@@ -108,6 +108,42 @@ test('all C10 and F-100 wheel sizes survive sharing and preserve aligned paint a
   }
 });
 
+test('Rocket Attack 18 and 20 inch C10 wheels retain size, paint, stance and four views in sharing and exports', async () => {
+  const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
+  const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
+  const supported = vehicles.filter((v) => v.model === 'C10');
+  assert.equal(supported.length, 6);
+  for (const vehicle of supported)
+  for (const size of ['18', '20'])
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame']) {
+    const wheelId = `rocket-attack-${size}`;
+    const c = normalize({ vehicleId: vehicle.id, wheelId, stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true });
+    assert.equal(c.wheelId, wheelId);
+    assert.deepEqual(readShare(shareHash(c)), c);
+    assert.equal(summary(c).Wheels, `Rocket Racing Attack · Titanium/Machined · ${size}″`);
+    for (const view of views) {
+      const pack = vehicle.views[view].studio;
+      const root = pack.stanceRoots[stance] ?? pack.root;
+      const svg = renderSvg(c, view);
+      assert.ok(svg.includes(pack.wheelScenes[wheelId][stance]));
+      assert.ok(svg.includes(`${root}/paint-mask.png`));
+      assert.ok(svg.includes(`${root}/cab-mask.png`));
+      assert.ok(!svg.includes('-torq-v1'));
+      const embedded = await embedArtwork(svg, async (path) => {
+        const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+        assert.equal(bytes.readUInt32BE(16), 768);
+        assert.equal(bytes.readUInt32BE(20), 512);
+        return `data:image/png;base64,${bytes.toString('base64')}`;
+      });
+      assert.ok(!embedded.includes('/designer/'));
+    }
+  }
+  for (const v of vehicles.filter((v) => v.model !== 'C10')) {
+    assert.equal(normalize({ vehicleId: v.id, wheelId: 'rocket-attack-20' }).wheelId, 'street-temp');
+    assert.ok(!v.views.side.studio.wheelScenes?.['rocket-attack-20']);
+  }
+});
+
 test('Baja and KMC wheels remain selected across 4WD years, paint layouts, K5 roof states and exports', async () => {
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);

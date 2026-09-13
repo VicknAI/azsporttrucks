@@ -34,6 +34,10 @@ export const kmcWheelOptions = [
   { id: 'kmc-impact-monoblock-machined', label: 'KMC Impact Forged Monoblock - Raw Machined', pack: 'kmc-impact-monoblock-v1' },
   { id: 'kmc-impact-beadlock-machined', label: 'KMC Impact Forged Beadlock - Raw Machined', pack: 'kmc-impact-beadlock-v1' },
 ];
+export const sizedWheelOptions = [
+  { id: 'torq-thrust', label: 'Torq Thrust II', summary: 'American Racing Torq Thrust II' },
+  { id: 'rocket-attack', label: 'Rocket Racing Attack — Titanium/Machined', summary: 'Rocket Racing Attack · Titanium/Machined' },
+];
 export const trimFields = [
   'grille',
   'headlights',
@@ -526,6 +530,11 @@ for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F
         ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/wheels/${wheelFamily}-torq-v1/${size}/${stance}/${view}.png`]),
       )]),
     );
+    if (vehicle.model === 'C10') {
+      for (const size of ['18', '20']) vehicle.views[view].studio!.wheelScenes![`rocket-attack-${size}`] = Object.fromEntries(
+        ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/wheels/${family}-${sourceYear}-rocket-attack-v1/${size}/${stance}/${view}.png`]),
+      );
+    }
   }
 }
 
@@ -715,8 +724,8 @@ export function summary(c: Configuration): Record<string, string> {
       ? 'American Racing Baja - Black'
       : c.wheelId === 'baja-polished'
       ? 'American Racing Baja · Polished'
-      : v.views.side.studio?.wheelScenes && c.wheelId.startsWith('torq-thrust-')
-      ? `American Racing Torq Thrust II · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
+      : v.views.side.studio?.wheelScenes && sizedWheelOptions.some((wheel) => c.wheelId.startsWith(`${wheel.id}-`))
+      ? `${sizedWheelOptions.find((wheel) => c.wheelId.startsWith(`${wheel.id}-`))!.summary} · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
       : v.views.side.studio?.wheelScenes ? 'Stock' : 'As pictured; fitment to be discussed'),
     Tires: 'As pictured; size to be discussed',
     'K5 roof': v.model === 'K5' ? c.roof : 'Not applicable',

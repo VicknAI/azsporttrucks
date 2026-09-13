@@ -25,6 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   colors,
   kmcWheelOptions,
+  sizedWheelOptions,
   pickupStanceOptions,
   defaultConfiguration,
   fitmentNotice,
@@ -176,6 +177,8 @@ export function Designer({ children }: { children?: ReactNode }) {
     return () => abort.abort();
   }, []);
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
+  const sizedWheel = sizedWheelOptions.find((wheel) => config.wheelId.startsWith(`${wheel.id}-`));
+  const availableSizedWheels = sizedWheelOptions.filter((wheel) => vehicle.views.side.studio?.wheelScenes?.[`${wheel.id}-18`]);
   const squarebodyK10 = vehicle.model === 'K10' && vehicle.year >= 1973;
   const blueSquarebodyK10 = squarebodyK10 && vehicle.year === 1973;
   const fixedAppearance = Boolean(vehicle.views.side.studio?.fixedAppearance);
@@ -739,21 +742,23 @@ export function Designer({ children }: { children?: ReactNode }) {
               {vehicle.views.side.studio?.wheelScenes && (
                 <Choice
                   label="Wheel style"
-                  value={config.wheelId.startsWith('torq-thrust-') ? 'torq-thrust' : config.wheelId}
+                  value={sizedWheel?.id ?? config.wheelId}
                   options={[{ id: 'street-temp', label: 'Stock' }, ...(vehicle.views.side.studio?.wheelScenes?.['baja-polished']
                     ? [{ id: 'baja-polished', label: 'American Racing Baja — Polished' }, { id: 'baja-black', label: 'American Racing Baja - Black' }, ...kmcWheelOptions]
-                    : [{ id: 'torq-thrust', label: 'Torq Thrust II' }]) ]}
-                  onChange={(style) => update({ wheelId: style === 'torq-thrust' ? 'torq-thrust-18' : style })}
+                    : availableSizedWheels) ]}
+                  onChange={(style) => update({ wheelId: availableSizedWheels.some((wheel) => wheel.id === style) ? `${style}-${config.wheelId.endsWith('-20') ? '20' : '18'}` : style })}
                 />
               )}
-              {vehicle.views.side.studio?.wheelScenes && config.wheelId.startsWith('torq-thrust-') && (
+              {vehicle.views.side.studio?.wheelScenes && sizedWheel && (
                 <Choice label="Wheel size" value={config.wheelId}
-                  options={[{ id: 'torq-thrust-18', label: '18″' }, { id: 'torq-thrust-20', label: '20″' }]}
+                  options={[{ id: `${sizedWheel.id}-18`, label: '18″' }, { id: `${sizedWheel.id}-20`, label: '20″' }]}
                   onChange={(wheelId) => update({ wheelId })} />
               )}
               <p className="design-note">
                 {vehicle.views.side.studio?.wheelScenes?.['baja-polished']
                   ? 'Compare Stock, American Racing Baja, and KMC Impact wheels. Tire size and ride height stay as pictured.'
+                  : vehicle.model === 'C10' && vehicle.views.side.studio?.wheelScenes?.['rocket-attack-18']
+                  ? 'Compare Stock, Torq Thrust II, and Rocket Racing Attack. Choose 18″ or 20″ wheels; the 20″ option has a shorter tire sidewall. Nick will confirm final sizes and fitment.'
                   : vehicle.views.side.studio?.wheelScenes
                   ? 'Compare Stock with Torq Thrust II in 18″ or 20″. Nick will help confirm tire sizes and fitment for your build.'
                   : 'Wheels and tires stay as pictured. Nick can help select sizes and fitment for your build.'}
