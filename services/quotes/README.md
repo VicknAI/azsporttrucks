@@ -4,15 +4,44 @@ This dedicated Cloudflare Worker receives `/api/quotes*`, persists records in D1
 and image-only uploads in a private R2 bucket, and emails Nick a signed private
 review link. The public website retains its existing email preparation flow
 until `/api/quotes/status` confirms that the service is enabled and configured.
-The service is prepared but **not activated**; Cloudflare sign-in is required.
+The service is prepared but **not activated**.
+
+## Activation status — September 13, 2026
+
+- Wrangler sign-in works. D1 `azsporttrucks-quotes` is created and its initial
+  migration is applied; both quote tables were verified remotely. The actual
+  database binding is recorded in `wrangler.jsonc`.
+- The disabled Worker deployment was rejected with Cloudflare authentication
+  error 10000 on the deployments endpoint. The approved login includes
+  `workers:write` but needs the separate `workers_scripts:write` scope. Obtain
+  approval for that specific permission addition; do not request unrelated
+  default Wrangler scopes. The Worker has not been deployed and no public
+  quote route has been added.
+- R2 is not activated. The dashboard requires accepting an auto-renewing,
+  usage-based subscription: $0 due now, 10 GB-month storage, 1 million Class A
+  operations and 10 million Class B operations included monthly. Standard
+  overages are $0.015/GB-month, $4.50/million Class A and $0.36/million Class B.
+  Leave its final subscription action for explicit approval. No bucket exists.
+- Email Routing onboarding for `azsporttrucks.com` was activated after checking
+  there were no existing MX or TXT records. Cloudflare added its MX, SPF and
+  DKIM records; the dashboard initially reported Syncing. Check Active before
+  testing delivery. Do not purchase Workers Paid: sends to a verified account
+  destination address are free, including with only Email Routing configured.
+- `aztruckshootout@gmail.com` was added as the notification destination; the
+  dashboard confirms Pending verification. Nick must click Cloudflare's
+  verification link in that inbox. Do not repeatedly resend the message.
+- Gmail recipient verification, Turnstile, private-link secrets, private R2,
+  the service deployment and a controlled end-to-end submission remain required.
+  `QUOTE_ENABLED` stays false until these checks pass.
 
 ## Account setup remaining
 
 Use Nick's existing Cloudflare account `a4d7127a37c46604491a4d8f8d8d5541`.
 Do not change the existing website Worker or its custom domain.
 
-1. Authenticate Wrangler with `pnpm exec wrangler login`.
-2. Create D1 database `azsporttrucks-quotes` and private R2 bucket
+1. Authenticate Wrangler with the required scopes, including
+   `workers_scripts:write`; see the activation status above before renewing.
+2. Reuse D1 database `azsporttrucks-quotes` and create private R2 bucket
    `azsporttrucks-quote-files`. Check account billing requirements before enabling
    any paid service. Do not enable a public bucket domain or `r2.dev` access.
 3. Add these real bindings to this directory's `wrangler.jsonc`, keeping
@@ -29,11 +58,13 @@ Do not change the existing website Worker or its custom domain.
 }
 ```
 
-4. Apply `migrations/0001_quotes.sql` with Wrangler D1 migrations. Use the config
-   in this directory; never substitute the main site's placeholder database ID.
-5. Configure Email Sending for `azsporttrucks.com`; verify
+4. Check migration status with Wrangler D1 migrations; the initial migration is
+   already applied. Use the config in this directory; never substitute the main
+   site's placeholder database ID.
+5. Finish Email Routing configuration for `azsporttrucks.com`; verify
    `Aztruckshootout@gmail.com` as the destination. Review proposed DNS changes
-   against existing mail records. Sender: `quotes@azsporttrucks.com`. Replies use
+   against existing mail records. Email Sending's paid upgrade is unnecessary
+   for notifications only to this verified address. Sender: `quotes@azsporttrucks.com`. Replies use
    the customer's validated email. Notifications go only to Nick.
 6. Create a managed Turnstile widget restricted to `azsporttrucks.com`. Put its
    public key in `TURNSTILE_SITE_KEY`; save its secret with `wrangler secret put
