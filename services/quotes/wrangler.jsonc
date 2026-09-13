@@ -28,10 +28,10 @@
   ],
   "triggers": { "crons": ["*/5 * * * *"] },
   "vars": {
-    "QUOTE_ENABLED": "false",
+    "QUOTE_ENABLED": "true",
     "PUBLIC_ORIGIN": "https://azsporttrucks.com",
     "QUOTE_FROM": "quotes@azsporttrucks.com",
-    "QUOTE_TO": "Aztruckshootout@gmail.com",
+    "QUOTE_TO": "aztruckshootout@gmail.com",
     "TURNSTILE_SITE_KEY": "0x4AAAAAAEyzn-YAodMqgLrs",
   },
 }

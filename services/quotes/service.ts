@@ -29,6 +29,24 @@ export type Mail = {
   text: string;
 };
 export type SendMail = (mail: Mail) => Promise<void>;
+const contactLabels: Record<string, string> = {
+  name: 'Name',
+  email: 'Email',
+  phone: 'Phone',
+  location: 'Location',
+  ownsTruck: 'Already owns truck',
+  budget: 'Target budget',
+  timeline: 'Desired timeline',
+  description: 'Project description',
+};
+function contactSummary(contact: Record<string, string>) {
+  return Object.fromEntries(
+    Object.entries(contactLabels).map(([key, label]) => [
+      label,
+      contact[key] || '',
+    ]),
+  );
+}
 type Row = {
   id: string;
   request_key: string;
@@ -146,7 +164,9 @@ export async function notifyQuote(
       'A new AZ Sport Trucks build request has been received and saved.',
       `Reference: ${row.reference}`,
       '',
-      ...Object.entries(contact).map(([key, value]) => `${key}: ${value}`),
+      ...Object.entries(contactSummary(contact)).map(
+        ([key, value]) => `${key}: ${value}`,
+      ),
       '',
       'BUILD',
       ...Object.entries(summary(config)).map(
@@ -378,7 +398,7 @@ async function review(request: Request, env: QuoteEnv, id: string) {
           `<dt>${escapeHtml(key)}</dt><dd>${escapeHtml(String(value))}</dd>`,
       )
       .join('');
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${row.reference} | AZ Sport Trucks</title><style>body{background:#111;color:#eee;font:16px/1.6 Arial,sans-serif;margin:0}main{max-width:1100px;margin:auto;padding:32px 20px}h1{color:#f34b52}dl{display:grid;grid-template-columns:minmax(130px,1fr) 3fr;gap:8px 20px}dt{font-weight:bold}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.images{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}figure{margin:0}img,svg{width:100%;height:auto}a{color:#ff969a}.note{color:#bbb}</style></head><body><main><h1>AZ SPORT TRUCKS</h1><h2>${row.reference}</h2><p class="note">Private request received ${new Date(row.created_at * 1000).toISOString().slice(0, 10)}. Keep this link private.</p><h2>Customer</h2><dl>${pairs(contact)}</dl><h2>Build selections</h2><dl>${pairs(summary(config))}</dl><h2>Build views</h2><div class="images">${views.map((view) => `<figure>${renderSvg(config, view, `quote-${view}`)}<figcaption>${escapeHtml(viewLabels[view])}</figcaption></figure>`).join('')}</div><p class="note">Views use the saved selections and current designer artwork. Truck photos arrive separately by email. Confirm actual parts, fitment, and pricing with the customer.</p></main></body></html>`;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${row.reference} | AZ Sport Trucks</title><style>body{background:#111;color:#eee;font:16px/1.6 Arial,sans-serif;margin:0}main{max-width:1100px;margin:auto;padding:32px 20px}h1{color:#f34b52}dl{display:grid;grid-template-columns:minmax(130px,1fr) 3fr;gap:8px 20px}dt{font-weight:bold}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.images{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}figure{margin:0}img,svg{width:100%;height:auto}a{color:#ff969a}.note{color:#bbb}@media(max-width:640px){.images{grid-template-columns:1fr}dl{grid-template-columns:1fr;gap:4px}dd{margin-bottom:12px}}</style></head><body><main><h1>AZ SPORT TRUCKS</h1><h2>${row.reference}</h2><p class="note">Private request received ${new Date(row.created_at * 1000).toISOString().slice(0, 10)}. Keep this link private.</p><h2>Customer</h2><dl>${pairs(contactSummary(contact))}</dl><h2>Build selections</h2><dl>${pairs(summary(config))}</dl><h2>Build views</h2><div class="images">${views.map((view) => `<figure>${renderSvg(config, view, `quote-${view}`)}<figcaption>${escapeHtml(viewLabels[view])}</figcaption></figure>`).join('')}</div><p class="note">Views use the saved selections and current designer artwork. Truck photos arrive separately by email. Confirm actual parts, fitment, and pricing with the customer.</p></main></body></html>`;
   return new Response(html, {
     headers: {
       ...responseHeaders,

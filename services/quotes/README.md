@@ -37,7 +37,15 @@ quota error by silently upgrading the account.
   as encrypted Worker secrets. Never print them or put them in source control.
 - Wrangler authentication now includes the necessary `workers_scripts:write`
   permission; the initial disabled deployment succeeded.
-- `QUOTE_ENABLED` remains false until deployment and verification are complete.
+- `QUOTE_ENABLED` is true. The live website test `AZST-1352118E-A109` was
+  saved successfully; D1 confirmed `received`, notification `sent`, one attempt.
+  Cloudflare accepted the email; inbox placement is for Nick to confirm.
+- Live browser checks confirmed the direct form, automatic Turnstile validation,
+  receipt reference, and the photo-email link carrying that reference. No file
+  uploads are present. The signed review handler was also checked with a local
+  test record under its production security headers; all four images rendered.
+- Main frontend commit `343adb7` includes the free form and updated guide. The
+  live `designer-BB0G99te.js` asset matched the local production build exactly.
 
 From the repository root, deploy the service with:
 
