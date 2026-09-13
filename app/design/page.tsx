@@ -29,7 +29,7 @@ export default function DesignPage() {
               <li>Choose a manufacturer, model, and year or year group under Vehicle.</li>
               <li>Open Paint &amp; finish to try a body color, gloss or satin finish, and a solid or two-tone layout.</li>
               <li>Compare side, front three-quarter, rear three-quarter, and straight-front views.</li>
-              <li>Share your configuration, save a build on this device, or download a build sheet. Request a Quote prepares an email for you to send to Nick.</li>
+              <li>Share your configuration, save a build on this device, or download a build sheet. Use Request a Quote to start your build inquiry with Nick.</li>
             </ol>
           </div>
         </div>
