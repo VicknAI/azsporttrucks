@@ -651,6 +651,21 @@ export function Designer({ children }: { children?: ReactNode }) {
                       />
                     </>
                   )}
+                  {vehicle.model === 'K5' && (
+                    <>
+                      <Choice
+                        label="K5 roof option"
+                        value={config.roof}
+                        options={roofs}
+                        onChange={(value) => update({ roof: value })}
+                      />
+                      <p className="design-note">
+                        {vehicle.views.side.studio?.openTopRoot
+                          ? 'Choose a white, black, or body-color full hardtop, or remove it to reveal the open cabin. Black dash and roll bar, with gray/black patterned seat centers.'
+                          : 'Top off uses a separate interior and bed-rail placeholder. Final seating, shadows, and roof details are pending artwork.'}
+                      </p>
+                    </>
+                  )}
                   {vehicle.model !== 'K5' && vehicle.contrastingRoof && (
                     <>
                       <Choice
@@ -729,21 +744,6 @@ export function Designer({ children }: { children?: ReactNode }) {
                 <p className="design-note">KMC designates the Forged Beadlock for off-road use only. Nick can help confirm fitment for your build.</p>
               )}
             </Category>
-            {vehicle.model === 'K5' && (
-              <Category id="roof" title="05 / K5 roof">
-                <Choice
-                  label="K5 roof option"
-                  value={config.roof}
-                  options={roofs}
-                  onChange={(value) => update({ roof: value })}
-                />
-                <p className="design-note">
-                  {vehicle.views.side.studio?.openTopRoot
-                    ? 'Choose a white, black, or body-color full hardtop, or remove it to reveal the open cabin. Black dash and roll bar, with gray/black patterned seat centers.'
-                    : 'Top off uses a separate interior and bed-rail placeholder. Final seating, shadows, and roof details are pending artwork.'}
-                </p>
-              </Category>
-            )}
           </Accordion>
         </aside>
       </div>
