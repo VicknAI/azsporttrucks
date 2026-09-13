@@ -112,7 +112,7 @@ test('Baja and KMC wheels remain selected across 4WD years, paint layouts, K5 ro
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const supported = vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model));
-  assert.equal(supported.length, 11);
+  assert.equal(supported.length, 12);
   const wheelExpectations = {
     'baja-polished': ['American Racing Baja · Polished', '-baja-v1/'],
     'baja-black': ['American Racing Baja - Black', '-baja-black-v1/'],
@@ -218,8 +218,8 @@ process.on('exit', () => {
     rmSync(resolved, { recursive: true, force: true });
 });
 test('exact years and K10 year groups have distinct manifests and four anchor packs', () => {
-  assert.equal(vehicles.length, 19);
-  assert.equal(new Set(vehicles.map((v) => v.id)).size, 19);
+  assert.equal(vehicles.length, 20);
+  assert.equal(new Set(vehicles.map((v) => v.id)).size, 20);
   for (const [model, years] of [
     ['C10', [1967, 1968, 1969, 1970, 1971, 1972]],
     ['K10', [1967, 1968]],
@@ -516,23 +516,30 @@ test('1979 F-150 finishes preserve two-tone and cab colors without changing appr
   assert.equal(sources.size, 4);
 });
 
-test('1973–1974 K10 remains one group across shares, paint layouts and build summaries', () => {
-  const group = vehicles.find((v) => v.id === 'Chevrolet-K10-1973-1974');
-  assert.equal(group.label, '1973–1974 K10');
-  assert.equal(group.yearEnd, 1974);
-  assert.ok(!vehicles.some((v) => ['Chevrolet-K10-1973', 'Chevrolet-K10-1974'].includes(v.id)));
-  const initial = defaultConfiguration(group);
-  assert.equal(initial.paintMode, 'Two-tone');
-  assert.equal(initial.contrastRoof, true);
-  for (const paintMode of ['Solid', 'Two-tone']) {
-    const c = normalize({ ...initial, paintMode, contrastRoof: paintMode === 'Two-tone', color: '#3c6254', secondaryColor: '#f1eee5' });
-    assert.deepEqual(readShare(shareHash(c)), c);
-    assert.equal(summary(c).Vehicle, '1973–1974 Chevrolet K10');
-    for (const view of views) {
-      const svg = renderSvg(c, view);
-      assert.ok(svg.includes('/chevrolet-k10-1973-1974-color-v3/'));
-      if (paintMode === 'Solid') assert.equal(svg, renderSvg({ ...c, secondaryColor: '#ff00ff', roofColor: '#ff00ff' }, view));
-      else assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#ff00ff' }, view));
+test('square-body K10 groups retain their own paint, artwork and summaries', () => {
+  for (const [first, last, version, color, contrastRoof] of [
+    [1973, 1974, 'v3', '#237cae', true],
+    [1975, 1976, 'v1', '#d34b20', false],
+  ]) {
+    const group = vehicles.find((v) => v.id === `Chevrolet-K10-${first}-${last}`);
+    assert.equal(group.label, `${first}–${last} K10`);
+    assert.equal(group.yearEnd, last);
+    assert.ok(!vehicles.some((v) => [`Chevrolet-K10-${first}`, `Chevrolet-K10-${last}`].includes(v.id)));
+    const initial = defaultConfiguration(group);
+    assert.equal(initial.paintMode, 'Two-tone');
+    assert.equal(initial.color, color);
+    assert.equal(initial.contrastRoof, contrastRoof);
+    for (const paintMode of ['Solid', 'Two-tone']) {
+      const c = normalize({ ...initial, paintMode, contrastRoof: paintMode === 'Two-tone', color: '#3c6254', secondaryColor: '#f1eee5' });
+      assert.deepEqual(readShare(shareHash(c)), c);
+      assert.equal(summary(c).Vehicle, `${first}–${last} Chevrolet K10`);
+      if (c.contrastRoof) assert.equal(summary(c)['Cab paint coverage'], 'Roof and cab back; door window frames stay body color');
+      for (const view of views) {
+        const svg = renderSvg(c, view);
+        assert.ok(svg.includes(`/chevrolet-k10-${first}-${last}-color-${version}/`));
+        if (paintMode === 'Solid') assert.equal(svg, renderSvg({ ...c, secondaryColor: '#ff00ff', roofColor: '#ff00ff' }, view));
+        else assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#ff00ff' }, view));
+      }
     }
   }
 });
@@ -540,7 +547,7 @@ test('1973–1974 K10 remains one group across shares, paint layouts and build s
 test('paired K10 years load legacy shared links and saved drafts without losing customization', async () => {
   const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   assert.deepEqual(vehicles.filter((v) => v.model === 'K10').map((v) => v.label), [
-    '1967 K10', '1968 K10', '1969–1970 K10', '1971–1972 K10', '1973–1974 K10',
+    '1967 K10', '1968 K10', '1969–1970 K10', '1971–1972 K10', '1973–1974 K10', '1975–1976 K10',
   ]);
   const previousStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
   let savedDraft;

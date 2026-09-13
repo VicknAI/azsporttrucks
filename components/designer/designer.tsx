@@ -163,6 +163,7 @@ export function Designer({ children }: { children?: ReactNode }) {
   const [quoteEmail, setQuoteEmail] = useState<QuoteEmail | null>(null);
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
   const squarebodyK10 = vehicle.model === 'K10' && vehicle.year >= 1973;
+  const blueSquarebodyK10 = squarebodyK10 && vehicle.year === 1973;
   const fixedAppearance = Boolean(vehicle.views.side.studio?.fixedAppearance);
   const paintScene = Boolean(vehicle.views.side.studio?.paintScene);
   const studioView = Boolean(vehicle.views[config.view].studio);
@@ -550,17 +551,17 @@ export function Designer({ children }: { children?: ReactNode }) {
                       className="design-button"
                       onClick={() =>
                         update({
-                          color: squarebodyK10 ? '#237cae' : vehicle.id === 'Chevrolet-K10-1967' ? '#087ca2' : vehicle.id === 'Chevrolet-K10-1968' ? '#20584b' : vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
+                          color: blueSquarebodyK10 ? '#237cae' : vehicle.id === 'Chevrolet-K10-1967' ? '#087ca2' : vehicle.id === 'Chevrolet-K10-1968' ? '#20584b' : vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
                           secondaryColor: '#f1eee5',
                           roofColor: '#f1eee5',
                           paintMode: ['Chevrolet-K10-1967', 'Chevrolet-K10-1968', 'Chevrolet-C10-1967', 'Chevrolet-C10-1968'].includes(vehicle.id) ? 'Solid' : 'Two-tone',
                           twoToneStyle: 'Center band',
-                          contrastRoof: !['Chevrolet-C10-1968', 'Chevrolet-K10-1967', 'Chevrolet-K10-1968'].includes(vehicle.id),
+                          contrastRoof: !['Chevrolet-C10-1968', 'Chevrolet-K10-1967', 'Chevrolet-K10-1968', 'Chevrolet-K10-1975-1976'].includes(vehicle.id),
                           cabPaint: 'Roof and pillars',
                         })
                       }
                     >
-                      {squarebodyK10 ? 'Blue / white reference look' : vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
+                      {blueSquarebodyK10 ? 'Blue / white reference look' : vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look'}
                     </button>
                   )}
                   {vehicle.manufacturer === 'Ford' && vehicle.model === 'F-100' && (

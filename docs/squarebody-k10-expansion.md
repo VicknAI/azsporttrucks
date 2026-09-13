@@ -12,7 +12,7 @@ Nick selected these year groups on September 12, 2026, using the [CJ Pony Parts 
 | 1983–1984 | Updated two-level grille |
 | 1985–1987 | Final grille family |
 
-Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The first implemented group is 1973–1974; the remaining six groups are not yet implemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
+Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The implemented groups are 1973–1974 and 1975–1976; the remaining five groups are not yet implemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
 
 ## Integration direction
 
@@ -52,7 +52,7 @@ The listing specifies a 2-inch lift and 35-inch tires; its Raceline wheels are r
 
 ## User-selected 1975–1976 reference and corrections
 
-[1976 K10 Scottsdale](https://bringatrailer.com/listing/1976-chevrolet-k10-pickup-7/) supplied for orange/white two-tone and the 1975–1976 body group. Nick explicitly noted that its taillights are modified and asked to omit the duckbill-style visor above the windshield. Use factory-style red/clear taillights and a normal unadorned windshield/roof edge. Do not reproduce the clear aftermarket lamps or the visor. The listing describes a six-inch lift; this is reference equipment, not factory stock stance. Keep the current first implementation focused on 1973–1974.
+[1976 K10 Scottsdale](https://bringatrailer.com/listing/1976-chevrolet-k10-pickup-7/) supplied for orange/white two-tone and the 1975–1976 body group. Nick explicitly noted that its taillights are modified and asked to omit the duckbill-style visor above the windshield. Use factory-style red/clear taillights and a normal unadorned windshield/roof edge. Do not reproduce the clear aftermarket lamps or the visor. The listing describes a six-inch lift; this is reference equipment, not factory stock stance. The implemented preview retains the smaller tire proportions approved on the 1973–1974 truck.
 
 ## User-selected 1983–1984 body and stock-wheel reference
 
@@ -97,3 +97,15 @@ The tire resize now uses smooth inner-opening contours, protects the adjoining c
 Reproducible authoring: `assets/squarebody-k10-expansion/1974/refine-edge-cleanup.py`; detailed door/arch reviews, four-view paint and wheel sheets, and mask verification are saved in `1974/edge-cleanup-v3/` outside the site checkout.
 
 Validation: all 26 repository checks and production build pass. Four-angle blue/white, solid green and red/black paint sheets were reviewed with the updated wheel scenes. Pixel comparisons confirm the body/secondary paint layers, wheel centers and straight-front scenes remain unchanged. Roof coverage only decreases where the upper doors must retain body color. Local designer returns HTTP 200.
+
+## 1975–1976 Scottsdale-style group — September 12, 2026
+
+One new selectable `Chevrolet-K10-1975-1976` entry adds all four views, solid/two-tone paint, optional contrasting roof/cab back, and all five existing 4WD wheel choices. The initial appearance and reference button use orange/white with a body-color cab, following Nick's supplied 1976 reference. Contrasting cab paint continues to exclude the complete upper doors.
+
+The new `chevrolet-k10-1975-1976-color-v1` and matching four alternative wheel packs use the approved 1973–1974 v3 body and smaller tire geometry. A single built-in imagegen edit supplied chrome headlamp surrounds, a smooth front bumper without vertical guards, and Scottsdale-style badges. Its grille had an incorrect row count, so the final grille insert is registered from the user-supplied 1976 photograph, preserving four aperture rows, three divider bars and the gold bowtie. Outdoor color reflections behind the apertures are neutralized. Original paint coverage and body pixels remain unchanged outside the tightly bounded front-hardware and badge edits; all wheel positions and tire pixels are preserved. New front-valance paint coverage follows the edited bumper, preventing blue spots where its guards were removed.
+
+Factory-style red/clear taillights, normal windshield/roof edge, stock Rally-style wheels and the existing tailgate applique remain. No reference visor, clear aftermarket taillights or six-inch-lift tire proportions were copied. This is a representative Scottsdale-style studio preview on the common short-bed body, not a claim that every accessory and molding matches every 1975–1976 truck.
+
+Source, exact imagegen prompt, original donor and reproducible preparation are outside the checkout at `assets/squarebody-k10-expansion/1976/`. `prepare-artwork.py` produces six paint review sheets, all four alternative-wheel review sheets and pixel-preservation checks under `review-v1/`. Existing published groups and source assets are unchanged.
+
+Validation: all 26 repository checks pass, including both square-body groups, shared colors/roof choices, four-view artwork embedding and every wheel option. Production and public release verification are recorded in the private review folder after deployment. The 1983–1984 and 1985–1987 references are saved for the next reference-backed groups; their artwork is not implemented yet. The remaining three groups also remain unavailable.

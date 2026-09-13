@@ -443,6 +443,22 @@ const squarebodyK10: Vehicle = {
   }])) as Record<View, ViewManifest>,
 };
 vehicles.splice(vehicles.indexOf(squarebodyTemplate) + 1, 0, squarebodyK10);
+const squarebody1976: Vehicle = {
+  ...squarebodyK10,
+  id: 'Chevrolet-K10-1975-1976',
+  year: 1975,
+  yearEnd: 1976,
+  label: '1975–1976 K10',
+  views: Object.fromEntries(views.map((view) => [view, {
+    ...squarebodyK10.views[view],
+    assetRoot: `/designer/final/Chevrolet/K10/1975-1976/${view}`,
+    studio: {
+      ...squarebodyK10.views[view].studio!,
+      root: `/designer/studio/chevrolet-k10-1975-1976-color-v1/${view}`,
+    },
+  }])) as Record<View, ViewManifest>,
+};
+vehicles.splice(vehicles.indexOf(squarebodyK10) + 1, 0, squarebody1976);
 
 // Combine K10 years that already share a complete studio pack. Keep the old
 // exact-year IDs as input aliases so saved drafts and shared builds still load.
@@ -551,7 +567,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trimMode: 'Match My Truck',
     trimPackage: 'unverified',
     trim: { ...baseTrim },
-    color: squarebody ? '#237cae' : fordStudio || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
+    color: squarebody ? '#237cae' : vehicle.id === squarebody1976.id ? '#d34b20' : fordStudio || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex,
     secondaryColor: '#e5e7e7',
     roofColor: '#e5e7e7',
     finish: 'Gloss',
