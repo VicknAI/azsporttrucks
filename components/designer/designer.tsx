@@ -39,6 +39,7 @@ import {
 } from '@/lib/designer/manifest';
 import { escapeHtml, renderSvg } from '@/lib/designer/render';
 import { embedArtwork } from '@/lib/designer/export';
+import { QuoteRequest } from './quote-request';
 import {
   prepareQuoteEmail,
   quoteRecipient,
@@ -161,6 +162,19 @@ export function Designer({ children }: { children?: ReactNode }) {
   const [shareUrl, setShareUrl] = useState('');
   const [photos, setPhotos] = useState<File[]>([]);
   const [quoteEmail, setQuoteEmail] = useState<QuoteEmail | null>(null);
+  const [directQuote, setDirectQuote] = useState(false);
+  const [quoteSiteKey, setQuoteSiteKey] = useState('');
+  useEffect(() => {
+    const abort = new AbortController();
+    fetch('/api/quotes/status', { cache: 'no-store', signal: abort.signal })
+      .then(response => response.ok ? response.json() : null)
+      .then((status: unknown) => {
+        if (status && typeof status === 'object' && 'available' in status && status.available === true &&
+            'siteKey' in status && typeof status.siteKey === 'string') setQuoteSiteKey(status.siteKey);
+      })
+      .catch(() => {});
+    return () => abort.abort();
+  }, []);
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
   const squarebodyK10 = vehicle.model === 'K10' && vehicle.year >= 1973;
   const blueSquarebodyK10 = squarebodyK10 && vehicle.year === 1973;
@@ -232,6 +246,10 @@ export function Designer({ children }: { children?: ReactNode }) {
     setFormError('');
     setPhotos([]);
     setQuoteEmail(null);
+    if (which === 'quote' && quoteSiteKey) {
+      setDirectQuote(true);
+      return;
+    }
     setAction(which);
   }
   async function share() {
@@ -782,6 +800,8 @@ export function Designer({ children }: { children?: ReactNode }) {
           Request a Quote <ArrowUpRight size={17} />
         </button>
       </div>
+      {quoteSiteKey && <QuoteRequest open={directQuote} onOpenChange={setDirectQuote} configuration={config} siteKey={quoteSiteKey}
+        onReceived={(reference) => setSuccess(`Request received. Your reference number is ${reference}.`)} />}
       <Dialog open={review} onOpenChange={setReview}>
         <DialogContent className="designer-modal review-modal">
           <DialogTitle>Review your build</DialogTitle>

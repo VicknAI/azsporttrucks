@@ -1,0 +1,15 @@
+{
+  "name": "azsporttrucks-quotes",
+  "main": "worker.ts",
+  "compatibility_date": "2026-09-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {
+    "QUOTE_ENABLED": "false",
+    "PUBLIC_ORIGIN": "https://azsporttrucks.com",
+    "QUOTE_FROM": "quotes@azsporttrucks.com",
+    "QUOTE_TO": "Aztruckshootout@gmail.com",
+    "TURNSTILE_SITE_KEY": "",
+  },
+}

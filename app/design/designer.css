@@ -673,3 +673,10 @@
     scroll-margin-top: 360px;
   }
 }
+.quote-fields { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 20px; }
+.quote-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.quote-consent { display: flex; align-items: flex-start; gap: 12px; font-size: .9rem; line-height: 1.6; }
+.quote-consent input { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 4px; accent-color: #bc252c; }
+.quote-consent a { color: #ff969a; text-decoration: underline; }
+.quote-challenge { min-height: 65px; }
+.quote-reference { padding: 20px; border: 1px solid #555; font-size: 1.2rem; font-weight: 700; overflow-wrap: anywhere; }

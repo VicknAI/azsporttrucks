@@ -434,7 +434,7 @@ const squarebodyK10: Vehicle = {
   year: 1973,
   yearEnd: 1974,
   label: '1973–1974 K10',
-  views: Object.fromEntries(views.map((view) => [view, {
+  views: Object.fromEntries(views.map((view): [View, ViewManifest] => [view, {
     ...squarebodyTemplate.views[view],
     assetRoot: `/designer/final/Chevrolet/K10/1973-1974/${view}`,
     studio: {
