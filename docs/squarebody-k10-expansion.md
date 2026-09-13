@@ -62,6 +62,16 @@ The photographed truck has round headlights in dark rectangular recesses with ch
 
 Use this truck's front end, body detail and tan/white scheme to guide the representative 1977–1979 entry. Preserve the existing approved smaller tire geometry and Stock Rally wheels plus Baja/KMC alternatives. The listing's lifted suspension, 16-inch Ultra wheels and 285/75 tires are reference equipment rather than new requested options. The pictured tailgate is embossed GMC; use Chevrolet lettering for the Chevrolet designer model. The truck has been repainted and has rectangular fuel doors, so do not treat every pictured trim, fuel-filler or lamp detail as proof of original equipment across all three years; verify group-specific differences against original Chevrolet documentation.
 
+## User-selected single-year 1980 reference — September 13, 2026
+
+Nick supplied [this 1980 K10 Silverado listing](https://bringatrailer.com/listing/1980-chevrolet-k10-pickup/) for the separate 1980 entry. Saved and visually inspected three exterior photographs at workspace `assets/squarebody-k10-expansion/references/1980/`: `front-quarter.jpg`, `rear-quarter.jpg` and `wheel-reference.jpg` (full side). Exact image URLs are in `sources.json`.
+
+The photos show single rectangular headlights above clear rectangular signal lenses, a silver grille with three rows of large square openings and a gold Chevrolet bowtie, cooling slots below the grille, vertical amber front-fender markers, chrome bumpers, bright wheel-opening trim, Silverado badges, and a sliding rear window. The brushed tailgate applique carries Chevrolet lettering; a separate bright panel wraps the back of the cab. The blue body has rectangular fuel doors and no upper/lower side moldings in these photos. The listing describes a repaint, lifted suspension and 15-inch Rally wheels, so verify factory details against the original 1980 Chevrolet brochure already linked above.
+
+Use this as the 1980 front-end/body reference while retaining the approved smaller tires, Stock Rally appearance and existing Baja/KMC options. Its solid paint and missing side moldings do not replace the approved two-tone treatment or authorize removing the designer's upper/lower trim. Validate those paint boundaries separately, keeping complete upper doors body color. Preserve Chevrolet tailgate lettering and the normal chrome rear bumper. Keep 1980 as its own selector entry; the 1981–1982 body transition remains separate.
+
+References are now saved for all three remaining groups: 1977–1979, 1980 and 1981–1982. This reference intake does not add artwork or publish another model.
+
 ## User-selected 1981–1982 reference and rear-bumper correction — September 13, 2026
 
 Nick supplied [this 1981 K10 Silverado listing](https://bringatrailer.com/listing/1981-chevrolet-k10-pickup/). His explicit correction is to replace its aftermarket rear roll pan with a proper rear bumper. Use a factory-style chrome rear bumper consistent with the other approved K10 previews, with believable mounts, license-plate placement and side/rear-quarter alignment. Do not carry the smooth body-colored roll pan into the finished truck.
