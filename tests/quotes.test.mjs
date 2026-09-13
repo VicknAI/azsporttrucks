@@ -252,8 +252,11 @@ test('identical retries keep one request and one notification; changed payload c
 test('square-body quotes preserve the year group, paint and wheel artwork', async () => {
   for (const [years, color, contrastRoof] of [
     ['1977-1979', '#c4a574', true],
+    ['1980', '#1678ba', false],
+    ['1981-1982', '#e5e7e7', false],
     ['1985-1987', '#17191c', false],
   ]) {
+    const version = years === '1977-1979' ? 'v2' : 'v1';
     const h = harness();
     const configuration = {
       vehicleId: `Chevrolet-K10-${years}`,
@@ -273,8 +276,8 @@ test('square-body quotes preserve the year group, paint and wheel artwork', asyn
     const review = await h.request(new Request(await privateLink(h.env, row.id)));
     const html = await review.text();
     for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
-      assert.ok(html.includes(`/chevrolet-k10-${years}-color-v1/${view}/paint-mask.png`));
-      assert.ok(html.includes(`/chevrolet-k10-${years}-kmc-impact-beadlock-v1/${view}.png`));
+      assert.ok(html.includes(`/chevrolet-k10-${years}-color-${version}/${view}/paint-mask.png`));
+      assert.ok(html.includes(`/chevrolet-k10-${years}-kmc-impact-beadlock-${version}/${view}.png`));
     }
     await h.close();
   }

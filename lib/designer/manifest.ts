@@ -443,7 +443,7 @@ const squarebodyK10: Vehicle = {
     ...squarebodyTemplate.views[view],
     assetRoot: `/designer/final/Chevrolet/K10/1973-1974/${view}`,
     studio: {
-      root: `/designer/studio/chevrolet-k10-1973-1974-color-v3/${view}`,
+      root: `/designer/studio/chevrolet-k10-1973-1974-color-v4/${view}`,
       paintScene: true,
       width: 768,
       height: 512,
@@ -465,7 +465,7 @@ const squarebody1976: Vehicle = {
     assetRoot: `/designer/final/Chevrolet/K10/1975-1976/${view}`,
     studio: {
       ...squarebodyK10.views[view].studio!,
-      root: `/designer/studio/chevrolet-k10-1975-1976-color-v1/${view}`,
+      root: `/designer/studio/chevrolet-k10-1975-1976-color-v2/${view}`,
     },
   }])) as Record<View, ViewManifest>,
 };
@@ -487,11 +487,34 @@ const squarebody1977: Vehicle = {
     assetRoot: `/designer/final/Chevrolet/K10/1977-1979/${view}`,
     studio: {
       ...squarebody1976.views[view].studio!,
-      root: `/designer/studio/chevrolet-k10-1977-1979-color-v1/${view}`,
+      root: `/designer/studio/chevrolet-k10-1977-1979-color-v2/${view}`,
     },
   }])) as Record<View, ViewManifest>,
 };
 vehicles.splice(vehicles.indexOf(squarebody1976) + 1, 0, squarebody1977);
+const squarebody1980: Vehicle = {
+  ...squarebody1977,
+  id: 'Chevrolet-K10-1980',
+  year: 1980,
+  yearEnd: undefined,
+  label: '1980 K10',
+  referencePaint: {
+    label: 'Blue reference look',
+    color: '#1678ba',
+    secondaryColor: '#f1eee5',
+    contrastRoof: false,
+    paintMode: 'Solid',
+  },
+  views: Object.fromEntries(views.map((view) => [view, {
+    ...squarebody1977.views[view],
+    assetRoot: `/designer/final/Chevrolet/K10/1980/${view}`,
+    studio: {
+      ...squarebody1977.views[view].studio!,
+      root: `/designer/studio/chevrolet-k10-1980-color-v1/${view}`,
+    },
+  }])) as Record<View, ViewManifest>,
+};
+vehicles.splice(vehicles.indexOf(squarebody1977) + 1, 0, squarebody1980);
 const squarebody1983: Vehicle = {
   ...squarebodyK10,
   id: 'Chevrolet-K10-1983-1984',
@@ -513,7 +536,30 @@ const squarebody1983: Vehicle = {
     },
   }])) as Record<View, ViewManifest>,
 };
-vehicles.splice(vehicles.indexOf(squarebody1977) + 1, 0, squarebody1983);
+vehicles.splice(vehicles.indexOf(squarebody1980) + 1, 0, squarebody1983);
+const squarebody1981: Vehicle = {
+  ...squarebody1983,
+  id: 'Chevrolet-K10-1981-1982',
+  year: 1981,
+  yearEnd: 1982,
+  label: '1981–1982 K10',
+  referencePaint: {
+    label: 'White reference look',
+    color: '#e5e7e7',
+    secondaryColor: '#b8bec5',
+    contrastRoof: false,
+    paintMode: 'Solid',
+  },
+  views: Object.fromEntries(views.map((view) => [view, {
+    ...squarebody1983.views[view],
+    assetRoot: `/designer/final/Chevrolet/K10/1981-1982/${view}`,
+    studio: {
+      ...squarebody1983.views[view].studio!,
+      root: `/designer/studio/chevrolet-k10-1981-1982-color-v1/${view}`,
+    },
+  }])) as Record<View, ViewManifest>,
+};
+vehicles.splice(vehicles.indexOf(squarebody1983), 0, squarebody1981);
 const squarebody1986: Vehicle = {
   ...squarebody1983,
   id: 'Chevrolet-K10-1985-1987',
@@ -586,11 +632,14 @@ for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F
 
 // Replacement wheel faces follow each 4WD body's existing tires and ride height.
 for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.model))) {
-  const sourceYear = vehicle.model === 'K10' && vehicle.year >= 1973 && vehicle.yearEnd ? `${vehicle.year}-${vehicle.yearEnd}` : vehicle.model === 'K10' && vehicle.year >= 1969
+  const sourceYear = vehicle.model === 'K10' && vehicle.year >= 1973
+    ? vehicle.yearEnd ? `${vehicle.year}-${vehicle.yearEnd}` : vehicle.year
+    : vehicle.model === 'K10' && vehicle.year >= 1969
     ? vehicle.year <= 1970 ? 1970 : 1972
     : vehicle.model === 'K5' ? vehicle.year <= 1970 ? 1970 : 1972 : vehicle.year;
   const family = vehicle.model === 'F-150' ? 'ford-f150' : `chevrolet-${vehicle.model.toLowerCase()}`;
-  const wheelVersion = vehicle.id === squarebodyK10.id ? 'v3' : 'v1';
+  const wheelVersion = vehicle.id === squarebodyK10.id ? 'v4'
+    : [squarebody1976.id, squarebody1977.id].includes(vehicle.id) ? 'v2' : 'v1';
   for (const view of views) {
     const wheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-${wheelVersion}`;
     const blackWheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-black-${wheelVersion}`;
