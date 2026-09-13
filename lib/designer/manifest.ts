@@ -470,6 +470,28 @@ const squarebody1976: Vehicle = {
   }])) as Record<View, ViewManifest>,
 };
 vehicles.splice(vehicles.indexOf(squarebodyK10) + 1, 0, squarebody1976);
+const squarebody1977: Vehicle = {
+  ...squarebody1976,
+  id: 'Chevrolet-K10-1977-1979',
+  year: 1977,
+  yearEnd: 1979,
+  label: '1977–1979 K10',
+  referencePaint: {
+    label: 'Tan / white reference look',
+    color: '#c4a574',
+    secondaryColor: '#f1eee5',
+    contrastRoof: true,
+  },
+  views: Object.fromEntries(views.map((view) => [view, {
+    ...squarebody1976.views[view],
+    assetRoot: `/designer/final/Chevrolet/K10/1977-1979/${view}`,
+    studio: {
+      ...squarebody1976.views[view].studio!,
+      root: `/designer/studio/chevrolet-k10-1977-1979-color-v1/${view}`,
+    },
+  }])) as Record<View, ViewManifest>,
+};
+vehicles.splice(vehicles.indexOf(squarebody1976) + 1, 0, squarebody1977);
 const squarebody1983: Vehicle = {
   ...squarebodyK10,
   id: 'Chevrolet-K10-1983-1984',
@@ -491,7 +513,7 @@ const squarebody1983: Vehicle = {
     },
   }])) as Record<View, ViewManifest>,
 };
-vehicles.splice(vehicles.indexOf(squarebody1976) + 1, 0, squarebody1983);
+vehicles.splice(vehicles.indexOf(squarebody1977) + 1, 0, squarebody1983);
 const squarebody1986: Vehicle = {
   ...squarebody1983,
   id: 'Chevrolet-K10-1985-1987',
@@ -630,7 +652,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     trim: { ...baseTrim },
     color: vehicle.referencePaint?.color ?? (squarebody ? '#237cae' : vehicle.id === squarebody1976.id ? '#d34b20' : fordStudio || vehicle.views.side.studio?.solidOnly ? '#1678ba' : blueK10 ? '#087ca2' : greenK10 ? '#20584b' : seafoam1967 ? '#63aba6' : blue1968 ? '#087fb8' : vehicle.model === 'K5' && vehicle.year <= 1970 ? '#a9adb1' : vehicle.views.side.studio?.openTopRoot ? '#1678ba' : vehicle.views.side.studio?.paintScene ? '#bc252c' : colors[0].hex),
     secondaryColor: vehicle.referencePaint?.secondaryColor ?? '#e5e7e7',
-    roofColor: '#e5e7e7',
+    roofColor: vehicle.referencePaint?.secondaryColor ?? '#e5e7e7',
     finish: 'Gloss',
     paintMode: vehicle.referencePaint?.paintMode ?? (fordStudio || vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid'),
     twoToneStyle: fordStudio || ['C10', 'K10'].includes(vehicle.model)

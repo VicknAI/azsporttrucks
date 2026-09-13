@@ -12,7 +12,7 @@ Nick selected these year groups on September 12, 2026, using the [CJ Pony Parts 
 | 1983–1984 | Updated two-level grille |
 | 1985–1987 | Final grille family |
 
-Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The implemented groups are 1973–1974, 1975–1976, 1983–1984 and 1985–1987; 1977–1979, 1980 and 1981–1982 remain unimplemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
+Nick clarified that each group should be a single selectable designer entry, rather than separate exact-year entries. Use the seven range labels above (with 1980 as the single-year exception). The implemented groups are 1973–1974, 1975–1976, 1977–1979, 1983–1984 and 1985–1987; 1980 and 1981–1982 remain unimplemented. Nick subsequently grouped the earlier K10s as 1967, 1968, 1969–1970 and 1971–1972, as recorded below.
 
 ## Integration direction
 
@@ -161,3 +161,13 @@ The dedicated quote Worker must be deployed alongside the website after any new 
 All 39 repository tests, TypeScript validation and the production build pass. Four-view solid black/green, contrasting blue/white and KMC black/silver artwork sheets were visually inspected, and pixel comparisons confirm preservation outside the intended front hardware edits. No browser interaction testing was requested or performed.
 
 Nick enabled the hourly task follow-up `continue-square-body-k10-models` to continue this group and then 1977–1979, 1980 and 1981–1982, honoring the existing GitHub/Cloudflare setup and free-only services. Stop the follow-up once all remaining groups are verified live. Actual publication results are recorded in the private 1986 review directory when completed.
+
+## 1977–1979 Custom Deluxe-style group — September 13, 2026
+
+Added `Chevrolet-K10-1977-1979` with the reference-inspired dark three-row grid grille, light Chevrolet bowtie, round headlamps in dark recesses, clear signal lenses with amber centers, and a tan/white preset. The selected reference has a customized dark grille; the [original 1977 Chevrolet pickup brochure cover](https://www.oldcarbrochures.org/United%20States/GM%20Trucks%20and%20Vans/1977_Trucks_and_Vans/1977-Chevrolet-Pickups-Brochure-Rev/slides/1977_Chevrolet_Pickups_Rev-01.html) confirms the round-lamp layout and shows brighter grille ribs. The designer follows Nick's selected appearance rather than claiming every pictured finish is factory equipment. The shared body keeps the early round fuel filler; fuel-door and other differences within the group are not represented as separate options.
+
+One built-in imagegen edit supplied the front hardware. Only the grille, headlamp and signal regions are applied over the approved 1975–1976 scenes. Original paint, body contours, both side moldings, cab/door boundaries, chrome bumpers, Chevrolet tailgate, tire dimensions and all five wheel choices stay fixed. The donor's unchanged Scottsdale badges were replaced with the actual Custom Deluxe badge isolated from Nick's photograph. Existing models and artwork packs are unchanged. The default contrasting roof now uses a vehicle's reference secondary color, matching the existing reference-reset button.
+
+The new `chevrolet-k10-1977-1979-color-v1` studio pack and four alternative wheel packs contain 40 PNGs. Authoring source, exact built-in prompt, original donor, reference-badge cutout, reproducible `prepare-artwork.py`, six paint review sheets, four wheel sheets and pixel-preservation checks are saved outside the checkout under workspace `assets/squarebody-k10-expansion/1977/`. Tan/white, solid green and KMC beadlock sheets were visually inspected in all four angles. Publication verification is saved in that directory's `review-v1/live-release-verification.json` after deployment.
+
+All 39 repository tests, TypeScript validation and the production build pass. The quote-service regression covers both this group and 1985–1987, preserving the group identity, paint, wheel choice and all four private review images. The updated quote Worker was deployed before the website, version `c2e53de3-5422-41d3-afa4-282f94116382`, with the existing free-service configuration. This hourly background run skips a browser-only preview and browser interaction testing; direct public asset verification follows the website deployment. Next work is the separate 1980 group, followed by 1981–1982 with the requested chrome rear bumper.
