@@ -636,7 +636,7 @@ test('paired K10 years load legacy shared links and saved drafts without losing 
       assert.equal(summary(c)['Cab paint coverage'], 'Roof and pillars');
       for (const view of views) {
         const svg = renderSvg(c, view);
-        const source = year <= 1970 ? '1970-color-v4' : '1972-color-v3';
+        const source = year <= 1970 ? '1970-color-v5' : '1972-color-v3';
         assert.ok(svg.includes(`/chevrolet-k10-${source}/${view}/paint-mask.png`));
       }
     }
