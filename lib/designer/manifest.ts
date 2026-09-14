@@ -336,7 +336,7 @@ for (const model of ['C10', 'K10'])
 const k10Studio1967 = vehicles.find((v) => v.id === 'Chevrolet-K10-1967')!;
 for (const view of views)
   k10Studio1967.views[view].studio = {
-    root: `/designer/studio/chevrolet-k10-1967-color-v1/${view}`,
+    root: `/designer/studio/chevrolet-k10-1967-color-v2/${view}`,
     paintScene: true,
     width: 768,
     height: 512,
@@ -347,7 +347,7 @@ for (const view of views)
 const k10Studio1968 = vehicles.find((v) => v.id === 'Chevrolet-K10-1968')!;
 for (const view of views)
   k10Studio1968.views[view].studio = {
-    root: `/designer/studio/chevrolet-k10-1968-color-v1/${view}`,
+    root: `/designer/studio/chevrolet-k10-1968-color-v2/${view}`,
     paintScene: true,
     width: 768,
     height: 512,
