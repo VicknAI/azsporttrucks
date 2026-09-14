@@ -8,6 +8,7 @@ export function SiteHeader() {
     <a href="/" className="brand" aria-label="AZ Sport Trucks home"><img src="/az-sport-trucks-logo.png" alt="AZ Sport Trucks" width="1536" height="1024" /></a>
     <nav aria-label="Main navigation">
       <a href="/#builds">Builds</a>
+      <a href="/chassis" aria-current={pathname === '/chassis' ? 'page' : undefined}>Chassis Guide</a>
       <a href="/design" aria-current={pathname === '/design' ? 'page' : undefined}>Design Your Build</a>
       <DropdownMenu><DropdownMenuTrigger className="sale-trigger" data-active={pathname.startsWith('/for-sale') || undefined}>For Sale <ChevronDown size={15} aria-hidden="true" /></DropdownMenuTrigger>
         <DropdownMenuContent className="sale-menu" sideOffset={14}>

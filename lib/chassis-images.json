@@ -1,0 +1,52 @@
+{
+  "rs-spec-c67": {
+    "source": "https://roadstershop.com/product/1967-72-c10-standard/",
+    "representative": false,
+    "url": "https://cdn.roadstershop.com/app/uploads/2021/08/17210227/1967-72-C10-Stock-SPEC-chassis-1-1.png"
+  },
+  "rs-fast-c67": {
+    "source": "https://roadstershop.com/product/1967-72-c10-fast-track/",
+    "representative": false,
+    "url": "https://cdn.roadstershop.com/app/uploads/2021/08/17211247/DSC_0006.png"
+  },
+  "schwartz": {
+    "source": "https://www.schwartzperformance.com/chassis/1967-1972-chevy-c10-gmc/",
+    "representative": false,
+    "url": "https://www.schwartzperformance.com/wp-content/uploads/2018/07/C10-web.jpg"
+  },
+  "gsi-air": {
+    "source": "https://www.gsimfab.com/products/67-72-c10-air-ride-chassis",
+    "representative": false,
+    "url": "https://www.gsimfab.com/cdn/shop/files/GSI_67-72_C10_Air_Ride_Chassis_Fully_Modded_Photo.jpg?crop=center&height=1200&v=1771022688&width=1200"
+  },
+  "scotts-coil": {
+    "source": "https://scottshotrods.com/1963-87-chevy-gmc-chassis/",
+    "representative": false,
+    "url": "https://scottshotrods.com/wp-content/uploads/2021/01/scotts-67-72-c10-coilover-chassis-mandrel-web.png"
+  },
+  "scotts-apex": {
+    "source": "https://scottshotrods.com/apex4-chassis/",
+    "representative": true,
+    "url": "https://scottshotrods.com/wp-content/uploads/2026/05/scotts-hotrods-4x4-81-87-K10-chassis-web-1024x552.png"
+  },
+  "revb": {
+    "source": "https://revbchassis.com/pages/chassis-accompaniments",
+    "representative": true,
+    "url": "https://revbchassis.com/cdn/shop/files/Gen2676.jpg?v=1692134892&width=1500"
+  },
+  "fatfender": {
+    "source": "https://fatfender.com/pages/chassis",
+    "representative": true,
+    "url": "https://fatfender.com/cdn/shop/files/2_wheel_drive_chassis_fatfender.jpg?v=1786461035&width=1200"
+  },
+  "cbc": {
+    "source": "https://cbcpro.com/products/c10-performance-chassis-60-72",
+    "representative": true,
+    "url": "https://cbcpro.com/cdn/shop/products/Chassis_Performance_BLK_03e82310-8613-410b-818b-124179325745.jpg?v=1772327386"
+  },
+  "rs-legend-blazer": {
+    "source": "https://roadstershop.com/product/1969-72-blazer-legend-series-chassis/",
+    "representative": false,
+    "url": "https://cdn.roadstershop.com/app/uploads/2022/10/01145108/69-72-Legend-Blazer.png"
+  }
+}
