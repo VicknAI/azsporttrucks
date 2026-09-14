@@ -258,7 +258,7 @@ export const vehicles: Vehicle[] = [
 const c10Studio = vehicles.find((v) => v.id === 'Chevrolet-C10-1967')!;
 for (const view of views)
   c10Studio.views[view].studio = {
-    root: `/designer/studio/chevrolet-c10-1967-color-v3/${view}`,
+    root: `/designer/studio/chevrolet-c10-1967-color-v4/${view}`,
     paintScene: true,
     width: 768,
     height: 512,
@@ -336,7 +336,7 @@ for (const model of ['C10', 'K10'])
 const k10Studio1967 = vehicles.find((v) => v.id === 'Chevrolet-K10-1967')!;
 for (const view of views)
   k10Studio1967.views[view].studio = {
-    root: `/designer/studio/chevrolet-k10-1967-color-v2/${view}`,
+    root: `/designer/studio/chevrolet-k10-1967-color-v3/${view}`,
     paintScene: true,
     width: 768,
     height: 512,
@@ -609,9 +609,10 @@ for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F
     ? vehicle.year <= 1968 ? vehicle.year : vehicle.year <= 1970 ? 1970 : 1971
     : vehicle.year;
   const family = vehicle.model === 'C10' ? 'chevrolet-c10' : 'ford-f100';
+  const stanceVersion = vehicle.model === 'C10' && sourceYear === 1967 ? 2 : 1;
   for (const view of views) {
     vehicle.views[view].studio!.stanceRoots = Object.fromEntries(
-      ['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/${family}-${sourceYear}-stance-v1/${stance}/${view}`]),
+      ['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/${family}-${sourceYear}-stance-v${stanceVersion}/${stance}/${view}`]),
     );
     // Reuse the approved 1971/72 wheel pack; each other body family is aligned
     // to its own tire positions and stance masks.
