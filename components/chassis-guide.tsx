@@ -10,7 +10,6 @@ const money = (n: number) => new Intl.NumberFormat('en-US', {style:'currency',cu
 const road = [
   { name:'Street', tagline:'Enjoy every mile.', copy:'Comfort, cruising and everyday driving.', icon:Truck },
   { name:'Street & Track', tagline:'Drive it. Then push it.', copy:'Street manners with autocross and track-day capability.', icon:Gauge },
-  { name:'Track-Focused', tagline:'Build around performance.', copy:'Competition-led builds where setup and tuning take priority.', icon:Flag },
 ];
 const trail = [
   { name:'Street', tagline:'Classic look. Modern comfort.', copy:'Road comfort and everyday 4×4 drivability.', icon:Truck },
@@ -61,7 +60,7 @@ export function ChassisGuide() {
     <section className="chassis-results" aria-labelledby="chassis-results-title">
       <div className="chassis-results-top"><div><span className="chassis-step">02 / FIND YOUR DRIVING STYLE</span><h2 id="chassis-results-title">{truck.name}</h2></div><p aria-live="polite">{entries.length} options to explore · {truck.four?'4×4':'2WD'}</p></div>
       <p className="chassis-editor-note">Choose by how you drive. These are use categories, not quality rankings. Exact year, bed length, drivetrain and package fitment should be confirmed with the manufacturer.</p>
-      <div className="chassis-columns" key={truckId}>{categories.map((category,index)=>{
+      <div className="chassis-columns" data-columns={categories.length} key={truckId}>{categories.map((category,index)=>{
         const Icon=category.icon;const group=entries.filter(i=>i.category===index);
         return <section key={category.name} className={`chassis-column chassis-column-${index}`} aria-labelledby={`category-${index}`}>
           <header className="chassis-category-head"><div><Icon size={27} aria-hidden="true"/><span>{String(index+1).padStart(2,'0')}</span></div><h3 id={`category-${index}`}>{category.name}</h3><strong>{category.tagline}</strong><p>{category.copy}</p><span className="chassis-count">{group.length} {group.length===1?'option':'options'}</span></header>
