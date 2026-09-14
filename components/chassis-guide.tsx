@@ -1,7 +1,7 @@
 /* oxlint-disable next/no-img-element -- Manufacturer-hosted photos use native lazy loading and graceful failure handling. */
 'use client';
 import { useState } from 'react';
-import { ArrowUpRight, Gauge, Flag, Mountain, Route, Truck } from 'lucide-react';
+import { ArrowUpRight, Gauge, Flag, Mountain, Truck } from 'lucide-react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { chassis, trucks, type Chassis } from '@/lib/chassis-data';
 import images from '@/lib/chassis-images.json';
@@ -12,9 +12,7 @@ const road = [
   { name:'Street & Track', tagline:'Drive it. Then push it.', copy:'Street manners with autocross and track-day capability.', icon:Gauge },
 ];
 const trail = [
-  { name:'Street', tagline:'Classic look. Modern comfort.', copy:'Road comfort and everyday 4×4 drivability.', icon:Truck },
-  { name:'Street & Trail', tagline:'Beyond the pavement.', copy:'Highway miles and off-road use in the same build.', icon:Route },
-  { name:'Off-Road Focused', tagline:'Built for demanding terrain.', copy:'Heavy-duty configurations for more challenging trails.', icon:Mountain },
+  { name:'Street & Offroad', tagline:'On the road. Beyond the pavement.', copy:'Compare 4×4 foundations for everyday driving, trail use and demanding terrain.', icon:Mountain },
 ];
 function Card({item, selected, onCompare}: {item:Chassis; selected:boolean; onCompare:()=>void}) {
   const picture = (images as Record<string,{url:string;representative?:boolean}>)[item.id];
@@ -61,7 +59,7 @@ export function ChassisGuide() {
       <div className="chassis-results-top"><div><span className="chassis-step">02 / FIND YOUR DRIVING STYLE</span><h2 id="chassis-results-title">{truck.name}</h2></div><p aria-live="polite">{entries.length} options to explore · {truck.four?'4×4':'2WD'}</p></div>
       <p className="chassis-editor-note">Choose by how you drive. These are use categories, not quality rankings. Exact year, bed length, drivetrain and package fitment should be confirmed with the manufacturer.</p>
       <div className="chassis-columns" data-columns={categories.length} key={truckId}>{categories.map((category,index)=>{
-        const Icon=category.icon;const group=entries.filter(i=>i.category===index);
+        const Icon=category.icon;const group=truck.four ? entries : entries.filter(i=>i.category===index);
         return <section key={category.name} className={`chassis-column chassis-column-${index}`} aria-labelledby={`category-${index}`}>
           <header className="chassis-category-head"><div><Icon size={27} aria-hidden="true"/><span>{String(index+1).padStart(2,'0')}</span></div><h3 id={`category-${index}`}>{category.name}</h3><strong>{category.tagline}</strong><p>{category.copy}</p><span className="chassis-count">{group.length} {group.length===1?'option':'options'}</span></header>
           <div className="chassis-stack">{group.length?group.map(item=><Card key={item.id} item={item} selected={ids.includes(item.id)} onCompare={()=>toggle(item.id)}/>):<div className="chassis-empty"><Flag size={28}/><h4>Still researching this category.</h4><p>We haven’t identified a suitable option for this truck in this category yet. Explore the adjacent options or talk with us about your build.</p></div>}</div>
