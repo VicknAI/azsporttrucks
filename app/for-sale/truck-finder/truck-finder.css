@@ -1,34 +1,21 @@
 .truck-finder{min-height:70svh;padding-top:40px}
-.truck-finder h1{font-size:clamp(2.6rem,6vw,5.5rem);margin:20px 0 12px;line-height:1.05}
-.finder-intro{color:#c8c8c8;font-size:1.125rem;line-height:1.7;margin-bottom:24px}
-.truck-finder .sale-categories{flex-wrap:wrap;gap:8px 28px;margin-bottom:24px}
-.finder-mode{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#211a1b;border:1px solid #654044;padding:16px 20px;margin-bottom:24px}
-.finder-mode p{font-size:.875rem;color:#e5cecf;line-height:1.7;margin:0}
-.finder-mode button,.finder-filters button{font-size:.875rem;text-decoration:underline;text-underline-offset:4px;cursor:pointer;flex-shrink:0;min-height:44px}
-.finder-filters{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;align-items:end;gap:16px;border-bottom:1px solid #383838;padding-bottom:24px}
-.finder-filters label{display:flex;flex-direction:column;gap:9px;font-size:.875rem;min-width:0}
-.truck-finder input,.truck-finder select{background:#1b1b1b;border:1px solid #555;color:#f5f5f3;padding:12px;font:inherit;min-height:46px;min-width:0;border-radius:0;color-scheme:dark}
-.truck-finder input::placeholder{color:#aaa}
-.truck-finder :is(input,select,button,a):focus-visible{outline:2px solid #ff6268;outline-offset:4px}
-.finder-results-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin:22px 0;font-size:.875rem;color:#c8c8c8}
-.finder-results-bar select{margin-left:10px}
-.truck-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-.truck-card{background:#161616;border:1px solid #383838;min-width:0}
-.truck-card-image{position:relative;aspect-ratio:1.5;background:#ededeb;overflow:hidden}
-.truck-card-image img{width:100%;height:100%;object-fit:contain}
-.truck-card-image>span{position:absolute;top:12px;left:12px;background:#191919;color:#fff;padding:7px 9px;font-size:.75rem;font-weight:700}
-.truck-card-body{padding:22px}
-.truck-card-price{font-size:1.75rem;font-weight:700;margin:0 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.truck-card-price small{font-size:.75rem;font-weight:400;color:#bcbcbc}
-.truck-card h2{font-family:Arial,Helvetica,sans-serif;font-size:1.125rem;letter-spacing:normal;line-height:1.5;margin:0 0 12px}
-.truck-card-location{display:flex;align-items:center;gap:6px;font-size:.875rem;color:#bcbcbc;line-height:1.7}
-.truck-card-location svg{flex-shrink:0}
-.truck-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #383838;margin-top:22px;padding-top:16px;font-size:.875rem;color:#bcbcbc}
-.truck-card-bottom a{display:inline-flex;align-items:center;gap:6px;color:#ff8c92}
-.finder-empty{border:1px solid #383838;background:#151515;text-align:center;padding:56px 24px}
-.finder-empty h2{font-family:Arial,Helvetica,sans-serif;font-size:1.5rem;letter-spacing:normal;line-height:1.5}
-.finder-empty p{color:#bcbcbc;max-width:580px;margin:16px auto;line-height:1.8}
-.finder-empty button{display:inline-flex;align-items:center;gap:12px;background:#ae1721;color:white;padding:14px 20px;cursor:pointer;margin-top:10px}
+.truck-finder h1{font-size:clamp(2.6rem,6vw,5.5rem);margin:20px 0;line-height:1.05}
+.finder-intro{max-width:720px;color:#c8c8c8;font-size:1.125rem;line-height:1.7;margin-bottom:24px}
+.truck-finder .sale-categories{flex-wrap:wrap;gap:8px 28px;margin-bottom:30px}
+.finder-heading{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.finder-heading h2{font-family:Arial,Helvetica,sans-serif;font-size:1.5rem;letter-spacing:normal;line-height:1.4}
+.finder-heading span,.finder-help{font-size:.875rem;color:#bcbcbc;line-height:1.7}
+.finder-help{margin:10px 0 22px}
+.finder-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.finder-region{background:#151515;border:1px solid #383838;border-top:3px solid #b81420;padding:24px;display:flex;flex-direction:column;min-width:0}
+.finder-region>svg{color:#ff6268;margin-bottom:22px}
+.finder-region h3{font-family:Arial,Helvetica,sans-serif;font-size:1.25rem;letter-spacing:normal;line-height:1.4;margin:0 0 8px}
+.finder-region p{color:#bcbcbc;font-size:.875rem;line-height:1.6;margin:0 0 26px}
+.finder-links{display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.finder-links a{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;border:1px solid #555;padding:12px;font-size:.875rem;font-weight:700;background:#202020}
+.finder-links a:hover{background:#a60e17;border-color:#ef252e;color:white}
+.finder-links a:focus-visible{outline:2px solid #ff6268;outline-offset:4px}
+.finder-links svg{flex-shrink:0}
 .finder-note{max-width:900px;color:#bcbcbc;font-size:.875rem;line-height:1.8;margin-top:28px}
-@media(max-width:1000px){.truck-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.finder-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.finder-filters button{justify-self:start}}
-@media(max-width:600px){.truck-gallery{grid-template-columns:1fr}.finder-mode{align-items:start;flex-direction:column;gap:6px}.truck-finder{padding-top:28px}.truck-finder .sale-categories{gap:4px 20px}.truck-finder .sale-categories a{font-size:.875rem}.finder-results-bar label{display:flex;align-items:center}.finder-empty{padding:36px 20px}}
+@media(max-width:1100px){.finder-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.finder-grid{grid-template-columns:1fr}.truck-finder{padding-top:32px}.finder-region{padding:22px}.finder-region>svg{margin-bottom:16px}.finder-links{flex-direction:row}.finder-links a{flex:1}.truck-finder .sale-categories{gap:4px 20px}.truck-finder .sale-categories a{font-size:.875rem}}
