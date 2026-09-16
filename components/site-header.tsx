@@ -14,6 +14,7 @@ export function SiteHeader() {
         <DropdownMenuContent className="sale-menu" sideOffset={14}>
           <DropdownMenuItem className="sale-menu-item" render={<a href="/for-sale/trucks" aria-current={pathname === '/for-sale/trucks' ? 'page' : undefined} />}>Trucks For Sale</DropdownMenuItem>
           <DropdownMenuItem className="sale-menu-item" render={<a href="/for-sale/parts" aria-current={pathname === '/for-sale/parts' ? 'page' : undefined} />}>Parts</DropdownMenuItem>
+          <DropdownMenuItem className="sale-menu-item" render={<a href="/for-sale/truck-finder" aria-current={pathname === '/for-sale/truck-finder' ? 'page' : undefined} />}>Arizona Truck Finder</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <a href="/#approach">Our approach</a>
