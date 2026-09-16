@@ -19,3 +19,4 @@
 .finder-note{max-width:900px;color:#bcbcbc;font-size:.875rem;line-height:1.8;margin-top:28px}
 @media(max-width:1100px){.finder-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.finder-grid{grid-template-columns:1fr}.truck-finder{padding-top:32px}.finder-region{padding:22px}.finder-region>svg{margin-bottom:16px}.finder-links{flex-direction:row}.finder-links a{flex:1}.truck-finder .sale-categories{gap:4px 20px}.truck-finder .sale-categories a{font-size:.875rem}}
+@media(max-width:560px){.finder-links{flex-wrap:wrap}.finder-links a{flex:1 1 130px}}

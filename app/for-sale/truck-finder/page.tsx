@@ -4,8 +4,8 @@ import './truck-finder.css';
 
 export const metadata = pageMetadata({
   path: '/for-sale/truck-finder',
-  title: 'Arizona C10 & K10 Truck Finder | AZ Sport Trucks',
-  description: 'Search Craigslist for C10 and K10 trucks across eight Arizona regions. Browse photo galleries, prices, and seller details.',
+  title: 'Arizona C10, K10 & K5 Truck Finder | AZ Sport Trucks',
+  description: 'Search Craigslist for C10 and K10 trucks and Chevy K5 Blazers across eight Arizona regions. Browse photo galleries, prices, and seller details.',
 });
 
 const regions = [
@@ -19,10 +19,12 @@ const regions = [
   { name: 'Yuma', host: 'yuma', area: 'Southwestern Arizona' },
 ];
 
-function searchUrl(host: string, model: 'C10' | 'K10') {
+function searchUrl(host: string, model: 'C10' | 'K10' | 'K5') {
   const letter = model[0].toLowerCase();
   const params = new URLSearchParams({
-    query: `${letter}10 | "${letter}-10" | "${letter} 10"`,
+    query: model === 'K5'
+      ? '(k5 | "k-5" | "k 5") (chevy | chevrolet | blazer)'
+      : `${letter}10 | "${letter}-10" | "${letter} 10"`,
     sort: 'date',
     hasPic: '1',
   });
@@ -33,7 +35,7 @@ export default function TruckFinder() {
   return <main id="main" className="section truck-finder">
     <span className="eyebrow">AZ SPORT TRUCKS / ARIZONA</span>
     <h1>TRUCK <em>FINDER.</em></h1>
-    <p className="finder-intro">Find your next C10 or K10. Choose an Arizona region to browse photos, prices, and seller details on Craigslist.</p>
+    <p className="finder-intro">Find your next C10, K10, or Chevy K5 Blazer. Choose an Arizona region to browse photos, prices, and seller details on Craigslist.</p>
     <nav className="sale-categories" aria-label="For sale categories">
       <a href="/for-sale/trucks">Trucks For Sale</a>
       <a href="/for-sale/parts">Parts</a>
@@ -47,7 +49,7 @@ export default function TruckFinder() {
         <h3 id={`region-${region.host}`}>{region.name}</h3>
         <p>{region.area}</p>
         <div className="finder-links">
-          {(['C10', 'K10'] as const).map(model => <a key={model} href={searchUrl(region.host, model)} target="_blank" rel="noopener noreferrer" aria-label={`Browse ${model} trucks in ${region.name} on Craigslist (opens in a new tab)`}>
+          {(['C10', 'K10', 'K5'] as const).map(model => <a key={model} href={searchUrl(region.host, model)} target="_blank" rel="noopener noreferrer" aria-label={`Browse ${model === 'K5' ? 'Chevy K5 Blazers' : `${model} trucks`} in ${region.name} on Craigslist (opens in a new tab)`}>
             Browse {model}s <ArrowUpRight size={17} aria-hidden="true" />
           </a>)}
         </div>
