@@ -1,5 +1,19 @@
 # Square-body K10 expansion
 
+## 1985–1987 contrasting cab cleanup — September 24, 2026
+
+Nick also flagged the late body's side and rear three-quarter cab boundaries. Added separate source-coordinate mask contours for these two views. The side contour follows the actual bright door trim and lower door seam; the rear contour fills the missing cab-back strip, rounds the roof corner, and meets the existing lower paint boundary. Complete door frames stay body color. These are local additions to the existing mask, constrained by body-paint coverage, without changing any raster asset or other model group's geometry.
+
+The earlier 1975–1976 correction is retained. Combined verification compares 953 unaffected renders against the original renderer, checks all five wheel selections, and checks shared configurations and self-contained exports. Magnified browser review covers white and black contrasting cabs. Authoring and verification: `assets/k10-1985-1987-cab-cleanup/`. Both corrections are local and have not been published; the website and quote Worker need the same shared renderer when released.
+
+## 1975–1976 contrasting cab corner cleanup — September 24, 2026
+
+Corrected the rear three-quarter cab paint boundary flagged by Nick. The inherited raster mask stopped at a straight roof-crown cutoff and left a body-color strip beside the rear window. A source-coordinate SVG mask extension now follows the rounded roof corner and continues down the cab back to the existing lower color boundary. The complete door/window frame remains body color.
+
+The extension is constrained by the existing body paint mask and registered only on the 1975–1976 rear-quarter pack, after related packs are constructed. It works with both roof mask choices, all five wheel scenes, shared configurations, and embedded build sheets. Original raster artwork, glass, chrome, wheels, paint textures, other views, and all other model groups remain unchanged. Contrast-off rendering is unchanged too.
+
+Local visual review covers white and black contrasting cabs plus a bright diagnostic color. Workspace `assets/k10-1975-1976-cab-cleanup/verify.mjs` compares 963 unaffected renders to the previous renderer and checks sharing and offline exports. The repository's 39 tests pass. This entry records a local change; publishing must include the quote Worker because its private build reviews share the renderer.
+
 Nick selected these year groups on September 12, 2026, using the [CJ Pony Parts identification guide](https://www.cjponyparts.com/resources/square-body-chevy-identification-guide):
 
 | Artwork group | Reference distinction |

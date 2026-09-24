@@ -282,6 +282,123 @@ test('square-body quotes preserve the year group, paint and wheel artwork', asyn
     await h.close();
   }
 });
+test('square-body C10 quotes retain the selected 2WD group, street wheels, stance and cab paint', async () => {
+  for (const years of ['1973-1974', '1975-1976', '1977-1979', '1980', '1981-1982', '1983-1984', '1985-1987']) {
+    for (const [wheelId, stance, wheelPack] of [
+      ['street-temp', 'stock', null],
+      ['torq-thrust-18', 'drop2', 'torq-v1/18/drop2'],
+      ['rocket-attack-20', 'frame', 'rocket-attack-v1/20/frame'],
+    ]) {
+      const h = harness();
+      const configuration = {
+        vehicleId: `Chevrolet-C10-${years}`,
+        direction: 'Lowered',
+        color: '#325577',
+        secondaryColor: '#e8ddc7',
+        roofColor: '#f1eee5',
+        paintMode: 'Two-tone',
+        contrastRoof: true,
+        finish: 'Satin',
+        wheelId,
+        stance,
+      };
+      const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+      assert.equal(response.status, 201);
+      await h.settle();
+      const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+      const saved = JSON.parse(row.configuration_json);
+      for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
+      assert.ok(h.sent[0].text.includes(`${years.replace('-', '–')} Chevrolet C10`));
+      assert.ok(h.sent[0].text.includes('Street tires; size to be discussed'));
+      assert.ok(h.sent[0].text.includes('Roof and cab back; door window frames stay body color'));
+      const review = await h.request(new Request(await privateLink(h.env, row.id)));
+      assert.equal(review.status, 200);
+      const html = await review.text();
+      const root = stance === 'stock' ? `color-v1` : `stance-v1/${stance}`;
+      for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+        assert.ok(html.includes(`/chevrolet-c10-${years}-${root}/${view}/paint-mask.png`));
+        assert.ok(html.includes(wheelPack
+          ? `/chevrolet-c10-${years}-${wheelPack}/${view}.png`
+          : `/chevrolet-c10-${years}-${root}/${view}/studio.png`));
+      }
+      assert.ok(!html.includes('/chevrolet-k10-'));
+      assert.ok(!html.includes('/chevrolet-c10-1971-'));
+      await h.close();
+    }
+  }
+});
+
+test('1979 Bronco quotes preserve rear hardtop choices and render the corresponding four views', async () => {
+  for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off'])
+  for (const paintMode of ['Solid', 'Two-tone']) {
+    const h = harness();
+    const configuration = {
+      vehicleId: 'Ford-Bronco-1979',
+      direction: 'Lifted',
+      color: '#386c47',
+      secondaryColor: '#e8dfca',
+      paintMode,
+      finish: 'Satin',
+      contrastRoof: false,
+      cabPaint: 'Roof only',
+      roof,
+      wheelId: 'street-temp',
+      stance: 'stock',
+    };
+    const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+    assert.equal(response.status, 201);
+    await h.settle();
+    const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+    const saved = JSON.parse(row.configuration_json);
+    for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
+    assert.ok(h.sent[0].text.includes('1979 Ford Bronco'));
+    assert.ok(h.sent[0].text.includes(`Rear hardtop: ${roof}`));
+    assert.ok(h.sent[0].text.includes('Front cab roof: Body color (fixed steel roof)'));
+    assert.ok(h.sent[0].text.includes('Black vinyl upholstery'));
+    assert.ok(h.sent[0].text.includes('As pictured (lifted)'));
+    const review = await h.request(new Request(await privateLink(h.env, row.id)));
+    assert.equal(review.status, 200);
+    const html = await review.text();
+    assert.equal((html.match(/<figure>/g) || []).length, 4);
+    const top = roof === 'Top off' ? 'top-off' : 'top-on';
+    for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+      assert.ok(html.includes(`/ford-bronco-1979-color-v1/${top}/${view}/studio.png`));
+      assert.ok(html.includes(`/ford-bronco-1979-color-v1/${top}/${view}/paint-mask.png`));
+      assert.ok(html.includes(`/ford-bronco-1979-color-v1/${top}/${view}/roof-mask.png`));
+    }
+    assert.ok(!html.includes('/ford-f150-') && !html.includes('/chevrolet-k5-'));
+    await h.close();
+  }
+});
+
+test('1971–1972 K10 quote reviews preserve Rocker paint in all four views', async () => {
+  const h = harness();
+  const configuration = {
+    vehicleId: 'Chevrolet-K10-1971-1972', paintMode: 'Two-tone', twoToneStyle: 'Rocker',
+    color: '#497385', secondaryColor: '#f2eee3', wheelId: 'baja-black',
+    contrastRoof: true, roofColor: '#f2eee3', finish: 'Satin',
+  };
+  try {
+    const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+    assert.equal(response.status, 201);
+    await h.settle();
+    const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+    const saved = JSON.parse(row.configuration_json);
+    assert.equal(saved.vehicleId, 'Chevrolet-K10-1971-1972');
+    for (const [key, value] of Object.entries(configuration)) if (key !== 'vehicleId') assert.equal(saved[key], value);
+    assert.ok(h.sent[0].text.includes('Two-tone pattern: Rocker'));
+    const review = await h.request(new Request(await privateLink(h.env, row.id)));
+    assert.equal(review.status, 200);
+    const html = await review.text();
+    assert.equal((html.match(/<figure>/g) || []).length, 4);
+    for (const view of ['side', 'front-quarter', 'rear-quarter', 'front'])
+      assert.ok(html.includes(`/chevrolet-k10-1972-color-v4/${view}/rocker-mask.png`));
+    assert.doesNotMatch(html, /<filter id="[^"]+-center-band-tint"/);
+  } finally {
+    await h.close();
+  }
+});
+
 test('a free database limit never confirms receipt or sends mail; retry recovers the same reservation', async () => {
   const h = harness({ failSave: true });
   const key = crypto.randomUUID();

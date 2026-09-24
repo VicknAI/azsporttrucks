@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  colors,
+  paintPresetsFor,
   kmcWheelOptions,
   sizedWheelOptions,
   pickupStanceOptions,
@@ -31,7 +31,6 @@ import {
   fitmentNotice,
   manufacturers,
   normalize,
-  roofs,
   summary,
   vehicles,
   viewLabels,
@@ -179,8 +178,9 @@ export function Designer({ children }: { children?: ReactNode }) {
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
   const sizedWheel = sizedWheelOptions.find((wheel) => config.wheelId.startsWith(`${wheel.id}-`));
   const availableSizedWheels = sizedWheelOptions.filter((wheel) => vehicle.views.side.studio?.wheelScenes?.[`${wheel.id}-18`]);
-  const squarebodyK10 = vehicle.model === 'K10' && vehicle.year >= 1973;
-  const blueSquarebodyK10 = squarebodyK10 && vehicle.year === 1973;
+  const squarebodyPickup = ['C10', 'K10'].includes(vehicle.model) && vehicle.year >= 1973;
+  const squarebodyC10 = squarebodyPickup && vehicle.model === 'C10';
+  const blueSquarebodyPickup = squarebodyPickup && vehicle.year === 1973;
   const fixedAppearance = Boolean(vehicle.views.side.studio?.fixedAppearance);
   const paintScene = Boolean(vehicle.views.side.studio?.paintScene);
   const studioView = Boolean(vehicle.views[config.view].studio);
@@ -398,7 +398,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                 <h2>{vehicle.label}</h2>
                 <span>
                   {vehicle.manufacturer} · {vehicle.model}
-                  {vehicle.manufacturer === 'Ford'
+                  {vehicle.manufacturer === 'Ford' && ['F-100', 'F-150'].includes(vehicle.model)
                     ? ' · Regular-cab short-bed'
                     : ''}
                 </span>
@@ -540,7 +540,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                 }
               />
               <Choice
-                label={vehicle.model === 'K10' ? 'Year / year group' : 'Exact model year'}
+                label={['C10', 'K10'].includes(vehicle.model) ? 'Year / year group' : 'Exact model year'}
                 value={vehicle.id}
                 options={vehicles
                   .filter(
@@ -567,7 +567,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                 </p>
               ) : (
                 <>
-                  {['C10', 'K10'].includes(vehicle.model) && (
+                  {['C10', 'K10', 'Bronco'].includes(vehicle.model) && (
                     <button
                       className="design-button"
                       onClick={() =>
@@ -578,9 +578,10 @@ export function Designer({ children }: { children?: ReactNode }) {
                           paintMode: vehicle.referencePaint.paintMode ?? 'Two-tone',
                           twoToneStyle: 'Center band',
                           contrastRoof: vehicle.referencePaint.contrastRoof,
-                          cabPaint: 'Roof and pillars',
+                          cabPaint: vehicle.roofOptions.length ? 'Roof only' : 'Roof and pillars',
+                          ...(vehicle.model === 'Bronco' ? { roof: 'White top' } : {}),
                         }) : update({
-                          color: blueSquarebodyK10 ? '#237cae' : vehicle.id === 'Chevrolet-K10-1967' ? '#087ca2' : vehicle.id === 'Chevrolet-K10-1968' ? '#20584b' : vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
+                          color: blueSquarebodyPickup ? '#237cae' : vehicle.id === 'Chevrolet-K10-1967' ? '#087ca2' : vehicle.id === 'Chevrolet-K10-1968' ? '#20584b' : vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
                           secondaryColor: '#f1eee5',
                           roofColor: '#f1eee5',
                           paintMode: ['Chevrolet-K10-1967', 'Chevrolet-K10-1968', 'Chevrolet-C10-1967', 'Chevrolet-C10-1968'].includes(vehicle.id) ? 'Solid' : 'Two-tone',
@@ -590,7 +591,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                         })
                       }
                     >
-                      {vehicle.referencePaint?.label ?? (blueSquarebodyK10 ? 'Blue / white reference look' : vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look')}
+                      {vehicle.referencePaint?.label ?? (blueSquarebodyPickup ? 'Blue / white reference look' : vehicle.id === 'Chevrolet-K10-1967' ? 'Blue-green reference look' : vehicle.id === 'Chevrolet-K10-1968' ? 'Green reference look' : vehicle.id === 'Chevrolet-C10-1967' ? 'Seafoam / white reference look' : vehicle.id === 'Chevrolet-C10-1968' ? 'Blue reference look' : 'Orange / white reference look')}
                     </button>
                   )}
                   {vehicle.manufacturer === 'Ford' && vehicle.model === 'F-100' && (
@@ -612,7 +613,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                     className="paint-presets"
                     aria-label="Paint presets"
                   >
-                    {colors.map((color) => (
+                    {paintPresetsFor(vehicle).map((color) => (
                       <button
                         key={color.hex}
                         title={color.name}
@@ -654,7 +655,9 @@ export function Designer({ children }: { children?: ReactNode }) {
                           value={config.twoToneStyle}
                           options={
                             paintScene
-                              ? ['Center band']
+                              ? vehicle.views.side.studio?.rockerPaint
+                                ? ['Center band', 'Rocker']
+                                : ['Center band']
                               : ['Center band', 'Lower body']
                           }
                           onChange={(value) =>
@@ -672,22 +675,24 @@ export function Designer({ children }: { children?: ReactNode }) {
                       />
                     </>
                   )}
-                  {vehicle.model === 'K5' && (
+                  {vehicle.roofOptions.length > 0 && (
                     <>
                       <Choice
-                        label="K5 roof option"
+                        label={vehicle.model === 'K5' ? 'K5 roof option' : 'Rear hardtop'}
                         value={config.roof}
-                        options={roofs}
+                        options={vehicle.roofOptions}
                         onChange={(value) => update({ roof: value })}
                       />
                       <p className="design-note">
-                        {vehicle.views.side.studio?.openTopRoot
+                        {vehicle.model === 'Bronco'
+                          ? 'Choose a white, black, or body-color rear hardtop, or Top off to reveal the black vinyl interior. The fixed steel front cab stays body color.'
+                          : vehicle.views.side.studio?.openTopRoot
                           ? 'Choose a white, black, or body-color full hardtop, or remove it to reveal the open cabin. Black dash and roll bar, with gray/black patterned seat centers.'
                           : 'Top off uses a separate interior and bed-rail placeholder. Final seating, shadows, and roof details are pending artwork.'}
                       </p>
                     </>
                   )}
-                  {vehicle.model !== 'K5' && vehicle.contrastingRoof && (
+                  {!vehicle.roofOptions.length && vehicle.contrastingRoof && (
                     <>
                       <Choice
                         label="Contrasting cab roof"
@@ -710,7 +715,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                             value={config.roofColor}
                             onChange={(value) => update({ roofColor: value })}
                           />
-                          {squarebodyK10 && <p className="design-note">Colors the roof and cab back. Door window frames retain the body color.</p>}
+                          {squarebodyPickup && <p className="design-note">Colors the roof and cab back. Door window frames retain the body color.</p>}
                         </>
                       )}
                     </>
@@ -730,12 +735,15 @@ export function Designer({ children }: { children?: ReactNode }) {
                   <p className="design-note">
                     {config.stance === 'frame'
                       ? 'Laying frame shows the truck parked with air suspension fully lowered.'
+                      : squarebodyC10 && config.stance === 'stock'
+                      ? 'Stock shows a factory-style two-wheel-drive height with street tires. Ride-height previews are illustrative; Nick will confirm suspension and fitment.'
                       : 'Compare ride heights with your selected wheels and tires.'}
                   </p>
                 </>
               ) : <p className="design-note">
-                The preview keeps its pictured stance. Suspension changes can be
-                discussed with Nick when planning your build.
+                {vehicle.model === 'Bronco'
+                  ? 'This preview keeps the reference Bronco’s lifted stance and pictured tires. Discuss suspension changes with Nick when planning your build.'
+                  : 'The preview keeps its pictured stance. Suspension changes can be discussed with Nick when planning your build.'}
               </p>}
             </Category>
             <Category id="wheels" title="04 / Wheels & tires">

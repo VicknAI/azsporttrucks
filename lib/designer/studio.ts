@@ -4,7 +4,11 @@ export type StudioPack = {
   root: string;
   fixedAppearance?: boolean;
   paintScene?: boolean;
+  /** This pack includes an aligned mask below the lower body molding. */
+  rockerPaint?: boolean;
   solidOnly?: boolean;
+  /** Additional cab coverage in source coordinates, bounded by the body paint mask. */
+  cabMaskExtension?: string;
   stanceRoots?: Record<string, string>;
   wheelScenes?: Record<string, Record<string, string>>;
   openTopWheelScenes?: Record<string, Record<string, string>>;
@@ -36,11 +40,18 @@ export function renderStudio(
   if (pack.paintScene) {
     const wheelScenes = c.roof === 'Top off' && pack.openTopRoot ? pack.openTopWheelScenes : pack.wheelScenes;
     const scene = wheelScenes?.[c.wheelId]?.[c.stance] ?? `${root}/studio.png`;
-    const masks = ['paint', 'center-band', 'cab', 'roof'];
+    const rocker = c.paintMode === 'Two-tone' && c.twoToneStyle === 'Rocker' && pack.rockerPaint;
+    const masks = ['paint', 'center-band', 'cab', 'roof', ...(rocker ? ['rocker'] : [])];
     const roofColor = pack.openTopRoot
       ? c.roof === 'Body-color top' ? c.color : c.roof === 'Black top' ? '#171717' : '#e5e7e7'
       : c.roofColor;
     const roofTint = pack.openTopRoot ? c.roof !== 'Top off' : c.contrastRoof;
+    const maskDefinitions = masks.map((name) => {
+      const extension = roofTint && pack.cabMaskExtension && (name === 'cab' || name === 'roof')
+        ? `<path d="${pack.cabMaskExtension}" fill="white" mask="url(#${prefix}-paint-mask)"/>`
+        : '';
+      return `<mask id="${prefix}-${name}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}" style="mask-type:alpha"><image href="${root}/${name}-mask.png" width="${width}" height="${height}"/>${extension}</mask>`;
+    }).join('');
     const tint = (name: string, color: string) => {
       const channels = [1, 3, 5].map(
         (i) => Number.parseInt(color.slice(i, i + 2), 16) / 255,
@@ -48,7 +59,7 @@ export function renderStudio(
       const filter = `<filter id="${prefix}-${name}-tint" color-interpolation-filters="sRGB"><feComponentTransfer>${channels.map((n, i) => `<feFunc${['R', 'G', 'B'][i]} type="table" tableValues="0 ${n / 3} ${(n * 2) / 3} ${n} ${c.finish === 'Gloss' ? 1 : n + (1 - n) * 0.45}"/>`).join('')}</feComponentTransfer></filter>`;
       return `${filter}<g mask="url(#${prefix}-${name}-mask)"><use href="#${prefix}-texture" filter="url(#${prefix}-${name}-tint)"/></g>`;
     };
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} customizable studio artwork"><defs><image id="${prefix}-texture" href="${root}/paint-texture.png" width="${width}" height="${height}"/>${masks.map((name) => `<mask id="${prefix}-${name}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}" style="mask-type:alpha"><image href="${root}/${name}-mask.png" width="${width}" height="${height}"/></mask>`).join('')}</defs><image data-layer="reference-artwork" href="${scene}" width="${width}" height="${height}"/><g data-layer="paint-mask">${tint('paint', c.color)}${c.paintMode === 'Two-tone' ? tint('center-band', c.secondaryColor) : ''}</g><g data-layer="roof">${roofTint ? tint(!pack.openTopRoot && c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', roofColor) : ''}</g></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} customizable studio artwork"><defs><image id="${prefix}-texture" href="${root}/paint-texture.png" width="${width}" height="${height}"/>${maskDefinitions}</defs><image data-layer="reference-artwork" href="${scene}" width="${width}" height="${height}"/><g data-layer="paint-mask">${tint('paint', c.color)}${c.paintMode === 'Two-tone' ? tint(rocker ? 'rocker' : 'center-band', c.secondaryColor) : ''}</g><g data-layer="roof">${roofTint ? tint(!pack.openTopRoot && c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', roofColor) : ''}</g></svg>`;
   }
   if (pack.fixedAppearance) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} red and white reference artwork"><image data-layer="reference-artwork" href="${root}/studio.png" width="${width}" height="${height}"/></svg>`;

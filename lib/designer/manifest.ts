@@ -79,6 +79,22 @@ export const colors = [
   { name: 'Copper', hex: '#aa6538' },
   { name: 'Forest', hex: '#3c6254' },
 ];
+// Screen approximations of the requested period Chevrolet paint shades.
+const classicChevroletColors = [
+  { name: 'Medium Blue', hex: '#497385' },
+  { name: 'Hugger Orange', hex: '#e45125' },
+  { name: 'Dark Green', hex: '#254b3c' },
+  { name: 'Red', hex: '#c42b27' },
+  { name: 'Ochre', hex: '#a37d26' },
+  { name: 'White', hex: '#f2eee3' },
+];
+export function paintPresetsFor(vehicle: Pick<Vehicle, 'manufacturer' | 'model' | 'year'>) {
+  return vehicle.manufacturer === 'Chevrolet' &&
+    ['C10', 'K10', 'K5'].includes(vehicle.model) &&
+    vehicle.year >= 1967 && vehicle.year <= 1972
+    ? classicChevroletColors
+    : colors;
+}
 export const roofs = ['White top', 'Black top', 'Body-color top', 'Top off'];
 export const tires = [
   'Street performance',
@@ -603,8 +619,9 @@ for (const firstYear of [1969, 1971]) {
   });
 }
 
-// Each 2WD body family has aligned paint layers at all four ride heights.
-for (const vehicle of vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100')) {
+// Earlier 2WD bodies have aligned paint layers at all four ride heights.
+// Square-body C10 groups use their own complete packs, registered separately below.
+for (const vehicle of vehicles.filter((v) => (v.model === 'C10' && v.year <= 1972) || v.model === 'F-100')) {
   const sourceYear = vehicle.model === 'C10'
     ? vehicle.year <= 1968 ? vehicle.year : vehicle.year <= 1970 ? 1970 : 1971
     : vehicle.year;
@@ -664,6 +681,116 @@ for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.m
   }
 }
 
+// Register cab corrections after related packs are constructed, keeping each
+// contour local to the specific model group and view that it was traced for.
+squarebody1976.views['rear-quarter'].studio!.cabMaskExtension =
+  'M535 19 C551 19 566 23 575 33 C568 32 561 36 562 46 L574.6 125.96 L550 125.35 L550 113 C558 111 559 106 557 95 L551 50 C549 39 544 37 535 37 Z';
+
+// Close the unpainted strip between the late cab's door seam and rear pillar.
+squarebody1986.views.side.studio!.cabMaskExtension =
+  'M402 94.8 C407 94.8 410 99 411.2 106 C413.7 121 416 145 418.5 165 L418 177 L437 177 L429 89 L414 87 L402 89 Z';
+squarebody1986.views['rear-quarter'].studio!.cabMaskExtension =
+  'M535 19 C552 19 567 23 576 31 C570 31 566 33 565 44 L577.73 133.09 L554 131.8 L548 113 C554 111 554 105 553 96 L546 49 C544 41 540 38 535 38 Z';
+
+// Each square-body C10 has its own 2WD street-tire scenes, aligned paint layers,
+// and wheel/stance variants. K10 cab corrections are baked into these masks.
+const squarebodyC10Groups: Vehicle[] = [
+  squarebodyK10, squarebody1976, squarebody1977, squarebody1980,
+  squarebody1981, squarebody1983, squarebody1986,
+].map((source) => {
+  const years = source.yearEnd ? `${source.year}-${source.yearEnd}` : String(source.year);
+  const family = `chevrolet-c10-${years}`;
+  const referencePaint: NonNullable<Vehicle['referencePaint']> = source.referencePaint
+    ? { ...source.referencePaint }
+    : {
+      label: source.year === 1973 ? 'Blue / white reference look' : 'Orange / white reference look',
+      color: source.year === 1973 ? '#237cae' : '#d34b20',
+      secondaryColor: '#e5e7e7',
+      contrastRoof: source.year === 1973,
+      paintMode: 'Two-tone',
+    };
+  return {
+    ...source,
+    id: `Chevrolet-C10-${years}`,
+    model: 'C10',
+    label: `${years.replace('-', '–')} C10`,
+    directions: ['Lowered'],
+    referencePaint,
+    views: Object.fromEntries(views.map((view): [View, ViewManifest] => [view, {
+      ...source.views[view],
+      assetRoot: `/designer/final/Chevrolet/C10/${years}/${view}`,
+      anchors: source.views[view].anchors.map((anchor) => ({ ...anchor })),
+      studio: {
+        root: `/designer/studio/${family}-color-v1/${view}`,
+        paintScene: true,
+        width: 768,
+        height: 512,
+        viewport: [0, 0, 768, 512],
+        shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
+        wheels: [],
+        stanceRoots: Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) =>
+          [stance, `/designer/studio/${family}-stance-v1/${stance}/${view}`])),
+        wheelScenes: Object.fromEntries(sizedWheelOptions.flatMap((wheel) =>
+          ['18', '20'].map((size) => [`${wheel.id}-${size}`, Object.fromEntries(
+            ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance,
+              `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v1/${size}/${stance}/${view}.png`]),
+          )]))),
+      },
+    }])) as Record<View, ViewManifest>,
+  };
+});
+vehicles.splice(vehicles.findIndex((vehicle) => vehicle.model === 'K10'), 0, ...squarebodyC10Groups);
+
+// The 1979 Bronco has its own lifted body and removable rear cap. Its fixed
+// steel front cab stays body color; no pickup stance or wheel pack is inherited.
+const bronco1979: Vehicle = {
+  id: 'Ford-Bronco-1979',
+  manufacturer: 'Ford',
+  model: 'Bronco',
+  year: 1979,
+  label: '1979 Ford Bronco',
+  directions: ['Lifted'],
+  contrastingRoof: false,
+  roofOptions: [...roofs],
+  trim: trimOptions,
+  packages: [{ id: 'unverified', label: 'Factory-style placeholder — unverified', verified: false, selections: { ...baseTrim } }],
+  referencePaint: {
+    label: 'Blue / white reference look',
+    color: '#1f4e73',
+    secondaryColor: '#e5e7e7',
+    contrastRoof: false,
+    paintMode: 'Two-tone',
+  },
+  views: Object.fromEntries(views.map((view): [View, ViewManifest] => [view, {
+    assetRoot: `/designer/final/Ford/Bronco/1979/${view}`,
+    background: null,
+    body: null,
+    paintMask: null,
+    frontEnd: null,
+    trim: null,
+    roof: null,
+    topOffInterior: null,
+    foregroundMask: null,
+    anchors: geometry[view].anchors.map((anchor) => ({ ...anchor })),
+    studio: {
+      root: `/designer/studio/ford-bronco-1979-color-v1/top-on/${view}`,
+      openTopRoot: `/designer/studio/ford-bronco-1979-color-v1/top-off/${view}`,
+      paintScene: true,
+      width: 768,
+      height: 512,
+      viewport: [0, 0, 768, 512],
+      shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
+      wheels: [],
+    },
+  }])) as Record<View, ViewManifest>,
+};
+vehicles.push(bronco1979);
+
+// Rocker paint is traced for this group only; register it after copied packs
+// are constructed so no other model or year inherits the extra paint region.
+const rockerK10 = vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K10-1971-1972')!;
+for (const view of views) rockerK10.views[view].studio!.rockerPaint = true;
+
 export type Configuration = {
   version: 1;
   vehicleId: string;
@@ -677,7 +804,7 @@ export type Configuration = {
   roofColor: string;
   finish: 'Gloss' | 'Satin';
   paintMode: 'Solid' | 'Two-tone';
-  twoToneStyle: 'Center band' | 'Lower body';
+  twoToneStyle: 'Center band' | 'Lower body' | 'Rocker';
   cabPaint: 'Roof only' | 'Roof and pillars';
   contrastRoof: boolean;
   wheelId: string;
@@ -691,7 +818,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
   const greenK10 = vehicle.id === 'Chevrolet-K10-1968';
   const seafoam1967 = vehicle.id === 'Chevrolet-C10-1967';
   const blue1968 = vehicle.id === 'Chevrolet-C10-1968';
-  const fordStudio = vehicle.manufacturer === 'Ford' && vehicle.views.side.studio?.paintScene;
+  const fordStudio = vehicle.manufacturer === 'Ford' && !vehicle.roofOptions.length && vehicle.views.side.studio?.paintScene;
   return {
     version: 1,
     vehicleId: vehicle.id,
@@ -705,7 +832,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     roofColor: vehicle.referencePaint?.secondaryColor ?? '#e5e7e7',
     finish: 'Gloss',
     paintMode: vehicle.referencePaint?.paintMode ?? (fordStudio || vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid'),
-    twoToneStyle: fordStudio || ['C10', 'K10'].includes(vehicle.model)
+    twoToneStyle: fordStudio || vehicle.model === 'Bronco' || ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',
     cabPaint: fordStudio || ['C10', 'K10'].includes(vehicle.model)
@@ -771,16 +898,16 @@ export function normalize(input: unknown): Configuration {
         raw.vehicleId ? 'Lower body' : c.twoToneStyle,
       )
     : 'Lower body';
-  c.cabPaint = chevyPickup || (v.manufacturer === 'Ford' && v.views.side.studio?.paintScene) ? 'Roof and pillars' : 'Roof only';
+  c.cabPaint = chevyPickup || (v.manufacturer === 'Ford' && !v.roofOptions.length && v.views.side.studio?.paintScene) ? 'Roof and pillars' : 'Roof only';
   c.contrastRoof =
-    v.model !== 'K5' && v.contrastingRoof && raw.contrastRoof === true;
+    !v.roofOptions.length && v.contrastingRoof && raw.contrastRoof === true;
   c.wheelId = pick(
     raw.wheelId,
     wheelCatalog.map((w) => w.id),
     c.wheelId,
   );
   c.tire = pick(raw.tire, tires, c.tire);
-  c.roof = v.model === 'K5' ? pick(raw.roof, roofs, c.roof) : 'Not applicable';
+  c.roof = v.roofOptions.length ? pick(raw.roof, v.roofOptions, c.roof) : 'Not applicable';
   c.view = pick(raw.view, views, c.view);
   // Unsupported customization is paused during the artwork rebuild. Apply this
   // to restored/shared builds too, so hidden legacy options cannot alter a view.
@@ -794,7 +921,9 @@ export function normalize(input: unknown): Configuration {
     ? pick(raw.wheelId, ['street-temp', ...Object.keys(v.views.side.studio.wheelScenes)], 'street-temp')
     : 'street-temp';
   c.tire = 'Street performance';
-  if (v.views.side.studio?.paintScene) c.twoToneStyle = 'Center band';
+  if (v.views.side.studio?.paintScene) c.twoToneStyle = v.views.side.studio.rockerPaint
+    ? pick(raw.twoToneStyle, ['Center band', 'Rocker'], 'Center band')
+    : 'Center band';
   if (v.views.side.studio?.solidOnly) {
     c.paintMode = 'Solid';
     c.contrastRoof = false;
@@ -808,14 +937,14 @@ export function summary(c: Configuration): Record<string, string> {
     'Exterior trim': 'As pictured; custom requests to be discussed',
     'Ride height': v.views.side.studio?.stanceRoots
       ? pickupStanceOptions.find((s) => s.id === c.stance)?.label || 'Stock'
-      : 'As pictured',
+      : v.model === 'Bronco' ? 'As pictured (lifted)' : 'As pictured',
     Paint: v.views.side.studio?.fixedAppearance
       ? 'Red / white center band, red cab - as pictured'
       : `${c.color} · ${c.finish} · ${c.paintMode}${c.paintMode === 'Two-tone' ? ` / ${c.secondaryColor}` : ''}`,
     'Two-tone pattern':
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
-    'Contrasting roof': c.contrastRoof ? c.roofColor : 'No',
-    'Cab paint coverage': c.contrastRoof ? v.model === 'K10' && v.year >= 1973 ? 'Roof and cab back; door window frames stay body color' : c.cabPaint : 'Body color',
+    [v.model === 'Bronco' ? 'Front cab roof' : 'Contrasting roof']: v.model === 'Bronco' ? 'Body color (fixed steel roof)' : c.contrastRoof ? c.roofColor : 'No',
+    'Cab paint coverage': c.contrastRoof ? ['C10', 'K10'].includes(v.model) && v.year >= 1973 ? 'Roof and cab back; door window frames stay body color' : c.cabPaint : 'Body color',
     Wheels: kmcWheelOptions.find((wheel) => wheel.id === c.wheelId)?.label ?? (c.wheelId === 'baja-black'
       ? 'American Racing Baja - Black'
       : c.wheelId === 'baja-polished'
@@ -823,9 +952,10 @@ export function summary(c: Configuration): Record<string, string> {
       : v.views.side.studio?.wheelScenes && sizedWheelOptions.some((wheel) => c.wheelId.startsWith(`${wheel.id}-`))
       ? `${sizedWheelOptions.find((wheel) => c.wheelId.startsWith(`${wheel.id}-`))!.summary} · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
       : v.views.side.studio?.wheelScenes ? 'Stock' : 'As pictured; fitment to be discussed'),
-    Tires: 'As pictured; size to be discussed',
-    'K5 roof': v.model === 'K5' ? c.roof : 'Not applicable',
+    Tires: v.model === 'C10' && v.year >= 1973 ? 'Street tires; size to be discussed' : 'As pictured; size to be discussed',
+    [v.roofOptions.length && v.model !== 'K5' ? 'Rear hardtop' : 'K5 roof']: v.roofOptions.length ? c.roof : 'Not applicable',
     ...(v.model === 'K5' ? { Interior: 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),
+    ...(v.model === 'Bronco' ? { Interior: 'Black vinyl upholstery' } : {}),
   };
 }
 export const fitmentNotice =
