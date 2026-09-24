@@ -362,10 +362,12 @@ test('1979 Bronco quotes preserve rear hardtop choices and render the correspond
     assert.equal((html.match(/<figure>/g) || []).length, 4);
     const top = roof === 'Top off' ? 'top-off' : 'top-on';
     for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
-      assert.ok(html.includes(`/ford-bronco-1979-color-v1/${top}/${view}/studio.png`));
-      assert.ok(html.includes(`/ford-bronco-1979-color-v1/${top}/${view}/paint-mask.png`));
-      assert.ok(html.includes(`/ford-bronco-1979-color-v1/${top}/${view}/roof-mask.png`));
+      assert.ok(html.includes(`/ford-bronco-1979-color-v2/${top}/${view}/studio.png`));
+      assert.ok(html.includes(`/ford-bronco-1979-color-v2/${top}/${view}/paint-mask.png`));
+      assert.ok(html.includes(`/ford-bronco-1979-color-v2/${top}/${view}/roof-mask.png`));
     }
+    assert.equal((html.match(/data-layer="detail-overlay"/g) || []).length, 3);
+    assert.ok(html.includes('/ford-bronco-1979-color-v2/wheel-details.png'));
     assert.ok(!html.includes('/ford-f150-') && !html.includes('/chevrolet-k5-'));
     await h.close();
   }

@@ -524,26 +524,38 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
       for (const view of views) {
         const pack = bronco.views[view].studio;
         assert.equal(pack.stanceRoots, undefined);
-        assert.equal(pack.root, `/designer/studio/ford-bronco-1979-color-v1/top-on/${view}`);
-        assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v1/top-off/${view}`);
+        assert.equal(pack.root, `/designer/studio/ford-bronco-1979-color-v2/top-on/${view}`);
+        assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v2/top-off/${view}`);
         const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
         const svg = renderSvg(c, view);
         assert.ok(svg.includes(`${root}/studio.png`));
         assert.ok(svg.includes(`${root}/roof-mask.png`));
+        assert.equal(Boolean(pack.detailOverlay), view !== 'front');
+        if (pack.detailOverlay) {
+          assert.ok(svg.includes(`href="${pack.detailOverlay.file}"`));
+          assert.ok(svg.indexOf('data-layer="detail-overlay"') > svg.indexOf('data-layer="roof"'));
+          const wheelDetails = (image) => image.slice(image.indexOf('<g data-layer="detail-overlay">'));
+          assert.equal(wheelDetails(svg), wheelDetails(renderSvg({ ...c, color: '#dd5500', secondaryColor: '#111111', finish: finish === 'Gloss' ? 'Satin' : 'Gloss' }, view)));
+          assert.equal(wheelDetails(svg), wheelDetails(renderSvg({ ...c, roof: roof === 'Top off' ? 'White top' : 'Top off' }, view)));
+        } else assert.ok(!svg.includes('data-layer="detail-overlay"'));
         assert.ok(!svg.includes('ford-f150-') && !svg.includes('ford-f100-') && !svg.includes('chevrolet-k5-'));
         assert.notEqual(svg, renderSvg({ ...c, roof: roof === 'Top off' ? 'White top' : 'Top off' }, view));
         assert.equal(svg, renderSvg({ ...c, contrastRoof: true, roofColor: '#ff00ff', cabPaint: 'Roof and pillars' }, view));
         assert.notEqual(svg, renderSvg({ ...c, color: '#dd5500' }, view));
         if (paintMode === 'Two-tone') assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#111111' }, view));
         else assert.equal(svg, renderSvg({ ...c, secondaryColor: '#111111' }, view));
+        const loaded = [];
         const embedded = await embedArtwork(svg, async (path) => {
+          loaded.push(path);
           const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
           assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
-          assert.equal(bytes.readUInt32BE(16), 768);
-          assert.equal(bytes.readUInt32BE(20), 512);
+          const overlay = path === pack.detailOverlay?.file;
+          assert.equal(bytes.readUInt32BE(16), overlay ? 1536 : 768);
+          assert.equal(bytes.readUInt32BE(20), overlay ? 1024 : 512);
           return `data:image/png;base64,${bytes.toString('base64')}`;
         });
         assert.ok(!embedded.includes('/designer/'));
+        if (pack.detailOverlay) assert.ok(loaded.includes(pack.detailOverlay.file));
       }
     }
   } finally {

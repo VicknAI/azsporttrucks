@@ -9,6 +9,13 @@ export type StudioPack = {
   solidOnly?: boolean;
   /** Additional cab coverage in source coordinates, bounded by the body paint mask. */
   cabMaskExtension?: string;
+  /** Static details drawn above paint, clipped by trusted SVG shapes in pack coordinates. */
+  detailOverlay?: {
+    file: string;
+    clipPath: string;
+    offset: [number, number];
+    size: [number, number];
+  };
   stanceRoots?: Record<string, string>;
   wheelScenes?: Record<string, Record<string, string>>;
   openTopWheelScenes?: Record<string, Record<string, string>>;
@@ -37,6 +44,10 @@ export function renderStudio(
 ): string {
   const { width, height } = pack;
   const root = pack.stanceRoots?.[c.stance] ?? (c.roof === 'Top off' && pack.openTopRoot ? pack.openTopRoot : pack.root);
+  const overlay = pack.detailOverlay;
+  const detailOverlay = overlay
+    ? `<g data-layer="detail-overlay"><defs><clipPath id="${prefix}-detail-clip" clipPathUnits="userSpaceOnUse">${overlay.clipPath}</clipPath></defs><image href="${overlay.file}" x="${overlay.offset[0]}" y="${overlay.offset[1]}" width="${overlay.size[0]}" height="${overlay.size[1]}" clip-path="url(#${prefix}-detail-clip)"/></g>`
+    : '';
   if (pack.paintScene) {
     const wheelScenes = c.roof === 'Top off' && pack.openTopRoot ? pack.openTopWheelScenes : pack.wheelScenes;
     const scene = wheelScenes?.[c.wheelId]?.[c.stance] ?? `${root}/studio.png`;
@@ -59,10 +70,10 @@ export function renderStudio(
       const filter = `<filter id="${prefix}-${name}-tint" color-interpolation-filters="sRGB"><feComponentTransfer>${channels.map((n, i) => `<feFunc${['R', 'G', 'B'][i]} type="table" tableValues="0 ${n / 3} ${(n * 2) / 3} ${n} ${c.finish === 'Gloss' ? 1 : n + (1 - n) * 0.45}"/>`).join('')}</feComponentTransfer></filter>`;
       return `${filter}<g mask="url(#${prefix}-${name}-mask)"><use href="#${prefix}-texture" filter="url(#${prefix}-${name}-tint)"/></g>`;
     };
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} customizable studio artwork"><defs><image id="${prefix}-texture" href="${root}/paint-texture.png" width="${width}" height="${height}"/>${maskDefinitions}</defs><image data-layer="reference-artwork" href="${scene}" width="${width}" height="${height}"/><g data-layer="paint-mask">${tint('paint', c.color)}${c.paintMode === 'Two-tone' ? tint(rocker ? 'rocker' : 'center-band', c.secondaryColor) : ''}</g><g data-layer="roof">${roofTint ? tint(!pack.openTopRoot && c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', roofColor) : ''}</g></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} customizable studio artwork"><defs><image id="${prefix}-texture" href="${root}/paint-texture.png" width="${width}" height="${height}"/>${maskDefinitions}</defs><image data-layer="reference-artwork" href="${scene}" width="${width}" height="${height}"/><g data-layer="paint-mask">${tint('paint', c.color)}${c.paintMode === 'Two-tone' ? tint(rocker ? 'rocker' : 'center-band', c.secondaryColor) : ''}</g><g data-layer="roof">${roofTint ? tint(!pack.openTopRoot && c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', roofColor) : ''}</g>${detailOverlay}</svg>`;
   }
   if (pack.fixedAppearance) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} red and white reference artwork"><image data-layer="reference-artwork" href="${root}/studio.png" width="${width}" height="${height}"/></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} red and white reference artwork"><image data-layer="reference-artwork" href="${root}/studio.png" width="${width}" height="${height}"/>${detailOverlay}</svg>`;
   }
   const body = `${root}/body.png`;
   const offset =
@@ -100,5 +111,5 @@ export function renderStudio(
     <g transform="translate(0 ${offset})"><g data-layer="vehicle-body"><use href="#${prefix}-source"/></g>
     <g data-layer="paint-mask">${tint('paint', c.color)}${c.paintMode === 'Two-tone' ? tint(c.twoToneStyle === 'Center band' ? 'center-band' : 'secondary', c.secondaryColor) : ''}</g>
     <g data-layer="roof">${c.contrastRoof ? tint(c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', c.roofColor) : ''}</g>
-    <g data-layer="trim">${frontTrim === 'Black' || frontTrim === 'Body color' ? tint('grille', trimColor(frontTrim)) : ''}${c.trim.bumper === 'Black' || c.trim.bumper === 'Body color' ? tint('bumper', trimColor(c.trim.bumper)) : ''}</g></g></svg>`;
+    <g data-layer="trim">${frontTrim === 'Black' || frontTrim === 'Body color' ? tint('grille', trimColor(frontTrim)) : ''}${c.trim.bumper === 'Black' || c.trim.bumper === 'Body color' ? tint('bumper', trimColor(c.trim.bumper)) : ''}</g></g>${detailOverlay}</svg>`;
 }

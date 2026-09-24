@@ -773,8 +773,8 @@ const bronco1979: Vehicle = {
     foregroundMask: null,
     anchors: geometry[view].anchors.map((anchor) => ({ ...anchor })),
     studio: {
-      root: `/designer/studio/ford-bronco-1979-color-v1/top-on/${view}`,
-      openTopRoot: `/designer/studio/ford-bronco-1979-color-v1/top-off/${view}`,
+      root: `/designer/studio/ford-bronco-1979-color-v2/top-on/${view}`,
+      openTopRoot: `/designer/studio/ford-bronco-1979-color-v2/top-off/${view}`,
       paintScene: true,
       width: 768,
       height: 512,
@@ -785,6 +785,23 @@ const bronco1979: Vehicle = {
   }])) as Record<View, ViewManifest>,
 };
 vehicles.push(bronco1979);
+
+// The aligned source sheet supplies the inner wheel faces, retaining the
+// original outer lips. The details stay independent of paint and top state.
+const broncoWheelDetails: Partial<Record<View, { offset: [number, number]; faces: [number, number, number, number][] }>> = {
+  side: { offset: [0, 0], faces: [[143, 355, 37, 38], [571, 356, 35, 37]] },
+  'front-quarter': { offset: [-768, 0], faces: [[385, 390, 25, 43], [652, 369, 18, 36]] },
+  'rear-quarter': { offset: [0, -512], faces: [[477, 369, 23, 43], [709, 343, 15, 34], [225, 193, 30, 42]] },
+};
+for (const view of views) {
+  const detail = broncoWheelDetails[view];
+  if (detail) bronco1979.views[view].studio!.detailOverlay = {
+    file: '/designer/studio/ford-bronco-1979-color-v2/wheel-details.png',
+    clipPath: detail.faces.map(([cx, cy, rx, ry]) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`).join(''),
+    offset: detail.offset,
+    size: [1536, 1024],
+  };
+}
 
 // Rocker paint is traced for this group only; register it after copied packs
 // are constructed so no other model or year inherits the extra paint region.

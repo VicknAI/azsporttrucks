@@ -20,7 +20,17 @@ The reference preset uses deep blue `#1f4e73`, white `#e5e7e7`, two-tone paint a
 
 The built-in image-generation tool creates the four-view top-on source and its aligned top-off edit. References, exact prompts, generated sources and native asset-authoring scripts are kept in the workspace's `assets/ford-bronco-1979/` directory, outside the website checkout. The authoring source uses blue painted metal and a magenta rear shell to separate body and hardtop masks; those key colors are replaced by the designer's paint layers.
 
-Public layer assets live under `public/designer/studio/ford-bronco-1979-color-v1/{top-on,top-off}/{view}/`. Each view supplies `studio.png`, `paint-texture.png`, `paint-mask.png`, `center-band-mask.png`, `cab-mask.png` and `roof-mask.png`. The renderer uses the same registered packs for the live designer, shared builds, saved build summaries, self-contained exports and private quote reviews.
+Public layer assets now live under `public/designer/studio/ford-bronco-1979-color-v2/{top-on,top-off}/{view}/`. Each view supplies `studio.png`, `paint-texture.png`, `paint-mask.png`, `center-band-mask.png`, `cab-mask.png` and `roof-mask.png`. An aligned `wheel-details.png` source supplies only the inner wheel faces through native SVG clips, preserving the original outer rims and tires. The renderer uses the same registered packs for the live designer, shared builds, saved build summaries, self-contained exports and private quote reviews.
+
+## Wheel-arch and wheel cleanup — September 24, 2026
+
+Nick marked the side-view front and rear wheel arches and asked for cleaner wheels. Smooth native band curves now follow the existing body creases in the side and both quarter views. The top-on and top-off band masks match; the straight-front view and tailgate band are unchanged. All original v1 assets remain intact.
+
+The built-in image-generation tool refined the white wheel faces, followed by a targeted edit giving the rear wheels and spare plain chrome center hardware. Front locking hubs remain red. Only the inner metal wheel faces from the generated source are overlaid; no generated body, tire, roof, or backdrop changes enter the designer. The v2 asset paths prevent an older cached artwork pack from being reused.
+
+Authoring files are in the workspace's `assets/ford-bronco-1979/`: `generated-wheel-details-final-v2.png`, `prompt-wheel-details-v2.txt`, `prompt-wheel-hubs-v2.txt`, and `arch-cleanup-staged/verification.json`. The first prompt requests aligned, mechanically coherent white wheel faces while preserving the source sheet; the second changes only four rear/spare center caps. `geometry.py` contains the smooth band curves, and `stage-arch-masks.py` rebuilds the eight staged masks from the frozen v1 pack.
+
+Validation covers all 16 hardtop/view combinations in the browser, self-contained wheel-detail exports, private quote views, and all 45 repository tests. TypeScript, focused lint and the production build pass. An exhaustive comparison preserves 13,888 non-Bronco renders and all 32 non-Bronco defaults. Artwork outside the six revised band masks and seven clipped wheel faces is preserved.
 
 ## Verification and release status
 
