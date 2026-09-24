@@ -528,7 +528,7 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
       for (const view of views) {
         const pack = bronco.views[view].studio;
         assert.equal(pack.stanceRoots, undefined);
-        assert.equal(pack.root, `/designer/studio/ford-bronco-1979-color-v2/top-on/${view}`);
+        assert.equal(pack.root, `/designer/studio/ford-bronco-1979-color-v${view === 'front' ? 2 : 3}/top-on/${view}`);
         assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v2/top-off/${view}`);
         const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
         const svg = renderSvg(c, view);
@@ -536,6 +536,7 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
         assert.ok(svg.includes(`${root}/roof-mask.png`));
         assert.equal(Boolean(pack.detailOverlay), view !== 'front');
         if (pack.detailOverlay) {
+          assert.equal(pack.detailOverlay.file, '/designer/studio/ford-bronco-1979-color-v2/wheel-details.png');
           assert.ok(svg.includes(`href="${pack.detailOverlay.file}"`));
           assert.ok(svg.indexOf('data-layer="detail-overlay"') > svg.indexOf('data-layer="roof"'));
           const wheelDetails = (image) => image.slice(image.indexOf('<g data-layer="detail-overlay">'));

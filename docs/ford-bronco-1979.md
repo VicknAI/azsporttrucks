@@ -20,7 +20,7 @@ The reference preset uses deep blue `#1f4e73`, white `#e5e7e7`, two-tone paint a
 
 The built-in image-generation tool creates the four-view top-on source and its aligned top-off edit. References, exact prompts, generated sources and native asset-authoring scripts are kept in the workspace's `assets/ford-bronco-1979/` directory, outside the website checkout. The authoring source uses blue painted metal and a magenta rear shell to separate body and hardtop masks; those key colors are replaced by the designer's paint layers.
 
-Public layer assets now live under `public/designer/studio/ford-bronco-1979-color-v2/{top-on,top-off}/{view}/`. Each view supplies `studio.png`, `paint-texture.png`, `paint-mask.png`, `center-band-mask.png`, `cab-mask.png` and `roof-mask.png`. An aligned `wheel-details.png` source supplies only the inner wheel faces through native SVG clips, preserving the original outer rims and tires. The renderer uses the same registered packs for the live designer, shared builds, saved build summaries, self-contained exports and private quote reviews.
+Public layer assets use `public/designer/studio/ford-bronco-1979-color-v3/top-on/{view}/` for side, front-quarter and rear-quarter. The straight-front top-on view and all top-off views remain under `ford-bronco-1979-color-v2`. Each view supplies `studio.png`, `paint-texture.png`, `paint-mask.png`, `center-band-mask.png`, `cab-mask.png` and `roof-mask.png`. The aligned v2 `wheel-details.png` source supplies only the inner wheel faces through native SVG clips, preserving the original outer rims and tires. The renderer uses the same registered packs for the live designer, shared builds, saved build summaries, self-contained exports and private quote reviews.
 
 ## Wheel-arch and wheel cleanup — September 24, 2026
 
@@ -32,7 +32,17 @@ Authoring files are in the workspace's `assets/ford-bronco-1979/`: `generated-wh
 
 Validation covers all 16 hardtop/view combinations in the browser, self-contained wheel-detail exports, private quote views, and all 45 repository tests. TypeScript, focused lint and the production build pass. An exhaustive comparison preserves 13,888 non-Bronco renders and all 32 non-Bronco defaults. Artwork outside the six revised band masks and seven clipped wheel faces is preserved.
 
-## Verification and release status
+## Hardtop window-mask cleanup — September 24, 2026
+
+Nick identified a pale angular gap below the side hardtop window with Body-color top selected in blue `#205381`. Inspection found related shell gaps in both quarter views. The native correction traces the window exclusions around the existing glazing, seals and bright trim, then fills the exposed shell area with localized neutral cap texture. It does not require new image generation.
+
+Only the side, front-quarter and rear-quarter **top-on** packs move to v3. The straight-front pack, every Top off pack, and the separate wheel-detail sheet remain on v2. The fixed front steel roof, body paint, center band, wheels, tires and all defaults retain their existing registration.
+
+The registration audit preserves all 31 vehicle defaults and summaries and 12,504 unaffected rendered SVGs. The 72 affected hardtop renders differ only in their three top-on pack roots. All 47 tests, TypeScript, focused lint, production build and quote Worker dry run pass. Browser checks cover all 16 hardtop/view combinations; independent close-up reviews confirm clean edges with body-color and black tops. Drafts, shares, self-contained exports and private quote reviews retain the same options.
+
+The 18 v3 PNGs retain the original scene, body and center-band layers. Roof/cab coverage only increases inside the corrected window boundaries (1,606 side, 967 front-quarter and 1,420 rear-quarter alpha pixels); existing coverage is never removed. Neutral texture changes only at those recovered pixels. Eight known missed-shell probes now have full or near-full alpha, while glass/seal probes remain unpainted. All 49 v2 PNGs are byte-identical. The shared native curves and staging script are in `assets/ford-bronco-1979/{geometry.py,build.py,window-cleanup/stage.py}`, with detailed checks in `window-cleanup/verification.json`. Publish and verify the website's v3 assets before deploying the quote Worker that references them.
+
+## Original addition verification and release status
 
 Completed locally on September 24, 2026. All 48 required PNG layers are present across the eight top-on/top-off view packs. Visual review covers white, black and body-color hardtops, the exposed black interior, contrasting body paints, the center band, and the fixed front cab roof. The final pass corrected source-blue remnants around trim, excluded the spare tire from body tinting, and blended the removed-cap background. Artwork outside the bounded top-removal area is preserved.
 

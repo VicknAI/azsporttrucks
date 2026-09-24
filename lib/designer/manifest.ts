@@ -777,7 +777,7 @@ const bronco1979: Vehicle = {
     foregroundMask: null,
     anchors: geometry[view].anchors.map((anchor) => ({ ...anchor })),
     studio: {
-      root: `/designer/studio/ford-bronco-1979-color-v2/top-on/${view}`,
+      root: `/designer/studio/ford-bronco-1979-color-v${view === 'front' ? 2 : 3}/top-on/${view}`,
       openTopRoot: `/designer/studio/ford-bronco-1979-color-v2/top-off/${view}`,
       paintScene: true,
       width: 768,
