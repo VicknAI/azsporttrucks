@@ -57,7 +57,7 @@ test('all C10 and F-100 ride heights survive sharing and select matching color l
       const svg = renderSvg(c, view);
       const pack = vehicle.views[view].studio;
       const root = stance === 'stock' ? pack.root : pack.stanceRoots[stance];
-      assert.ok(svg.includes(`${root}/studio.png`));
+      assert.ok(svg.includes(pack.wheelScenes?.['street-temp']?.[stance] ?? `${root}/studio.png`));
       assert.ok(svg.includes(`${root}/paint-mask.png`));
       assert.ok(svg.includes(`${root}/cab-mask.png`));
       const embedded = await embedArtwork(svg, async (path) => {
@@ -93,7 +93,9 @@ test('all C10 and F-100 wheel sizes survive sharing and preserve aligned paint a
       const svg = renderSvg(c, view);
       assert.ok(svg.includes(`${root}/paint-mask.png`));
       assert.ok(svg.includes(`${root}/cab-mask.png`));
-      assert.ok(svg.includes(wheelId === 'street-temp' ? `${root}/studio.png` : pack.wheelScenes[wheelId][stance]));
+      assert.ok(svg.includes(wheelId === 'street-temp'
+        ? pack.wheelScenes['street-temp']?.[stance] ?? `${root}/studio.png`
+        : pack.wheelScenes[wheelId][stance]));
       const embedded = await embedArtwork(svg, async (path) => {
         const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
         assert.equal(bytes.readUInt32BE(16), 768);
@@ -737,6 +739,20 @@ test('square-body C10 groups use independent 2WD art and keep their defaults, pa
       for (const [stance, root] of Object.entries(pack.stanceRoots)) {
         assert.equal(root, `/designer/studio/chevrolet-c10-${years}-stance-v1/${stance}/${view}`);
       }
+      for (const stance of ['stock', 'drop2', 'drop4', 'frame']) {
+        const scene = `/designer/wheels/chevrolet-c10-${years}-stock-rally-v1/${stance}/${view}.png`;
+        assert.equal(pack.wheelScenes['street-temp'][stance], scene);
+        const stock = normalize({ ...initial, stance });
+        assert.deepEqual(readShare(shareHash(stock)), stock);
+        const svg = renderSvg(stock, view);
+        assert.ok(svg.includes(scene));
+        assert.ok(svg.includes(`${pack.stanceRoots[stance] ?? pack.root}/paint-mask.png`));
+        assert.ok(!svg.includes('/studio.png'));
+        for (const [wheelId, folder] of [['torq-thrust', 'torq'], ['rocket-attack', 'rocket-attack']])
+        for (const size of ['18', '20'])
+          assert.equal(pack.wheelScenes[`${wheelId}-${size}`][stance],
+            `/designer/wheels/chevrolet-c10-${years}-${folder}-v1/${size}/${stance}/${view}.png`);
+      }
       const solid = normalize({ ...initial, paintMode: 'Solid', contrastRoof: false });
       assert.equal(renderSvg(solid, view), renderSvg({ ...solid, secondaryColor: '#aabbcc', roofColor: '#123456' }, view));
       const contrast = normalize({ ...initial, color: '#325577', paintMode: 'Two-tone', secondaryColor: '#f1eee5', contrastRoof: true, roofColor: '#eeeeee' });
@@ -751,6 +767,8 @@ test('square-body C10 groups use independent 2WD art and keep their defaults, pa
       assert.notEqual(svg, renderSvg({ ...contrast, roofColor: '#222222' }, view));
     }
   }
+  for (const vehicle of vehicles.filter((v) => v.model !== 'C10' || v.year < 1973))
+    for (const view of views) assert.equal(vehicle.views[view].studio.wheelScenes?.['street-temp'], undefined);
 });
 
 test('paired C10 years migrate legacy builds without changing paint, wheels, heights or exported artwork', async () => {

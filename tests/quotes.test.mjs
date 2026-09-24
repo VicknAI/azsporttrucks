@@ -333,7 +333,7 @@ test('paired C10 quotes accept old IDs and retain historical private reviews and
 test('square-body C10 quotes retain the selected 2WD group, street wheels, stance and cab paint', async () => {
   for (const years of ['1973-1974', '1975-1976', '1977-1979', '1980', '1981-1982', '1983-1984', '1985-1987']) {
     for (const [wheelId, stance, wheelPack] of [
-      ['street-temp', 'stock', null],
+      ...['stock', 'drop2', 'drop4', 'frame'].map((stance) => ['street-temp', stance, `stock-rally-v1/${stance}`]),
       ['torq-thrust-18', 'drop2', 'torq-v1/18/drop2'],
       ['rocket-attack-20', 'frame', 'rocket-attack-v1/20/frame'],
     ]) {
@@ -365,9 +365,8 @@ test('square-body C10 quotes retain the selected 2WD group, street wheels, stanc
       const root = stance === 'stock' ? `color-v1` : `stance-v1/${stance}`;
       for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
         assert.ok(html.includes(`/chevrolet-c10-${years}-${root}/${view}/paint-mask.png`));
-        assert.ok(html.includes(wheelPack
-          ? `/chevrolet-c10-${years}-${wheelPack}/${view}.png`
-          : `/chevrolet-c10-${years}-${root}/${view}/studio.png`));
+        assert.ok(html.includes(`/chevrolet-c10-${years}-${wheelPack}/${view}.png`));
+        assert.ok(!html.includes(`/chevrolet-c10-${years}-${root}/${view}/studio.png`));
       }
       assert.ok(!html.includes('/chevrolet-k10-'));
       assert.ok(!html.includes('/chevrolet-c10-1971-'));

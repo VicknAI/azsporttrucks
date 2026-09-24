@@ -28,6 +28,16 @@ The early-family cab masks match across 1973–1980 and the late-family masks ma
 
 Each C10 pack includes stock, 2-inch lower, 4-inch lower and laying-frame views, plus the existing C10 Torq Thrust II and Rocket Attack choices in 18- and 20-inch visual proportions. The factory-style stock configuration remains the default. The native authoring checks preserve body pixels and translate all paint layers together at lower heights; alternative wheel scenes change only the bounded wheel-face regions. The same files serve interactive previews, shared builds, self-contained exports and private quote reviews.
 
+## Stock Rally wheel reference update
+
+The requested stock wheel reference is the [1985 Chevrolet C10 Silverado at Classic Car Studio](https://www.classiccarstudio.com/inventory/1985-chevrolet-c10-silverado-2048/), whose listing identifies Rally wheels. The artwork brief follows the reference's silver dish and trim ring, projecting chrome five-lug center cap, and black cap face with a gold Chevrolet bowtie. Black street tires retain their existing dimensions and positions; this is an illustrative appearance, not a wheel or tire fitment specification.
+
+The existing **Stock** choice (`street-temp`) now selects dedicated `chevrolet-c10-{years}-stock-rally-v1/{stance}/{view}.png` scenes for the seven square-body groups, all four ride heights and all four views (112 scenes). Straight-front scenes remain copies of the existing artwork because the wheel faces are hidden. The body scene roots, paint masks, optional Torq Thrust II and Rocket Attack scenes, earlier C10 wheels, and other models keep their existing paths. Saved builds, shared links, exports and private quote reviews use the same wheel ID and registration; no new wheel option is required.
+
+All 47 repository tests, TypeScript, focused lint, production build and quote Worker dry run pass. Native checks verify all 112 scenes: 84 change only visible metal wheel faces, and 28 straight-front files remain byte-identical. All 1,120 original studio, paint and alternate-wheel assets are preserved. An independent render audit finds 5,840 non-target renders unchanged and 448 target renders differing only by the stock scene URL. Browser checks cover all seven groups and four angles, plus switching stock/alternate wheels at a lowered stance. The historical verification below describes the earlier expansion release.
+
+Publish the website and new static assets first, verify those public paths, then deploy the quote Worker. Vehicle and wheel IDs are unchanged, and the updated quote renderer requires the new images to be publicly available.
+
 ## Reference facts
 
 - [GM's 1975 C10 collection record](https://www.gm.com/heritage/collection/chevrolet-trucks/1975-chevrolet-c-10-pickup) documents the C10's Fleetside/Stepside configurations and two wheelbases. The current expansion mirrors the already selected Fleetside artwork; it does not add a Stepside selector.

@@ -730,11 +730,15 @@ const squarebodyC10Groups: Vehicle[] = [
         wheels: [],
         stanceRoots: Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) =>
           [stance, `/designer/studio/${family}-stance-v1/${stance}/${view}`])),
-        wheelScenes: Object.fromEntries(sizedWheelOptions.flatMap((wheel) =>
-          ['18', '20'].map((size) => [`${wheel.id}-${size}`, Object.fromEntries(
-            ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance,
-              `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v1/${size}/${stance}/${view}.png`]),
-          )]))),
+        wheelScenes: {
+          'street-temp': Object.fromEntries(['stock', 'drop2', 'drop4', 'frame'].map((stance) =>
+            [stance, `/designer/wheels/${family}-stock-rally-v1/${stance}/${view}.png`])),
+          ...Object.fromEntries(sizedWheelOptions.flatMap((wheel) =>
+            ['18', '20'].map((size) => [`${wheel.id}-${size}`, Object.fromEntries(
+              ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance,
+                `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v1/${size}/${stance}/${view}.png`]),
+            )]))),
+        },
       },
     }])) as Record<View, ViewManifest>,
   };
