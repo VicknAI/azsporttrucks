@@ -15,6 +15,7 @@ export type StudioPack = {
     clipPath: string;
     offset: [number, number];
     size: [number, number];
+    saturation?: number;
   };
   stanceRoots?: Record<string, string>;
   wheelScenes?: Record<string, Record<string, string>>;
@@ -45,8 +46,10 @@ export function renderStudio(
   const { width, height } = pack;
   const root = pack.stanceRoots?.[c.stance] ?? (c.roof === 'Top off' && pack.openTopRoot ? pack.openTopRoot : pack.root);
   const overlay = pack.detailOverlay;
+  const detailTone = overlay?.saturation === undefined ? ''
+    : `<filter id="${prefix}-detail-tone" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="${overlay.saturation}"/></filter>`;
   const detailOverlay = overlay
-    ? `<g data-layer="detail-overlay"><defs><clipPath id="${prefix}-detail-clip" clipPathUnits="userSpaceOnUse">${overlay.clipPath}</clipPath></defs><image href="${overlay.file}" x="${overlay.offset[0]}" y="${overlay.offset[1]}" width="${overlay.size[0]}" height="${overlay.size[1]}" clip-path="url(#${prefix}-detail-clip)"/></g>`
+    ? `<g data-layer="detail-overlay"><defs><clipPath id="${prefix}-detail-clip" clipPathUnits="userSpaceOnUse">${overlay.clipPath}</clipPath>${detailTone}</defs><image href="${overlay.file}" x="${overlay.offset[0]}" y="${overlay.offset[1]}" width="${overlay.size[0]}" height="${overlay.size[1]}" clip-path="url(#${prefix}-detail-clip)"${detailTone ? ` filter="url(#${prefix}-detail-tone)"` : ''}/></g>`
     : '';
   if (pack.paintScene) {
     const wheelScenes = c.roof === 'Top off' && pack.openTopRoot ? pack.openTopWheelScenes : pack.wheelScenes;

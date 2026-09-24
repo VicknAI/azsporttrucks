@@ -373,11 +373,13 @@ test('1979 Bronco quotes preserve rear hardtop choices and render the correspond
   }
 });
 
-test('1971–1972 K10 quote reviews preserve Rocker paint in all four views', async () => {
+test('1971–1972 K10 quote reviews preserve Center band and Rocker paint with the refined rear pack', async () => {
+  for (const twoToneStyle of ['Center band', 'Rocker'])
+  for (const wheelId of ['street-temp', 'baja-black']) {
   const h = harness();
   const configuration = {
-    vehicleId: 'Chevrolet-K10-1971-1972', paintMode: 'Two-tone', twoToneStyle: 'Rocker',
-    color: '#497385', secondaryColor: '#f2eee3', wheelId: 'baja-black',
+    vehicleId: 'Chevrolet-K10-1971-1972', paintMode: 'Two-tone', twoToneStyle,
+    color: '#497385', secondaryColor: '#f2eee3', wheelId,
     contrastRoof: true, roofColor: '#f2eee3', finish: 'Satin',
   };
   try {
@@ -388,16 +390,22 @@ test('1971–1972 K10 quote reviews preserve Rocker paint in all four views', as
     const saved = JSON.parse(row.configuration_json);
     assert.equal(saved.vehicleId, 'Chevrolet-K10-1971-1972');
     for (const [key, value] of Object.entries(configuration)) if (key !== 'vehicleId') assert.equal(saved[key], value);
-    assert.ok(h.sent[0].text.includes('Two-tone pattern: Rocker'));
+    assert.ok(h.sent[0].text.includes(`Two-tone pattern: ${twoToneStyle}`));
     const review = await h.request(new Request(await privateLink(h.env, row.id)));
     assert.equal(review.status, 200);
     const html = await review.text();
     assert.equal((html.match(/<figure>/g) || []).length, 4);
-    for (const view of ['side', 'front-quarter', 'rear-quarter', 'front'])
-      assert.ok(html.includes(`/chevrolet-k10-1972-color-v4/${view}/rocker-mask.png`));
-    assert.doesNotMatch(html, /<filter id="[^"]+-center-band-tint"/);
+    for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+      const root = `/designer/studio/chevrolet-k10-1972-color-v${view === 'rear-quarter' ? 5 : 4}/${view}`;
+      for (const file of ['paint-texture.png', 'paint-mask.png', 'center-band-mask.png', 'cab-mask.png', 'roof-mask.png'])
+        assert.ok(html.includes(`${root}/${file}`));
+      assert.equal(html.includes(`${root}/rocker-mask.png`), twoToneStyle === 'Rocker');
+      assert.ok(html.includes(wheelId === 'street-temp' ? `${root}/studio.png` : `/designer/wheels/chevrolet-k10-1972-baja-black-v1/${view}.png`));
+    }
+    assert.equal(/<filter id="[^"]+-center-band-tint"/.test(html), twoToneStyle === 'Center band');
   } finally {
     await h.close();
+  }
   }
 });
 

@@ -785,7 +785,7 @@ test('paired K10 years load legacy shared links and saved drafts without losing 
       assert.equal(summary(c)['Cab paint coverage'], 'Roof and pillars');
       for (const view of views) {
         const svg = renderSvg(c, view);
-        const source = year <= 1970 ? '1970-color-v5' : '1972-color-v4';
+        const source = year <= 1970 ? '1970-color-v5' : view === 'rear-quarter' ? '1972-color-v5' : '1972-color-v4';
         assert.ok(svg.includes(`/chevrolet-k10-${source}/${view}/paint-mask.png`));
       }
     }
@@ -795,11 +795,13 @@ test('paired K10 years load legacy shared links and saved drafts without losing 
   }
 });
 
-test('1971–1972 K10 Rocker paint survives saved and shared builds and exports each wheel/view combination', async () => {
+test('1971–1972 K10 Center band and Rocker paint retain the refined rear pack in saved builds and exports', async () => {
   const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const target = vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K10-1971-1972');
   assert.equal(defaultConfiguration(target).twoToneStyle, 'Center band');
+  for (const view of views)
+    assert.equal(target.views[view].studio.root, `/designer/studio/chevrolet-k10-1972-color-v${view === 'rear-quarter' ? 5 : 4}/${view}`);
   for (const vehicle of vehicles) {
     const supported = vehicle.id === target.id;
     assert.equal(normalize({ vehicleId: vehicle.id, twoToneStyle: 'Rocker' }).twoToneStyle, supported ? 'Rocker' : 'Center band');
@@ -825,15 +827,21 @@ test('1971–1972 K10 Rocker paint survives saved and shared builds and exports 
     if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage);
     else delete globalThis.localStorage;
   }
-  for (const wheelId of ['street-temp', ...Object.keys(target.views.side.studio.wheelScenes)]) {
-    const c = normalize({ vehicleId: target.id, paintMode: 'Two-tone', twoToneStyle: 'Rocker', color: '#497385', secondaryColor: '#f2eee3', wheelId });
+  const rearAssets = new Set();
+  for (const wheelId of ['street-temp', ...Object.keys(target.views.side.studio.wheelScenes)])
+  for (const twoToneStyle of ['Center band', 'Rocker']) {
+    const c = normalize({ vehicleId: target.id, paintMode: 'Two-tone', twoToneStyle, color: '#497385', secondaryColor: '#f2eee3', wheelId });
     for (const view of views) {
       const svg = renderSvg(c, view);
-      const maskPath = `/designer/studio/chevrolet-k10-1972-color-v4/${view}/rocker-mask.png`;
-      assert.ok(svg.includes(maskPath));
-      assert.match(svg, /<filter id="[^"]+-rocker-tint"/);
-      assert.doesNotMatch(svg, /<filter id="[^"]+-center-band-tint"/);
+      const root = target.views[view].studio.root;
+      const rocker = twoToneStyle === 'Rocker';
+      assert.equal(svg.includes(`${root}/rocker-mask.png`), rocker);
+      assert.equal(/<filter id="[^"]+-rocker-tint"/.test(svg), rocker);
+      assert.equal(/<filter id="[^"]+-center-band-tint"/.test(svg), !rocker);
+      assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#d5253a' }, view));
+      assert.ok(svg.includes(wheelId === 'street-temp' ? `${root}/studio.png` : target.views[view].studio.wheelScenes[wheelId].stock));
       const embedded = await embedArtwork(svg, async (path) => {
+        if (view === 'rear-quarter' && path.startsWith(`${root}/`)) rearAssets.add(path.slice(root.length + 1));
         const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
         assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
         assert.equal(bytes.readUInt32BE(16), 768);
@@ -847,6 +855,7 @@ test('1971–1972 K10 Rocker paint survives saved and shared builds and exports 
       assert.equal(renderSvg(solid, view), renderSvg({ ...solid, secondaryColor: '#ff00ff' }, view));
     }
   }
+  assert.deepEqual(rearAssets, new Set(['studio.png', 'paint-texture.png', 'paint-mask.png', 'center-band-mask.png', 'cab-mask.png', 'roof-mask.png', 'rocker-mask.png']));
 });
 
 test('1978 Ford studio variants preserve finishes, shares and offline artwork', async () => {

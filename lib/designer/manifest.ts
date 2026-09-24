@@ -807,6 +807,19 @@ for (const view of views) {
 // are constructed so no other model or year inherits the extra paint region.
 const rockerK10 = vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K10-1971-1972')!;
 for (const view of views) rockerK10.views[view].studio!.rockerPaint = true;
+// Refined rear cab and Rocker edges use a separate pack; other views and
+// alternative wheel scenes retain their approved sources.
+rockerK10.views['rear-quarter'].studio!.root =
+  '/designer/studio/chevrolet-k10-1972-color-v5/rear-quarter';
+// Neutralize the source-blue reflection on the chrome bumper lip; it is
+// outside the painted tailgate and must not inherit either paint color.
+rockerK10.views['rear-quarter'].studio!.detailOverlay = {
+  file: '/designer/studio/chevrolet-k10-1972-color-v5/rear-quarter/studio.png',
+  clipPath: '<path d="M77.5 250L291 250.5L431.5 251V260H77.5Z"/>',
+  offset: [0, 0],
+  size: [768, 512],
+  saturation: 0,
+};
 
 export type Configuration = {
   version: 1;
