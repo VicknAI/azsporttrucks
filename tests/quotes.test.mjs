@@ -282,6 +282,54 @@ test('square-body quotes preserve the year group, paint and wheel artwork', asyn
     await h.close();
   }
 });
+test('paired C10 quotes accept old IDs and retain historical private reviews and notifications', async () => {
+  for (const firstYear of [1969, 1971]) {
+    const groupId = `Chevrolet-C10-${firstYear}-${firstYear + 1}`;
+    for (const inputId of [`Chevrolet-C10-${firstYear}`, `Chevrolet-C10-${firstYear + 1}`, groupId]) {
+      const h = harness();
+      try {
+        const sourceYear = firstYear === 1969 ? 1970 : 1971;
+        const configuration = {
+          vehicleId: inputId, direction: 'Lowered', color: '#38694b', secondaryColor: '#f2eee3',
+          roofColor: '#ddbb88', contrastRoof: true, cabPaint: 'Roof and pillars',
+          paintMode: 'Two-tone', twoToneStyle: 'Center band', finish: 'Satin',
+          wheelId: 'rocket-attack-20', stance: 'frame', view: 'rear-quarter',
+        };
+        const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+        assert.equal(response.status, 201);
+        await h.settle();
+        const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+        const saved = JSON.parse(row.configuration_json);
+        assert.equal(saved.vehicleId, groupId);
+        for (const [key, value] of Object.entries(configuration)) if (key !== 'vehicleId') assert.equal(saved[key], value);
+        assert.ok(h.sent[0].text.includes(`${firstYear}–${firstYear + 1} Chevrolet C10`));
+        // Emulate an existing pre-grouping record without migrating stored data.
+        if (inputId !== groupId) h.sqlite.prepare('UPDATE quote_requests SET configuration_json=? WHERE id=?')
+          .run(JSON.stringify({ ...saved, vehicleId: inputId }), row.id);
+        const review = await h.request(new Request(await privateLink(h.env, row.id)));
+        assert.equal(review.status, 200);
+        const html = await review.text();
+        assert.ok(html.includes(`${firstYear}–${firstYear + 1} Chevrolet C10`));
+        assert.ok(html.includes('#38694b') && html.includes('#f2eee3'));
+        assert.equal((html.match(/<figure>/g) || []).length, 4);
+        for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+          assert.ok(html.includes(`/chevrolet-c10-${sourceYear}-stance-v1/frame/${view}/paint-mask.png`));
+          assert.ok(html.includes(`/chevrolet-c10-${sourceYear}-rocket-attack-v1/20/frame/${view}.png`));
+        }
+        if (inputId !== groupId) {
+          h.sqlite.prepare("UPDATE quote_requests SET email_status='pending',email_next_at=0 WHERE id=?").run(row.id);
+          await retryNotifications(h.env, h.deps.sendMail);
+          assert.equal(h.sent.length, 2);
+          assert.ok(h.sent[1].text.includes(`${firstYear}–${firstYear + 1} Chevrolet C10`));
+          assert.equal(JSON.parse(h.sqlite.prepare('SELECT configuration_json FROM quote_requests WHERE id=?').get(row.id).configuration_json).vehicleId, inputId);
+        }
+      } finally {
+        await h.close();
+      }
+    }
+  }
+});
+
 test('square-body C10 quotes retain the selected 2WD group, street wheels, stance and cab paint', async () => {
   for (const years of ['1973-1974', '1975-1976', '1977-1979', '1980', '1981-1982', '1983-1984', '1985-1987']) {
     for (const [wheelId, stance, wheelPack] of [
@@ -474,6 +522,7 @@ test('forged origins, challenges, fields, consent, and all file uploads are reje
     [payload({ privacyConsent: 'no' }), {}, 400],
     [payload({ email: 'x@example.com\r\nBcc:other@example.com' }), {}, 400],
     [payload({ configuration: '{"vehicleId":"unknown"}' }), {}, 400],
+    [payload({ configuration: '{"vehicleId":"Chevrolet-C10-1969-1971"}' }), {}, 400],
     [payload({ companyWebsite: 'spam.example' }), {}, 400],
   ];
   const forged = payload();

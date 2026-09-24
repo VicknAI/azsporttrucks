@@ -33,6 +33,7 @@ const {
   vehicles,
   views,
   normalize,
+  resolveVehicleId,
   defaultConfiguration,
   allowedStances,
   wheelCatalog,
@@ -45,7 +46,7 @@ test('all C10 and F-100 ride heights survive sharing and select matching color l
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const supported = vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100');
-  assert.equal(supported.length, 15);
+  assert.equal(supported.length, 13);
   for (const vehicle of supported)
   for (const [stance, label] of [['stock', 'Stock'], ['drop2', '2″ lower'], ['drop4', '4″ lower'], ['frame', 'Laying frame']]) {
     const c = normalize({ vehicleId: vehicle.id, stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true, roofColor: '#ffffff' });
@@ -78,7 +79,7 @@ test('all C10 and F-100 wheel sizes survive sharing and preserve aligned paint a
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const supported = vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100');
-  assert.equal(supported.length, 15);
+  assert.equal(supported.length, 13);
   for (const vehicle of supported)
   for (const wheelId of ['street-temp', 'torq-thrust-18', 'torq-thrust-20'])
   for (const stance of ['stock', 'drop2', 'drop4', 'frame']) {
@@ -112,7 +113,7 @@ test('Rocket Attack 18 and 20 inch C10 wheels retain size, paint, stance and fou
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const supported = vehicles.filter((v) => v.model === 'C10');
-  assert.equal(supported.length, 13);
+  assert.equal(supported.length, 11);
   for (const vehicle of supported)
   for (const size of ['18', '20'])
   for (const stance of ['stock', 'drop2', 'drop4', 'frame']) {
@@ -198,10 +199,11 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
     }
   }
 });
-test('1967 and 1971 have complete, distinct studio packs with valid PNG assets', () => {
+test('1967 and 1971–1972 C10 have complete, distinct studio packs with valid PNG assets', () => {
   const roots = new Set();
-  for (const year of [1967, 1971]) {
-    const vehicle = vehicles.find((v) => v.id === `Chevrolet-C10-${year}`);
+  for (const id of ['Chevrolet-C10-1967', 'Chevrolet-C10-1971-1972']) {
+    const vehicle = vehicles.find((v) => v.id === id);
+    assert.ok(vehicle);
     for (const view of views) {
       const pack = vehicle.views[view].studio;
       assert.ok(pack);
@@ -258,10 +260,10 @@ process.on('exit', () => {
     rmSync(resolved, { recursive: true, force: true });
 });
 test('exact years and pickup year groups have distinct manifests and four anchor packs', () => {
-  assert.equal(vehicles.length, 33);
-  assert.equal(new Set(vehicles.map((v) => v.id)).size, 33);
+  assert.equal(vehicles.length, 31);
+  assert.equal(new Set(vehicles.map((v) => v.id)).size, 31);
   for (const [model, years] of [
-    ['C10', [1967, 1968, 1969, 1970, 1971, 1972, 1980]],
+    ['C10', [1967, 1968, 1980]],
     ['K10', [1967, 1968, 1980]],
     ['K5', [1969, 1970, 1971, 1972]],
     ['F-100', [1978, 1979]],
@@ -480,7 +482,7 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
   const bronco = vehicles.find((vehicle) => vehicle.id === 'Ford-Bronco-1979');
   assert.ok(bronco);
   assert.equal(vehicles.filter((vehicle) => vehicle.manufacturer === 'Ford').length, 5);
-  assert.equal(vehicles.filter((vehicle) => vehicle.model === 'C10').length, 13);
+  assert.equal(vehicles.filter((vehicle) => vehicle.model === 'C10').length, 11);
   assert.deepEqual(vehicles.filter((vehicle) => vehicle.model === 'Bronco').map((vehicle) => vehicle.year), [1979]);
   assert.deepEqual(bronco.directions, ['Lifted']);
   assert.deepEqual(bronco.roofOptions, ['White top', 'Black top', 'Body-color top', 'Top off']);
@@ -748,6 +750,65 @@ test('square-body C10 groups use independent 2WD art and keep their defaults, pa
       assert.notEqual(svg, renderSvg({ ...contrast, secondaryColor: '#222222' }, view));
       assert.notEqual(svg, renderSvg({ ...contrast, roofColor: '#222222' }, view));
     }
+  }
+});
+
+test('paired C10 years migrate legacy builds without changing paint, wheels, heights or exported artwork', async () => {
+  const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
+  const previousStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  let savedDraft;
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
+    getItem(key) { assert.equal(key, draftKey); return savedDraft; },
+  } });
+  try {
+    for (const firstYear of [1969, 1971]) {
+      const groupId = `Chevrolet-C10-${firstYear}-${firstYear + 1}`;
+      const vehicle = vehicles.find((v) => v.id === groupId);
+      assert.ok(vehicle);
+      assert.equal(vehicle.yearEnd, firstYear + 1);
+      const sourceYear = firstYear === 1969 ? 1970 : 1971;
+      const colorVersion = firstYear === 1969 ? 4 : 6;
+      for (const inputId of [`Chevrolet-C10-${firstYear}`, `Chevrolet-C10-${firstYear + 1}`, groupId]) {
+        assert.equal(resolveVehicleId(inputId), groupId);
+        if (inputId !== groupId) assert.ok(!vehicles.some((v) => v.id === inputId));
+        for (const wheelId of ['street-temp', ...Object.keys(vehicle.views.side.studio.wheelScenes)])
+        for (const stance of ['stock', 'drop2', 'drop4', 'frame'])
+        for (const paintMode of ['Solid', 'Two-tone']) {
+          const selection = {
+            vehicleId: inputId, color: '#38694b', secondaryColor: '#f2eee3',
+            roofColor: '#ddbb88', contrastRoof: true, cabPaint: 'Roof and pillars',
+            finish: 'Satin', paintMode, twoToneStyle: 'Center band', wheelId, stance,
+            view: 'rear-quarter',
+          };
+          const c = readShare('#build=' + encodeURIComponent(JSON.stringify(selection)));
+          assert.equal(c.vehicleId, groupId);
+          for (const [key, value] of Object.entries(selection)) if (key !== 'vehicleId') assert.equal(c[key], value);
+          savedDraft = JSON.stringify(selection);
+          assert.deepEqual(readDraft(), c);
+          assert.deepEqual(readShare(shareHash(c)), c);
+          assert.equal(summary(c).Vehicle, `${firstYear}–${firstYear + 1} Chevrolet C10`);
+          for (const view of views) {
+            const svg = renderSvg(c, view);
+            const root = `/designer/studio/chevrolet-c10-${sourceYear}-${stance === 'stock' ? `color-v${colorVersion}` : `stance-v1/${stance}`}/${view}`;
+            assert.ok(svg.includes(`${root}/paint-mask.png`));
+            assert.ok(svg.includes(wheelId === 'street-temp' ? `${root}/studio.png` : vehicle.views[view].studio.wheelScenes[wheelId][stance]));
+            if (wheelId === 'rocket-attack-20' && stance === 'frame' && paintMode === 'Two-tone') {
+              const embedded = await embedArtwork(svg, async (path) => {
+                const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+                assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+                return `data:image/png;base64,${bytes.toString('base64')}`;
+              });
+              assert.ok(!embedded.includes('/designer/'));
+            }
+          }
+        }
+      }
+    }
+    for (const id of ['Chevrolet-C10-1969-1971', 'Chevrolet-C10-1970-1972', 'unknown', '', null, 1971])
+      assert.equal(resolveVehicleId(id), undefined);
+  } finally {
+    if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage);
+    else delete globalThis.localStorage;
   }
 });
 

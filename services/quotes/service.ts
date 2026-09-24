@@ -1,5 +1,5 @@
 import type { D1Database, ExecutionContext } from '@cloudflare/workers-types';
-import { summary, viewLabels, views } from '../../lib/designer/manifest';
+import { normalize, summary, viewLabels, views } from '../../lib/designer/manifest';
 import { escapeHtml, renderSvg } from '../../lib/designer/render';
 import {
   boundedForm,
@@ -158,7 +158,7 @@ export async function notifyQuote(
   if (!row) return;
   try {
     const contact = JSON.parse(row.contact_json);
-    const config = JSON.parse(row.configuration_json);
+    const config = normalize(JSON.parse(row.configuration_json));
     const link = await privateLink(env, row.id);
     const text = [
       'A new AZ Sport Trucks build request has been received and saved.',
@@ -390,7 +390,7 @@ async function review(request: Request, env: QuoteEnv, id: string) {
     .first<Row>();
   if (!row) return json({ error: 'Request not found.' }, 404);
   const contact = JSON.parse(row.contact_json);
-  const config = JSON.parse(row.configuration_json);
+  const config = normalize(JSON.parse(row.configuration_json));
   const pairs = (data: Record<string, unknown>) =>
     Object.entries(data)
       .map(

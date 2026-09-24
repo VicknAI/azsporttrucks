@@ -548,7 +548,10 @@ export function Designer({ children }: { children?: ReactNode }) {
                       v.manufacturer === vehicle.manufacturer &&
                       v.model === vehicle.model,
                   )
-                  .map((v) => ({ id: v.id, label: v.label }))}
+                  .map((v) => ({
+                    id: v.id,
+                    label: v.yearEnd ? `${v.year}–${v.yearEnd}` : String(v.year),
+                  }))}
                 onChange={changeVehicle}
               />
               {vehicle.manufacturer === 'Ford' && !vehicle.views.side.studio && (

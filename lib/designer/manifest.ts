@@ -821,6 +821,29 @@ rockerK10.views['rear-quarter'].studio!.detailOverlay = {
   saturation: 0,
 };
 
+// Pair the early C10 selections only after their exact-year paint, stance and
+// wheel packs are wired. Each pair already shares identical artwork/defaults.
+for (const firstYear of [1969, 1971]) {
+  const firstIndex = vehicles.findIndex((vehicle) => vehicle.id === `Chevrolet-C10-${firstYear}`);
+  const first = vehicles[firstIndex];
+  const lastYear = firstYear + 1;
+  const id = `Chevrolet-C10-${firstYear}-${lastYear}`;
+  for (const year of [firstYear, lastYear]) legacyVehicleGroups.set(`Chevrolet-C10-${year}`, id);
+  vehicles.splice(firstIndex, 2, {
+    ...first,
+    id,
+    yearEnd: lastYear,
+    label: `${firstYear}–${lastYear} C10`,
+  });
+}
+
+/** Resolve supported current IDs and explicit legacy aliases without a fallback. */
+export function resolveVehicleId(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const id = legacyVehicleGroups.get(value) ?? value;
+  return vehicles.some((vehicle) => vehicle.id === id) ? id : undefined;
+}
+
 export type Configuration = {
   version: 1;
   vehicleId: string;
@@ -883,7 +906,7 @@ export function allowedStances(direction: Direction) {
 export function normalize(input: unknown): Configuration {
   const raw =
     input && typeof input === 'object' ? (input as Partial<Configuration>) : {};
-  const vehicleId = legacyVehicleGroups.get(raw.vehicleId ?? '') ?? raw.vehicleId;
+  const vehicleId = resolveVehicleId(raw.vehicleId);
   const v = vehicles.find((v) => v.id === vehicleId) || vehicles[0];
   const c = defaultConfiguration(v);
   const pick = <T extends string>(

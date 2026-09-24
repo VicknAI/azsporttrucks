@@ -1,6 +1,6 @@
 import {
   normalize,
-  vehicles,
+  resolveVehicleId,
   type Configuration,
 } from '../../lib/designer/manifest';
 
@@ -127,7 +127,7 @@ export function validateFields(form: FormData) {
   if (
     !raw ||
     typeof raw !== 'object' ||
-    !vehicles.some((v) => v.id === (raw as Configuration).vehicleId)
+    !resolveVehicleId((raw as Configuration).vehicleId)
   )
     throw new QuoteError(400, 'Choose a supported truck.');
   return { contact, configuration: normalize(raw as Partial<Configuration>) };
