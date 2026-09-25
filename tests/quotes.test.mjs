@@ -426,8 +426,16 @@ test('K5 quotes retain stock off-road builds and lowered street wheels across ro
   }
 });
 
-test('1979 Bronco quotes preserve rear hardtop choices and render the corresponding four views', async () => {
+test('1979 Bronco quotes preserve wheel and rear hardtop choices in all four private review views', async () => {
+  const wheelChoices = {
+    'street-temp': ['Stock', null],
+    'baja-polished': ['American Racing Baja · Polished', 'baja'],
+    'baja-black': ['American Racing Baja - Black', 'baja-black'],
+    'kmc-impact-monoblock-machined': ['KMC Impact Forged Monoblock - Raw Machined', 'kmc-impact-monoblock'],
+    'kmc-impact-beadlock-machined': ['KMC Impact Forged Beadlock - Raw Machined', 'kmc-impact-beadlock'],
+  };
   for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off'])
+  for (const [wheelId, [wheelLabel, wheelPack]] of Object.entries(wheelChoices))
   for (const paintMode of ['Solid', 'Two-tone']) {
     const h = harness();
     const configuration = {
@@ -440,7 +448,7 @@ test('1979 Bronco quotes preserve rear hardtop choices and render the correspond
       contrastRoof: false,
       cabPaint: 'Roof only',
       roof,
-      wheelId: 'street-temp',
+      wheelId,
       stance: 'stock',
     };
     const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
@@ -450,6 +458,7 @@ test('1979 Bronco quotes preserve rear hardtop choices and render the correspond
     const saved = JSON.parse(row.configuration_json);
     for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
     assert.ok(h.sent[0].text.includes('1979 Ford Bronco'));
+    assert.ok(h.sent[0].text.includes(`Wheels: ${wheelLabel}`));
     assert.ok(h.sent[0].text.includes(`Rear hardtop: ${roof}`));
     assert.ok(h.sent[0].text.includes('Front cab roof: Body color (fixed steel roof)'));
     assert.ok(h.sent[0].text.includes('Black vinyl upholstery'));
@@ -461,12 +470,16 @@ test('1979 Bronco quotes preserve rear hardtop choices and render the correspond
     const top = roof === 'Top off' ? 'top-off' : 'top-on';
     for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
       const version = roof === 'Top off' || view === 'front' ? 2 : 3;
-      assert.ok(html.includes(`/ford-bronco-1979-color-v${version}/${top}/${view}/studio.png`));
+      const scene = wheelPack
+        ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v1/${top}/${view}.png`
+        : `/designer/studio/ford-bronco-1979-color-v${version}/${top}/${view}/studio.png`;
+      assert.ok(html.includes(`data-layer="reference-artwork" href="${scene}"`));
       assert.ok(html.includes(`/ford-bronco-1979-color-v${version}/${top}/${view}/paint-mask.png`));
       assert.ok(html.includes(`/ford-bronco-1979-color-v${version}/${top}/${view}/roof-mask.png`));
     }
-    assert.equal((html.match(/data-layer="detail-overlay"/g) || []).length, 3);
-    assert.ok(html.includes('/ford-bronco-1979-color-v2/wheel-details.png'));
+    assert.equal((html.match(/data-layer="detail-overlay"/g) || []).length, wheelPack ? 0 : 3);
+    assert.equal(html.includes('/ford-bronco-1979-color-v2/wheel-details.png'), !wheelPack);
+    assert.ok(!html.includes(`/${roof === 'Top off' ? 'top-on' : 'top-off'}/`));
     assert.ok(!html.includes('/ford-f150-') && !html.includes('/chevrolet-k5-'));
     await h.close();
   }

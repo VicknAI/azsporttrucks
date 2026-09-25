@@ -14,13 +14,13 @@ On this Bronco, **Top off removes only the rear fiberglass shell**. The steel ro
 
 The artwork is a visual design study based on the pictured vehicle, not a measured suspension or wheel/tire fitment specification.
 
-The reference preset uses deep blue `#1f4e73`, white `#e5e7e7`, two-tone paint and White top. The pictured white wheels and lifted stance are retained. No optional wheel or ride-height artwork is registered for this model.
+The reference preset uses deep blue `#1f4e73`, white `#e5e7e7`, two-tone paint and White top. The pictured white wheels remain the Stock choice. The lifted stance and tire sizes remain as pictured; the wheel choices described below now match the F-150 menu.
 
 ## Asset provenance
 
 The built-in image-generation tool creates the four-view top-on source and its aligned top-off edit. References, exact prompts, generated sources and native asset-authoring scripts are kept in the workspace's `assets/ford-bronco-1979/` directory, outside the website checkout. The authoring source uses blue painted metal and a magenta rear shell to separate body and hardtop masks; those key colors are replaced by the designer's paint layers.
 
-Public layer assets use `public/designer/studio/ford-bronco-1979-color-v3/top-on/{view}/` for side, front-quarter and rear-quarter. The straight-front top-on view and all top-off views remain under `ford-bronco-1979-color-v2`. Each view supplies `studio.png`, `paint-texture.png`, `paint-mask.png`, `center-band-mask.png`, `cab-mask.png` and `roof-mask.png`. The aligned v2 `wheel-details.png` source supplies only the inner wheel faces through native SVG clips, preserving the original outer rims and tires. The renderer uses the same registered packs for the live designer, shared builds, saved build summaries, self-contained exports and private quote reviews.
+Public layer assets use `public/designer/studio/ford-bronco-1979-color-v3/top-on/{view}/` for side, front-quarter and rear-quarter. The straight-front top-on view and all top-off views remain under `ford-bronco-1979-color-v2`. Each view supplies `studio.png`, `paint-texture.png`, `paint-mask.png`, `center-band-mask.png`, `cab-mask.png` and `roof-mask.png`. The aligned v2 `wheel-details.png` source supplies the Stock inner wheel faces through native SVG clips. Selected aftermarket scenes contain their own complete wheel faces, so the Stock detail overlay is omitted for those choices. The renderer uses the same registered packs for the live designer, shared builds, saved build summaries, self-contained exports and private quote reviews.
 
 ## Wheel-arch and wheel cleanup — September 24, 2026
 
@@ -49,3 +49,13 @@ Completed locally on September 24, 2026. All 48 required PNG layers are present 
 The full repository suite passes **43/43 tests**, including Bronco draft/share persistence, all hardtop choices, both paint layouts and finishes, four-view self-contained exports and private quote views. TypeScript, focused lint and the production build pass. A pre-Bronco baseline audit preserves all **32 previous vehicle defaults and summaries**, plus **512 existing paint/cab/view render hashes**. The catalog now contains 33 vehicles, including only the requested 1979 Bronco.
 
 Browser review confirms the Ford → Bronco → 1979 selection, all 16 hardtop/view combinations, reference and contrasting paint, and the build summary's separate fixed front cab roof and rear hardtop entries. Included in the authorized [September 24 designer release](designer-release-2026-09-24.md), covering both the website and quote Worker.
+
+## F-150 wheel choices — September 24, 2026
+
+The Bronco now offers the same five choices as the F-150: Stock, American Racing Baja in polished or black, and KMC Impact Forged Monoblock or Beadlock in raw-machined finish. The existing wheel IDs are shared, but each option uses Bronco-specific artwork. Its pictured tires, lifted stance, body paint and hardtop choices remain intact.
+
+The four aftermarket packs each contain four views for both roof states, totaling 32 PNGs under `/designer/wheels/ford-bronco-1979-{baja|baja-black|kmc-impact-monoblock|kmc-impact-beadlock}-v1/{top-on|top-off}/{view}.png`. Native authoring in workspace `assets/bronco-wheel-options/` registers the already-approved F-150 metal faces to measured Bronco rim boundaries. Front locking hubs retain the cleaned Bronco detail; the visible rear spare matches the chosen rear wheel face. Tire tread and all pixels outside the metal-face boundaries stay unchanged. Straight-front scenes remain exact source copies because no front wheel faces are visible.
+
+The stock white-wheel detail overlay has `baseSceneOnly: true`. The shared renderer suppresses it only when a matching replacement wheel scene exists, so it cannot cover the selected wheel with the stock white face. Stock renders and missing-scene fallbacks retain that detail, and unrelated overlays continue to render normally. Drafts, shared links, exports and private quote previews use the same roof-aware wheel registration.
+
+The independent registration audit preserves all 31 defaults, 14,300 non-Bronco SVGs, 68 stock Bronco SVGs and all 5,062 previously committed artwork files. The only stock summary change is the clearer “Stock” wheel label. New selections resolve to 32 Bronco-owned scene paths, and the audit confirms both aftermarket-overlay suppression and stock fallback. Deploy the website and verify all new PNGs before updating the quote Worker that shares this renderer.

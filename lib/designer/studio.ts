@@ -16,6 +16,8 @@ export type StudioPack = {
     offset: [number, number];
     size: [number, number];
     saturation?: number;
+    /** Keep base-scene details from covering a selected replacement wheel scene. */
+    baseSceneOnly?: boolean;
   };
   stanceRoots?: Record<string, string>;
   openTopStanceRoots?: Record<string, string>;
@@ -49,15 +51,16 @@ export function renderStudio(
   const root = openTop
     ? pack.openTopStanceRoots?.[c.stance] ?? pack.openTopRoot!
     : pack.stanceRoots?.[c.stance] ?? pack.root;
-  const overlay = pack.detailOverlay;
+  const wheelScenes = openTop ? pack.openTopWheelScenes : pack.wheelScenes;
+  const wheelScene = wheelScenes?.[c.wheelId]?.[c.stance];
+  const overlay = pack.detailOverlay?.baseSceneOnly && wheelScene ? undefined : pack.detailOverlay;
   const detailTone = overlay?.saturation === undefined ? ''
     : `<filter id="${prefix}-detail-tone" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="${overlay.saturation}"/></filter>`;
   const detailOverlay = overlay
     ? `<g data-layer="detail-overlay"><defs><clipPath id="${prefix}-detail-clip" clipPathUnits="userSpaceOnUse">${overlay.clipPath}</clipPath>${detailTone}</defs><image href="${overlay.file}" x="${overlay.offset[0]}" y="${overlay.offset[1]}" width="${overlay.size[0]}" height="${overlay.size[1]}" clip-path="url(#${prefix}-detail-clip)"${detailTone ? ` filter="url(#${prefix}-detail-tone)"` : ''}/></g>`
     : '';
   if (pack.paintScene) {
-    const wheelScenes = openTop ? pack.openTopWheelScenes : pack.wheelScenes;
-    const scene = wheelScenes?.[c.wheelId]?.[c.stance] ?? `${root}/studio.png`;
+    const scene = wheelScene ?? `${root}/studio.png`;
     const rocker = c.paintMode === 'Two-tone' && c.twoToneStyle === 'Rocker' && pack.rockerPaint;
     const masks = ['paint', 'center-band', 'cab', 'roof', ...(rocker ? ['rocker'] : [])];
     const roofColor = pack.openTopRoot

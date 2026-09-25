@@ -582,9 +582,16 @@ test('all lowered K5 years retain street wheels and roof-specific paint layers i
   }
 });
 
-test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares and every exported view', async () => {
+test('1979 Bronco wheels and rear hardtops retain paint and saved choices in every exported view', async () => {
   const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const bronco = vehicles.find((vehicle) => vehicle.id === 'Ford-Bronco-1979');
+  const wheelChoices = {
+    'street-temp': ['Stock', null],
+    'baja-polished': ['American Racing Baja · Polished', 'baja'],
+    'baja-black': ['American Racing Baja - Black', 'baja-black'],
+    'kmc-impact-monoblock-machined': ['KMC Impact Forged Monoblock - Raw Machined', 'kmc-impact-monoblock'],
+    'kmc-impact-beadlock-machined': ['KMC Impact Forged Beadlock - Raw Machined', 'kmc-impact-beadlock'],
+  };
   assert.ok(bronco);
   assert.equal(vehicles.filter((vehicle) => vehicle.manufacturer === 'Ford').length, 5);
   assert.equal(vehicles.filter((vehicle) => vehicle.model === 'C10').length, 11);
@@ -598,6 +605,9 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
   assert.equal(initial.secondaryColor, '#e5e7e7');
   assert.equal(initial.roof, 'White top');
   assert.equal(initial.contrastRoof, false);
+  assert.equal(initial.wheelId, 'street-temp');
+  assert.equal(initial.stance, 'stock');
+  assert.equal(summary(initial).Wheels, 'Stock');
   assert.equal(summary(initial)['Ride height'], 'As pictured (lifted)');
   assert.equal(summary(initial).Interior, 'Black vinyl upholstery');
   assert.equal(normalize({ ...initial, roof: 'Unsupported top' }).roof, 'White top');
@@ -607,6 +617,11 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
   assert.equal(invalid.wheelId, 'street-temp');
   assert.equal(invalid.contrastRoof, false);
   assert.equal(invalid.cabPaint, 'Roof only');
+  for (const view of views) assert.equal(renderSvg(invalid, view), renderSvg(initial, view));
+  for (const roof of bronco.roofOptions) {
+    assert.deepEqual(availableWheelIds(bronco, { stance: 'stock', roof }), Object.keys(wheelChoices));
+    assert.deepEqual(availableWheelIds(bronco, { stance: 'frame', roof }), ['street-temp']);
+  }
   const previousStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
   let savedDraft;
   Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
@@ -614,16 +629,19 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
   } });
   try {
     for (const roof of bronco.roofOptions)
+    for (const [wheelId, [wheelLabel, wheelPack]] of Object.entries(wheelChoices))
     for (const paintMode of ['Solid', 'Two-tone'])
     for (const finish of ['Gloss', 'Satin']) {
-      const c = normalize({ ...initial, roof, paintMode, finish, color: '#386c47', secondaryColor: '#e8dfca' });
+      const c = normalize({ ...initial, roof, wheelId, paintMode, finish, color: '#386c47', secondaryColor: '#e8dfca' });
       assert.equal(c.roof, roof);
+      assert.equal(c.wheelId, wheelId);
       assert.equal(c.paintMode, paintMode);
       assert.equal(c.finish, finish);
       assert.deepEqual(readShare(shareHash(c)), c);
       savedDraft = JSON.stringify(c);
       assert.deepEqual(readDraft(), c);
       assert.equal(summary(c).Vehicle, '1979 Ford Bronco');
+      assert.equal(summary(c).Wheels, wheelLabel);
       assert.equal(summary(c)['Rear hardtop'], roof);
       assert.equal(summary(c)['Front cab roof'], 'Body color (fixed steel roof)');
       assert.equal(summary(c)['Cab paint coverage'], 'Body color');
@@ -634,18 +652,30 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
         assert.equal(pack.root, `/designer/studio/ford-bronco-1979-color-v${view === 'front' ? 2 : 3}/top-on/${view}`);
         assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v2/top-off/${view}`);
         const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
+        const scene = wheelPack
+          ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v1/${roof === 'Top off' ? 'top-off' : 'top-on'}/${view}.png`
+          : `${root}/studio.png`;
         const svg = renderSvg(c, view);
-        assert.ok(svg.includes(`${root}/studio.png`));
+        assert.ok(svg.includes(`data-layer="reference-artwork" href="${scene}"`));
+        assert.ok(svg.includes(`${root}/paint-mask.png`));
         assert.ok(svg.includes(`${root}/roof-mask.png`));
+        assert.ok(!svg.includes(`/${roof === 'Top off' ? 'top-on' : 'top-off'}/`));
         assert.equal(Boolean(pack.detailOverlay), view !== 'front');
         if (pack.detailOverlay) {
           assert.equal(pack.detailOverlay.file, '/designer/studio/ford-bronco-1979-color-v2/wheel-details.png');
+          assert.equal(pack.detailOverlay.baseSceneOnly, true);
+        }
+        const hasStockDetails = !wheelPack && Boolean(pack.detailOverlay);
+        if (hasStockDetails) {
           assert.ok(svg.includes(`href="${pack.detailOverlay.file}"`));
           assert.ok(svg.indexOf('data-layer="detail-overlay"') > svg.indexOf('data-layer="roof"'));
           const wheelDetails = (image) => image.slice(image.indexOf('<g data-layer="detail-overlay">'));
           assert.equal(wheelDetails(svg), wheelDetails(renderSvg({ ...c, color: '#dd5500', secondaryColor: '#111111', finish: finish === 'Gloss' ? 'Satin' : 'Gloss' }, view)));
           assert.equal(wheelDetails(svg), wheelDetails(renderSvg({ ...c, roof: roof === 'Top off' ? 'White top' : 'Top off' }, view)));
-        } else assert.ok(!svg.includes('data-layer="detail-overlay"'));
+        } else {
+          assert.ok(!svg.includes('data-layer="detail-overlay"'));
+          assert.ok(!svg.includes('/wheel-details.png'));
+        }
         assert.ok(!svg.includes('ford-f150-') && !svg.includes('ford-f100-') && !svg.includes('chevrolet-k5-'));
         assert.notEqual(svg, renderSvg({ ...c, roof: roof === 'Top off' ? 'White top' : 'Top off' }, view));
         assert.equal(svg, renderSvg({ ...c, contrastRoof: true, roofColor: '#ff00ff', cabPaint: 'Roof and pillars' }, view));
@@ -663,7 +693,8 @@ test('1979 Bronco rear hardtops retain paint and roof state in drafts, shares an
           return `data:image/png;base64,${bytes.toString('base64')}`;
         });
         assert.ok(!embedded.includes('/designer/'));
-        if (pack.detailOverlay) assert.ok(loaded.includes(pack.detailOverlay.file));
+        assert.ok(loaded.includes(scene));
+        assert.equal(loaded.includes(pack.detailOverlay?.file), hasStockDetails);
       }
     }
   } finally {

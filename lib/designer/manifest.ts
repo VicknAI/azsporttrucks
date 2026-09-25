@@ -772,7 +772,7 @@ const squarebodyC10Groups: Vehicle[] = [
 vehicles.splice(vehicles.findIndex((vehicle) => vehicle.model === 'K10'), 0, ...squarebodyC10Groups);
 
 // The 1979 Bronco has its own lifted body and removable rear cap. Its fixed
-// steel front cab stays body color; no pickup stance or wheel pack is inherited.
+// steel front cab stays body color; optional wheels use Bronco-specific scenes.
 const bronco1979: Vehicle = {
   id: 'Ford-Bronco-1979',
   manufacturer: 'Ford',
@@ -823,13 +823,27 @@ const broncoWheelDetails: Partial<Record<View, { offset: [number, number]; faces
   'front-quarter': { offset: [-768, 0], faces: [[385, 390, 25, 43], [652, 369, 18, 36]] },
   'rear-quarter': { offset: [0, -512], faces: [[477, 369, 23, 43], [709, 343, 15, 34], [225, 193, 30, 42]] },
 };
+const broncoWheelPacks = [
+  { id: 'baja-polished', pack: 'baja-v1' },
+  { id: 'baja-black', pack: 'baja-black-v1' },
+  ...kmcWheelOptions,
+];
 for (const view of views) {
+  const pack = bronco1979.views[view].studio!;
+  for (const top of ['top-on', 'top-off'] as const) {
+    const scenes = Object.fromEntries(broncoWheelPacks.map((wheel) => [wheel.id, {
+      stock: `/designer/wheels/ford-bronco-1979-${wheel.pack}/${top}/${view}.png`,
+    }]));
+    if (top === 'top-on') pack.wheelScenes = scenes;
+    else pack.openTopWheelScenes = scenes;
+  }
   const detail = broncoWheelDetails[view];
-  if (detail) bronco1979.views[view].studio!.detailOverlay = {
+  if (detail) pack.detailOverlay = {
     file: '/designer/studio/ford-bronco-1979-color-v2/wheel-details.png',
     clipPath: detail.faces.map(([cx, cy, rx, ry]) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`).join(''),
     offset: detail.offset,
     size: [1536, 1024],
+    baseSceneOnly: true,
   };
 }
 
