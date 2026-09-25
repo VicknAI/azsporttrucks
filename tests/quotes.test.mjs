@@ -375,6 +375,56 @@ test('square-body C10 quotes retain the selected 2WD group, street wheels, stanc
   }
 });
 
+test('K5 quotes retain stock off-road builds and lowered street wheels across roof states and views', async () => {
+  const stockWheelPacks = {
+    'street-temp': null,
+    'baja-polished': 'baja-v1',
+    'baja-black': 'baja-black-v1',
+    'kmc-impact-monoblock-machined': 'kmc-impact-monoblock-v1',
+    'kmc-impact-beadlock-machined': 'kmc-impact-beadlock-v1',
+  };
+  for (const year of [1969, 1970, 1971, 1972])
+  for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off'])
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame'])
+  for (const wheelId of stance === 'stock' ? Object.keys(stockWheelPacks)
+    : ['street-temp', 'torq-thrust-18', 'torq-thrust-20', 'rocket-attack-18', 'rocket-attack-20']) {
+    const h = harness();
+    try {
+      const configuration = {
+        vehicleId: `Chevrolet-K5-${year}`, roof, stance, wheelId,
+        direction: stance === 'stock' ? 'Lifted' : 'Lowered',
+        color: '#386c47', secondaryColor: '#e8dfca', paintMode: 'Two-tone', finish: 'Satin',
+      };
+      const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+      assert.equal(response.status, 201);
+      await h.settle();
+      const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+      const saved = JSON.parse(row.configuration_json);
+      for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
+      assert.ok(h.sent[0].text.includes(`${year} Chevrolet K5`));
+      assert.ok(h.sent[0].text.includes(`K5 roof: ${roof}`));
+      assert.ok(h.sent[0].text.includes(stance === 'stock' ? 'Ride height: As pictured' : 'Street tires; size to be discussed'));
+      const review = await h.request(new Request(await privateLink(h.env, row.id)));
+      assert.equal(review.status, 200);
+      const html = await review.text();
+      const sourceYear = year <= 1970 ? 1970 : 1972;
+      const top = roof === 'Top off' ? 'top-off' : 'top-on';
+      for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+        const root = stance === 'stock'
+          ? `/designer/studio/chevrolet-k5-${sourceYear}-color-v${roof === 'Top off' ? 5 : 6}/${top}/${view}`
+          : `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v1/${top}/${stance}/${view}`;
+        const scene = wheelId === 'street-temp' ? `${root}/studio.png`
+          : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${sourceYear}-${stockWheelPacks[wheelId]}/${top}/${view}.png`
+          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v1/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+        assert.ok(html.includes(scene));
+        assert.ok(html.includes(`${root}/paint-mask.png`));
+        assert.ok(html.includes(`${root}/roof-mask.png`));
+      }
+      assert.ok(!html.includes(`/${roof === 'Top off' ? 'top-on' : 'top-off'}/`));
+    } finally { await h.close(); }
+  }
+});
+
 test('1979 Bronco quotes preserve rear hardtop choices and render the corresponding four views', async () => {
   for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off'])
   for (const paintMode of ['Solid', 'Two-tone']) {

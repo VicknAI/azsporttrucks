@@ -27,6 +27,7 @@ import {
   kmcWheelOptions,
   sizedWheelOptions,
   pickupStanceOptions,
+  availableWheelIds,
   defaultConfiguration,
   fitmentNotice,
   manufacturers,
@@ -176,8 +177,10 @@ export function Designer({ children }: { children?: ReactNode }) {
     return () => abort.abort();
   }, []);
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
+  const availableWheels = availableWheelIds(vehicle, config);
   const sizedWheel = sizedWheelOptions.find((wheel) => config.wheelId.startsWith(`${wheel.id}-`));
-  const availableSizedWheels = sizedWheelOptions.filter((wheel) => vehicle.views.side.studio?.wheelScenes?.[`${wheel.id}-18`]);
+  const availableSizedWheels = sizedWheelOptions.filter((wheel) => availableWheels.includes(`${wheel.id}-18`));
+  const loweredK5 = vehicle.model === 'K5' && config.stance !== 'stock';
   const squarebodyPickup = ['C10', 'K10'].includes(vehicle.model) && vehicle.year >= 1973;
   const squarebodyC10 = squarebodyPickup && vehicle.model === 'C10';
   const blueSquarebodyPickup = squarebodyPickup && vehicle.year === 1973;
@@ -732,11 +735,19 @@ export function Designer({ children }: { children?: ReactNode }) {
                   <Choice
                     label="Ride height"
                     value={config.stance}
-                    options={pickupStanceOptions}
+                    options={vehicle.model === 'K5'
+                      ? pickupStanceOptions.map((stance) => stance.id === 'stock' ? { ...stance, label: 'As pictured' } : stance)
+                      : pickupStanceOptions}
                     onChange={(stance) => update({ stance })}
                   />
                   <p className="design-note">
-                    {config.stance === 'frame'
+                    {vehicle.model === 'K5'
+                       ? loweredK5
+                         ? config.stance === 'frame'
+                           ? 'Laying frame shows the Blazer parked with air suspension fully lowered and street tires.'
+                           : 'Lowered previews use street tires with the selected wheels. Nick will confirm suspension and fitment.'
+                         : 'As pictured keeps the original off-road tires and wheel choices. Choose a lower ride height to compare street wheels and tires.'
+                       : config.stance === 'frame'
                       ? 'Laying frame shows the truck parked with air suspension fully lowered.'
                       : squarebodyC10 && config.stance === 'stock'
                       ? 'Stock shows a factory-style two-wheel-drive height with street tires. Ride-height previews are illustrative; Nick will confirm suspension and fitment.'
@@ -754,22 +765,22 @@ export function Designer({ children }: { children?: ReactNode }) {
                 <Choice
                   label="Wheel style"
                   value={sizedWheel?.id ?? config.wheelId}
-                  options={[{ id: 'street-temp', label: 'Stock' }, ...(vehicle.views.side.studio?.wheelScenes?.['baja-polished']
-                    ? [{ id: 'baja-polished', label: 'American Racing Baja — Polished' }, { id: 'baja-black', label: 'American Racing Baja - Black' }, ...kmcWheelOptions]
-                    : availableSizedWheels) ]}
+                  options={[{ id: 'street-temp', label: loweredK5 ? 'Street' : 'Stock' },
+                    ...[{ id: 'baja-polished', label: 'American Racing Baja — Polished' }, { id: 'baja-black', label: 'American Racing Baja - Black' }, ...kmcWheelOptions].filter((wheel) => availableWheels.includes(wheel.id)),
+                    ...availableSizedWheels]}
                   onChange={(style) => update({ wheelId: availableSizedWheels.some((wheel) => wheel.id === style) ? `${style}-${config.wheelId.endsWith('-20') ? '20' : '18'}` : style })}
                 />
               )}
               {vehicle.views.side.studio?.wheelScenes && sizedWheel && (
                 <Choice label="Wheel size" value={config.wheelId}
-                  options={[{ id: `${sizedWheel.id}-18`, label: '18″' }, { id: `${sizedWheel.id}-20`, label: '20″' }]}
+                  options={[{ id: `${sizedWheel.id}-18`, label: '18″' }, { id: `${sizedWheel.id}-20`, label: '20″' }].filter((wheel) => availableWheels.includes(wheel.id))}
                   onChange={(wheelId) => update({ wheelId })} />
               )}
               <p className="design-note">
-                {vehicle.views.side.studio?.wheelScenes?.['baja-polished']
+                {availableWheels.includes('baja-polished')
                   ? 'Compare Stock, American Racing Baja, and KMC Impact wheels. Tire size and ride height stay as pictured.'
-                  : vehicle.model === 'C10' && vehicle.views.side.studio?.wheelScenes?.['rocket-attack-18']
-                  ? 'Compare Stock, Torq Thrust II, and Rocket Racing Attack. Choose 18″ or 20″ wheels; the 20″ option has a shorter tire sidewall. Nick will confirm final sizes and fitment.'
+                  : availableWheels.includes('rocket-attack-18')
+                  ? `Compare ${loweredK5 ? 'Street' : 'Stock'}, Torq Thrust II, and Rocket Racing Attack. Choose 18″ or 20″ wheels; the 20″ option has a shorter tire sidewall. Nick will confirm final sizes and fitment.`
                   : vehicle.views.side.studio?.wheelScenes
                   ? 'Compare Stock with Torq Thrust II in 18″ or 20″. Nick will help confirm tire sizes and fitment for your build.'
                   : 'Wheels and tires stay as pictured. Nick can help select sizes and fitment for your build.'}

@@ -681,6 +681,28 @@ for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.m
   }
 }
 
+// Lowered K5 packs preserve the existing stock/off-road scenes and supply
+// separate street-tire paint layers for each hardtop state and ride height.
+for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
+  const sourceYear = vehicle.year <= 1970 ? 1970 : 1972;
+  const family = `chevrolet-k5-${sourceYear}`;
+  for (const view of views) {
+    const pack = vehicle.views[view].studio!;
+    for (const top of ['top-on', 'top-off'] as const) {
+      const roots = Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) =>
+        [stance, `/designer/studio/${family}-street-stance-v1/${top}/${stance}/${view}`]));
+      if (top === 'top-on') pack.stanceRoots = roots;
+      else pack.openTopStanceRoots = roots;
+      const wheelScenes = top === 'top-on' ? pack.wheelScenes! : pack.openTopWheelScenes!;
+      for (const wheel of sizedWheelOptions)
+      for (const size of ['18', '20']) wheelScenes[`${wheel.id}-${size}`] = Object.fromEntries(
+        ['drop2', 'drop4', 'frame'].map((stance) => [stance,
+          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v1/${top}/${size}/${stance}/${view}.png`]),
+      );
+    }
+  }
+}
+
 // Register cab corrections after related packs are constructed, keeping each
 // contour local to the specific model group and view that it was traced for.
 squarebody1976.views['rear-quarter'].studio!.cabMaskExtension =
@@ -907,6 +929,17 @@ export function allowedStances(direction: Direction) {
     (s) => s.direction === 'Both' || s.direction === direction,
   );
 }
+
+/** Wheel choices must have artwork for the selected roof and height in every view. */
+export function availableWheelIds(vehicle: Vehicle, c: Pick<Configuration, 'stance' | 'roof'>): string[] {
+  const scenesFor = (view: View) => {
+    const pack = vehicle.views[view].studio;
+    return c.roof === 'Top off' && pack?.openTopRoot ? pack.openTopWheelScenes : pack?.wheelScenes;
+  };
+  return ['street-temp', ...Object.keys(scenesFor('side') ?? {}).filter((id) =>
+    id !== 'street-temp' && views.every((view) => Boolean(scenesFor(view)?.[id]?.[c.stance])))];
+}
+
 export function normalize(input: unknown): Configuration {
   const raw =
     input && typeof input === 'object' ? (input as Partial<Configuration>) : {};
@@ -968,15 +1001,14 @@ export function normalize(input: unknown): Configuration {
   c.view = pick(raw.view, views, c.view);
   // Unsupported customization is paused during the artwork rebuild. Apply this
   // to restored/shared builds too, so hidden legacy options cannot alter a view.
-  c.stance = v.views.side.studio?.stanceRoots
-    ? pick(raw.stance, pickupStanceOptions.map((s) => s.id), 'stock')
-    : 'stock';
+  const pack = v.views.side.studio;
+  const stanceRoots = c.roof === 'Top off' && pack?.openTopRoot ? pack.openTopStanceRoots : pack?.stanceRoots;
+  c.stance = pick(raw.stance, ['stock', ...Object.keys(stanceRoots ?? {})], 'stock');
+  if (v.model === 'K5' && c.stance !== 'stock') c.direction = 'Lowered';
   c.trimMode = 'Match My Truck';
   c.trimPackage = 'unverified';
   c.trim = { ...baseTrim };
-  c.wheelId = v.views.side.studio?.wheelScenes
-    ? pick(raw.wheelId, ['street-temp', ...Object.keys(v.views.side.studio.wheelScenes)], 'street-temp')
-    : 'street-temp';
+  c.wheelId = pick(raw.wheelId, availableWheelIds(v, c), 'street-temp');
   c.tire = 'Street performance';
   if (v.views.side.studio?.paintScene) c.twoToneStyle = v.views.side.studio.rockerPaint
     ? pick(raw.twoToneStyle, ['Center band', 'Rocker'], 'Center band')
@@ -992,7 +1024,7 @@ export function summary(c: Configuration): Record<string, string> {
   return {
     Vehicle: `${v.year}${v.yearEnd ? `–${v.yearEnd}` : ''} ${v.manufacturer} ${v.model}`,
     'Exterior trim': 'As pictured; custom requests to be discussed',
-    'Ride height': v.views.side.studio?.stanceRoots
+    'Ride height': v.model === 'K5' && c.stance === 'stock' ? 'As pictured' : v.views.side.studio?.stanceRoots
       ? pickupStanceOptions.find((s) => s.id === c.stance)?.label || 'Stock'
       : v.model === 'Bronco' ? 'As pictured (lifted)' : 'As pictured',
     Paint: v.views.side.studio?.fixedAppearance
@@ -1008,8 +1040,9 @@ export function summary(c: Configuration): Record<string, string> {
       ? 'American Racing Baja · Polished'
       : v.views.side.studio?.wheelScenes && sizedWheelOptions.some((wheel) => c.wheelId.startsWith(`${wheel.id}-`))
       ? `${sizedWheelOptions.find((wheel) => c.wheelId.startsWith(`${wheel.id}-`))!.summary} · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
+      : v.model === 'K5' && c.stance !== 'stock' ? 'Street wheels'
       : v.views.side.studio?.wheelScenes ? 'Stock' : 'As pictured; fitment to be discussed'),
-    Tires: v.model === 'C10' && v.year >= 1973 ? 'Street tires; size to be discussed' : 'As pictured; size to be discussed',
+    Tires: (v.model === 'C10' && v.year >= 1973) || (v.model === 'K5' && c.stance !== 'stock') ? 'Street tires; size to be discussed' : 'As pictured; size to be discussed',
     [v.roofOptions.length && v.model !== 'K5' ? 'Rear hardtop' : 'K5 roof']: v.roofOptions.length ? c.roof : 'Not applicable',
     ...(v.model === 'K5' ? { Interior: 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),
     ...(v.model === 'Bronco' ? { Interior: 'Black vinyl upholstery' } : {}),

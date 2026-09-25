@@ -36,6 +36,7 @@ const {
   resolveVehicleId,
   defaultConfiguration,
   allowedStances,
+  availableWheelIds,
   wheelCatalog,
   summary,
 } = await import(pathToFileURL(join(temporary, 'manifest.mjs')).href);
@@ -70,7 +71,7 @@ test('all C10 and F-100 ride heights survive sharing and select matching color l
     }
   }
   assert.equal(normalize({ vehicleId: 'Chevrolet-C10-1971', stance: 'lift6' }).stance, 'stock');
-  for (const vehicle of vehicles.filter((v) => v.model !== 'C10' && v.model !== 'F-100')) {
+  for (const vehicle of vehicles.filter((v) => !['C10', 'F-100', 'K5'].includes(v.model))) {
     assert.equal(normalize({ vehicleId: vehicle.id, stance: 'frame' }).stance, 'stock');
     assert.ok(views.every((view) => !vehicle.views[view].studio.stanceRoots));
   }
@@ -107,7 +108,7 @@ test('all C10 and F-100 wheel sizes survive sharing and preserve aligned paint a
   }
   for (const other of vehicles.filter((v) => v.model !== 'C10' && v.model !== 'F-100')) {
     assert.equal(normalize({ vehicleId: other.id, wheelId: 'torq-thrust-20' }).wheelId, 'street-temp');
-    assert.ok(views.every((view) => !other.views[view].studio.wheelScenes?.['torq-thrust-20']));
+    assert.ok(!availableWheelIds(other, normalize({ vehicleId: other.id })).includes('torq-thrust-20'));
   }
 });
 
@@ -143,7 +144,7 @@ test('Rocket Attack 18 and 20 inch C10 wheels retain size, paint, stance and fou
   }
   for (const v of vehicles.filter((v) => v.model !== 'C10')) {
     assert.equal(normalize({ vehicleId: v.id, wheelId: 'rocket-attack-20' }).wheelId, 'street-temp');
-    assert.ok(!v.views.side.studio.wheelScenes?.['rocket-attack-20']);
+    assert.ok(!availableWheelIds(v, normalize({ vehicleId: v.id })).includes('rocket-attack-20'));
   }
 });
 
@@ -476,6 +477,106 @@ test('all K5 years retain colors and embed the paired studio artwork offline', a
       assert.ok(!embedded.includes('/designer/'));
     }
   }
+  }
+});
+
+test('K5 ride-height transitions offer only wheels with matching roof and stance artwork', () => {
+  const stockWheels = ['street-temp', 'baja-polished', 'baja-black', 'kmc-impact-monoblock-machined', 'kmc-impact-beadlock-machined'];
+  const streetWheels = ['street-temp', 'torq-thrust-18', 'torq-thrust-20', 'rocket-attack-18', 'rocket-attack-20'];
+  for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
+    const initial = defaultConfiguration(vehicle);
+    assert.equal(initial.stance, 'stock');
+    assert.equal(initial.wheelId, 'street-temp');
+    assert.equal(summary(initial)['Ride height'], 'As pictured');
+    assert.equal(summary(initial).Wheels, 'Stock');
+    assert.equal(summary(initial).Tires, 'As pictured; size to be discussed');
+    for (const roof of vehicle.roofOptions) {
+      assert.deepEqual(availableWheelIds(vehicle, { stance: 'stock', roof }), stockWheels);
+      for (const stance of ['drop2', 'drop4', 'frame']) {
+        assert.deepEqual(availableWheelIds(vehicle, { stance, roof }), streetWheels);
+        for (const wheelId of stockWheels.slice(1)) {
+          const lowered = normalize({ ...initial, direction: 'Lifted', roof, stance, wheelId });
+          assert.equal(lowered.wheelId, 'street-temp');
+          assert.equal(lowered.direction, 'Lowered');
+          assert.equal(summary(lowered).Wheels, 'Street wheels');
+          assert.equal(summary(lowered).Tires, 'Street tires; size to be discussed');
+        }
+        for (const wheelId of streetWheels.slice(1)) {
+          const selected = normalize({ ...initial, roof, stance, wheelId });
+          assert.equal(selected.wheelId, wheelId);
+          assert.equal(normalize({ ...selected, stance: 'stock' }).wheelId, 'street-temp');
+          assert.equal(normalize({ ...selected, stance: stance === 'drop2' ? 'drop4' : 'drop2' }).wheelId, wheelId);
+          assert.equal(normalize({ ...selected, roof: roof === 'Top off' ? 'White top' : 'Top off' }).wheelId, wheelId);
+        }
+      }
+      for (const stance of ['drop6', 'lift3', 'lift6', 'unknown']) {
+        const c = normalize({ ...initial, direction: 'Lifted', roof, stance, wheelId: 'baja-black' });
+        assert.equal(c.stance, 'stock');
+        assert.equal(c.wheelId, 'baja-black');
+      }
+    }
+  }
+  const partial = structuredClone(vehicles.find((v) => v.model === 'K5'));
+  delete partial.views.front.studio.openTopWheelScenes['rocket-attack-20'].drop4;
+  assert.ok(!availableWheelIds(partial, { stance: 'drop4', roof: 'Top off' }).includes('rocket-attack-20'));
+  assert.ok(availableWheelIds(partial, { stance: 'drop4', roof: 'White top' }).includes('rocket-attack-20'));
+});
+
+test('all lowered K5 years retain street wheels and roof-specific paint layers in drafts, shares and exports', async () => {
+  const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
+  const previousStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  let savedDraft;
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
+    getItem(key) { assert.equal(key, draftKey); return savedDraft; },
+  } });
+  try {
+    for (const year of [1969, 1970, 1971, 1972])
+    for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off'])
+    for (const [stance, label] of [['drop2', '2″ lower'], ['drop4', '4″ lower'], ['frame', 'Laying frame']])
+    for (const wheelId of ['street-temp', 'torq-thrust-18', 'torq-thrust-20', 'rocket-attack-18', 'rocket-attack-20'])
+    for (const paintMode of ['Solid', 'Two-tone']) {
+      const input = {
+        vehicleId: `Chevrolet-K5-${year}`, roof, stance, wheelId, paintMode,
+        color: '#386c47', secondaryColor: '#e8dfca', finish: paintMode === 'Solid' ? 'Gloss' : 'Satin',
+      };
+      const c = normalize(input);
+      for (const [key, value] of Object.entries(input)) assert.equal(c[key], value);
+      assert.equal(c.direction, 'Lowered');
+      assert.equal(summary(c)['Ride height'], label);
+      assert.equal(summary(c)['K5 roof'], roof);
+      assert.deepEqual(readShare(shareHash(c)), c);
+      savedDraft = JSON.stringify(c);
+      assert.deepEqual(readDraft(), c);
+      const sourceYear = year <= 1970 ? 1970 : 1972;
+      const top = roof === 'Top off' ? 'top-off' : 'top-on';
+      for (const view of views) {
+        const root = `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v1/${top}/${stance}/${view}`;
+        const scene = wheelId === 'street-temp' ? `${root}/studio.png`
+          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v1/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+        const svg = renderSvg(c, view);
+        assert.ok(svg.includes(scene));
+        for (const file of ['paint-texture', 'paint-mask', 'center-band-mask', 'cab-mask', 'roof-mask'])
+          assert.ok(svg.includes(`${root}/${file}.png`));
+        assert.ok(!svg.includes(`/${roof === 'Top off' ? 'top-on' : 'top-off'}/`));
+        assert.ok(!svg.includes('-color-v') && !svg.includes('-baja-') && !svg.includes('-kmc-impact-'));
+        assert.notEqual(svg, renderSvg({ ...c, color: '#992200' }, view));
+        if (paintMode === 'Two-tone') assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#114477' }, view));
+        assert.notEqual(svg, renderSvg({ ...c, roof: roof === 'Top off' ? 'Body-color top' : 'Top off' }, view));
+        if (year === sourceYear && ['White top', 'Top off'].includes(roof) && paintMode === 'Two-tone') {
+          const embedded = await embedArtwork(svg, async (path) => {
+            const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+            assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+            assert.equal(bytes.readUInt32BE(16), 768);
+            assert.equal(bytes.readUInt32BE(20), 512);
+            return `data:image/png;base64,${bytes.toString('base64')}`;
+          });
+          assert.ok(!embedded.includes('/designer/'));
+        }
+      }
+    }
+  } finally {
+    if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage);
+    else delete globalThis.localStorage;
   }
 });
 
