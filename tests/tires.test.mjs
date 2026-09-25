@@ -64,11 +64,13 @@ test('incomplete, nonphysical and out-of-range inputs cannot produce misleading 
   }
 });
 
-test('tire tools have an internal footer link, canonical page and sitemap entry', () => {
+test('tire tools are linked through Resources and retain their canonical page and sitemap entry', () => {
   const footer = readFileSync(new URL('../components/site-footer.tsx', import.meta.url), 'utf8');
+  const resources = readFileSync(new URL('../app/resources/page.tsx', import.meta.url), 'utf8');
   const page = readFileSync(new URL('../app/tire-calculator/page.tsx', import.meta.url), 'utf8');
   const sitemap = readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8');
-  assert.ok(footer.includes('href="/tire-calculator"'));
+  assert.ok(footer.includes('href="/resources"'));
+  assert.ok(resources.includes('href="/tire-calculator"'));
   assert.ok(page.includes("path: '/tire-calculator'"));
   assert.ok(sitemap.includes('<loc>https://azsporttrucks.com/tire-calculator</loc>'));
 });
