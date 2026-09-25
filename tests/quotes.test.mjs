@@ -410,12 +410,13 @@ test('K5 quotes retain stock off-road builds and lowered street wheels across ro
       const sourceYear = year <= 1970 ? 1970 : 1972;
       const top = roof === 'Top off' ? 'top-off' : 'top-on';
       for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+        const cleanedPaint = ['side', 'front-quarter'].includes(view);
         const root = stance === 'stock'
-          ? `/designer/studio/chevrolet-k5-${sourceYear}-color-v${roof === 'Top off' ? 5 : 6}/${top}/${view}`
-          : `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v1/${top}/${stance}/${view}`;
+          ? `/designer/studio/chevrolet-k5-${sourceYear}-color-v${cleanedPaint ? 7 : roof === 'Top off' ? 5 : 6}/${top}/${view}`
+          : `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v${cleanedPaint ? 2 : 1}/${top}/${stance}/${view}`;
         const scene = wheelId === 'street-temp' ? `${root}/studio.png`
-          : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${sourceYear}-${stockWheelPacks[wheelId]}/${top}/${view}.png`
-          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v1/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+          : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${sourceYear}-${stockWheelPacks[wheelId].replace('-v1', view === 'side' ? '-v2' : '-v1')}/${top}/${view}.png`
+          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v${view === 'side' ? 2 : 1}/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
         assert.ok(html.includes(scene));
         assert.ok(html.includes(`${root}/paint-mask.png`));
         assert.ok(html.includes(`${root}/roof-mask.png`));

@@ -385,11 +385,11 @@ for (const view of views)
 for (const year of [1969, 1970, 1971, 1972]) {
 const k5Studio = vehicles.find((v) => v.id === `Chevrolet-K5-${year}`)!;
 const sourceYear = year <= 1970 ? 1970 : 1972;
-const k5Root = `/designer/studio/chevrolet-k5-${sourceYear}-color-v6`;
-for (const view of views)
+for (const view of views) {
+  const cleanedPaint = view === 'side' || view === 'front-quarter';
   k5Studio.views[view].studio = {
-    root: `${k5Root}/top-on/${view}`,
-    openTopRoot: `/designer/studio/chevrolet-k5-${sourceYear}-color-v5/top-off/${view}`,
+    root: `/designer/studio/chevrolet-k5-${sourceYear}-color-v${cleanedPaint ? 7 : 6}/top-on/${view}`,
+    openTopRoot: `/designer/studio/chevrolet-k5-${sourceYear}-color-v${cleanedPaint ? 7 : 5}/top-off/${view}`,
     paintScene: true,
     width: 768,
     height: 512,
@@ -397,6 +397,7 @@ for (const view of views)
     shadow: { cx: 0, cy: 0, rx: 0, ry: 0 },
     wheels: [],
   };
+}
 }
 export const wheelCatalog = [
   {
@@ -659,8 +660,10 @@ for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.m
   const wheelVersion = vehicle.id === squarebodyK10.id ? 'v4'
     : [squarebody1976.id, squarebody1977.id].includes(vehicle.id) ? 'v2' : 'v1';
   for (const view of views) {
-    const wheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-${wheelVersion}`;
-    const blackWheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-black-${wheelVersion}`;
+    // K5 side scenes include the same bounded hood cleanup as the base pack.
+    const viewWheelVersion = vehicle.model === 'K5' && view === 'side' ? 'v2' : wheelVersion;
+    const wheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-${viewWheelVersion}`;
+    const blackWheelRoot = `/designer/wheels/${family}-${sourceYear}-baja-black-${viewWheelVersion}`;
     vehicle.views[view].studio!.wheelScenes = {
       'baja-polished': { stock: `${wheelRoot}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png` },
       'baja-black': { stock: `${blackWheelRoot}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png` },
@@ -670,7 +673,7 @@ for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.m
       'baja-black': { stock: `${blackWheelRoot}/top-off/${view}.png` },
     };
     for (const wheel of kmcWheelOptions) {
-      const root = `/designer/wheels/${family}-${sourceYear}-${wheel.pack.replace(/-v1$/, `-${wheelVersion}`)}`;
+      const root = `/designer/wheels/${family}-${sourceYear}-${wheel.pack.replace(/-v1$/, `-${viewWheelVersion}`)}`;
       vehicle.views[view].studio!.wheelScenes![wheel.id] = {
         stock: `${root}/${vehicle.model === 'K5' ? 'top-on/' : ''}${view}.png`,
       };
@@ -688,16 +691,17 @@ for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
   const family = `chevrolet-k5-${sourceYear}`;
   for (const view of views) {
     const pack = vehicle.views[view].studio!;
+    const paintVersion = view === 'side' || view === 'front-quarter' ? 2 : 1;
     for (const top of ['top-on', 'top-off'] as const) {
       const roots = Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) =>
-        [stance, `/designer/studio/${family}-street-stance-v1/${top}/${stance}/${view}`]));
+        [stance, `/designer/studio/${family}-street-stance-v${paintVersion}/${top}/${stance}/${view}`]));
       if (top === 'top-on') pack.stanceRoots = roots;
       else pack.openTopStanceRoots = roots;
       const wheelScenes = top === 'top-on' ? pack.wheelScenes! : pack.openTopWheelScenes!;
       for (const wheel of sizedWheelOptions)
       for (const size of ['18', '20']) wheelScenes[`${wheel.id}-${size}`] = Object.fromEntries(
         ['drop2', 'drop4', 'frame'].map((stance) => [stance,
-          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v1/${top}/${size}/${stance}/${view}.png`]),
+          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v${view === 'side' ? 2 : 1}/${top}/${size}/${stance}/${view}.png`]),
       );
     }
   }
