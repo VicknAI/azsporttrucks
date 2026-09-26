@@ -176,7 +176,7 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       const pack = v.views[view].studio;
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
-      const version = v.model === 'K5' && view === 'side' ? 'v2' : v.year === 1973 ? 'v4' : [1975, 1977].includes(v.year) ? 'v2' : 'v1';
+      const version = (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && view === 'side') ? 'v2' : v.year === 1973 ? 'v4' : [1975, 1977].includes(v.year) ? 'v2' : 'v1';
       const expectedFolder = folder.replace('-v1/', `-${version}/`);
       assert.ok(scenes[wheelId].stock.includes(expectedFolder));
       const svg = renderSvg(c, view);
@@ -551,10 +551,9 @@ test('all lowered K5 years retain street wheels and roof-specific paint layers i
       const sourceYear = year <= 1970 ? 1970 : 1972;
       const top = roof === 'Top off' ? 'top-off' : 'top-on';
       for (const view of views) {
-        const version = ['side', 'front-quarter'].includes(view) ? 2 : 1;
-        const root = `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v${version}/${top}/${stance}/${view}`;
+        const root = `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v3/${top}/${stance}/${view}`;
         const scene = wheelId === 'street-temp' ? `${root}/studio.png`
-          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v${view === 'side' ? 2 : 1}/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v3/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
         const svg = renderSvg(c, view);
         assert.ok(svg.includes(scene));
         for (const file of ['paint-texture', 'paint-mask', 'center-band-mask', 'cab-mask', 'roof-mask'])
@@ -653,7 +652,7 @@ test('1979 Bronco wheels and rear hardtops retain paint and saved choices in eve
         assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v2/top-off/${view}`);
         const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
         const scene = wheelPack
-          ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v1/${roof === 'Top off' ? 'top-off' : 'top-on'}/${view}.png`
+          ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v${view === 'front-quarter' ? 2 : 1}/${roof === 'Top off' ? 'top-off' : 'top-on'}/${view}.png`
           : `${root}/studio.png`;
         const svg = renderSvg(c, view);
         assert.ok(svg.includes(`data-layer="reference-artwork" href="${scene}"`));

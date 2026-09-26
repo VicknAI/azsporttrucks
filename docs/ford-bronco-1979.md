@@ -59,3 +59,7 @@ The four aftermarket packs each contain four views for both roof states, totalin
 The stock white-wheel detail overlay has `baseSceneOnly: true`. The shared renderer suppresses it only when a matching replacement wheel scene exists, so it cannot cover the selected wheel with the stock white face. Stock renders and missing-scene fallbacks retain that detail, and unrelated overlays continue to render normally. Drafts, shared links, exports and private quote previews use the same roof-aware wheel registration.
 
 The independent registration audit preserves all 31 defaults, 14,300 non-Bronco SVGs, 68 stock Bronco SVGs and all 5,062 previously committed artwork files. The only stock summary change is the clearer “Stock” wheel label. New selections resolve to 32 Bronco-owned scene paths, and the audit confirms both aftermarket-overlay suppression and stock fallback. Deploy the website and verify all new PNGs before updating the quote Worker that shares this renderer.
+
+### Front-quarter wheel registration — September 26, 2026
+
+The far metal faces were remeasured against each approved F-150 donor to center the Baja and KMC rims and exclude a small donor tire-letter fragment. The eight corrected front-quarter scenes use v2 URLs; side, rear-quarter and straight-front remain v1. All 32 original v1 files are preserved. The 32 active scenes pass independent visual review, with source Bronco body, tires, paint and roof layers unchanged. Native source hashes, measured geometry and mixed-version public verification are retained in `assets/bronco-wheel-options/`.

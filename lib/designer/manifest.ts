@@ -691,7 +691,7 @@ for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
   const family = `chevrolet-k5-${sourceYear}`;
   for (const view of views) {
     const pack = vehicle.views[view].studio!;
-    const paintVersion = view === 'side' || view === 'front-quarter' ? 2 : 1;
+    const paintVersion = 3;
     for (const top of ['top-on', 'top-off'] as const) {
       const roots = Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) =>
         [stance, `/designer/studio/${family}-street-stance-v${paintVersion}/${top}/${stance}/${view}`]));
@@ -701,7 +701,7 @@ for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
       for (const wheel of sizedWheelOptions)
       for (const size of ['18', '20']) wheelScenes[`${wheel.id}-${size}`] = Object.fromEntries(
         ['drop2', 'drop4', 'frame'].map((stance) => [stance,
-          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v${view === 'side' ? 2 : 1}/${top}/${size}/${stance}/${view}.png`]),
+          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v3/${top}/${size}/${stance}/${view}.png`]),
       );
     }
   }
@@ -832,7 +832,7 @@ for (const view of views) {
   const pack = bronco1979.views[view].studio!;
   for (const top of ['top-on', 'top-off'] as const) {
     const scenes = Object.fromEntries(broncoWheelPacks.map((wheel) => [wheel.id, {
-      stock: `/designer/wheels/ford-bronco-1979-${wheel.pack}/${top}/${view}.png`,
+      stock: `/designer/wheels/ford-bronco-1979-${wheel.pack.replace(/-v1$/, view === 'front-quarter' ? '-v2' : '-v1')}/${top}/${view}.png`,
     }]));
     if (top === 'top-on') pack.wheelScenes = scenes;
     else pack.openTopWheelScenes = scenes;

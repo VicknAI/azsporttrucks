@@ -413,10 +413,10 @@ test('K5 quotes retain stock off-road builds and lowered street wheels across ro
         const cleanedPaint = ['side', 'front-quarter'].includes(view);
         const root = stance === 'stock'
           ? `/designer/studio/chevrolet-k5-${sourceYear}-color-v${cleanedPaint ? 7 : roof === 'Top off' ? 5 : 6}/${top}/${view}`
-          : `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v${cleanedPaint ? 2 : 1}/${top}/${stance}/${view}`;
+          : `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v3/${top}/${stance}/${view}`;
         const scene = wheelId === 'street-temp' ? `${root}/studio.png`
           : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${sourceYear}-${stockWheelPacks[wheelId].replace('-v1', view === 'side' ? '-v2' : '-v1')}/${top}/${view}.png`
-          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v${view === 'side' ? 2 : 1}/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v3/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
         assert.ok(html.includes(scene));
         assert.ok(html.includes(`${root}/paint-mask.png`));
         assert.ok(html.includes(`${root}/roof-mask.png`));
@@ -471,7 +471,7 @@ test('1979 Bronco quotes preserve wheel and rear hardtop choices in all four pri
     for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
       const version = roof === 'Top off' || view === 'front' ? 2 : 3;
       const scene = wheelPack
-        ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v1/${top}/${view}.png`
+        ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v${view === 'front-quarter' ? 2 : 1}/${top}/${view}.png`
         : `/designer/studio/ford-bronco-1979-color-v${version}/${top}/${view}/studio.png`;
       assert.ok(html.includes(`data-layer="reference-artwork" href="${scene}"`));
       assert.ok(html.includes(`/ford-bronco-1979-color-v${version}/${top}/${view}/paint-mask.png`));
