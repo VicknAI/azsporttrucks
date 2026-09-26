@@ -553,7 +553,7 @@ test('all lowered K5 years retain street wheels and roof-specific paint layers i
       for (const view of views) {
         const root = `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v3/${top}/${stance}/${view}`;
         const scene = wheelId === 'street-temp' ? `${root}/studio.png`
-          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v3/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v4/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
         const svg = renderSvg(c, view);
         assert.ok(svg.includes(scene));
         for (const file of ['paint-texture', 'paint-mask', 'center-band-mask', 'cab-mask', 'roof-mask'])

@@ -416,7 +416,7 @@ test('K5 quotes retain stock off-road builds and lowered street wheels across ro
           : `/designer/studio/chevrolet-k5-${sourceYear}-street-stance-v3/${top}/${stance}/${view}`;
         const scene = wheelId === 'street-temp' ? `${root}/studio.png`
           : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${sourceYear}-${stockWheelPacks[wheelId].replace('-v1', view === 'side' ? '-v2' : '-v1')}/${top}/${view}.png`
-          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v3/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+          : `/designer/wheels/chevrolet-k5-${sourceYear}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v4/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
         assert.ok(html.includes(scene));
         assert.ok(html.includes(`${root}/paint-mask.png`));
         assert.ok(html.includes(`${root}/roof-mask.png`));

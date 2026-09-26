@@ -701,7 +701,7 @@ for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
       for (const wheel of sizedWheelOptions)
       for (const size of ['18', '20']) wheelScenes[`${wheel.id}-${size}`] = Object.fromEntries(
         ['drop2', 'drop4', 'frame'].map((stance) => [stance,
-          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v3/${top}/${size}/${stance}/${view}.png`]),
+          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v4/${top}/${size}/${stance}/${view}.png`]),
       );
     }
   }

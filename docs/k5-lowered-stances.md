@@ -37,3 +37,11 @@ The 2- and 4-inch body positions follow the smaller tires; laying frame retains 
 Every lowered paint pack now uses `chevrolet-k5-{1970|1972}-street-stance-v3`; all lowered Torq/Rocket wheel scenes use v3. These new paths cover 288 paint-pack files and 192 alternate-wheel scenes. Authoring, pixel-preservation checks, visual review and public-release verification are retained in workspace `assets/k5-street-tire-size/`.
 
 All 50 repository tests, TypeScript, focused lint, the production build and quote Worker dry run pass. The native build preserves all 1,328 prior K5 PNGs. Regression comparison preserves all 31 defaults and 2,632 saved configurations/summaries, 5,068 unrelated renders and 1,296 pictured-height K5 renders; lowered renders differ only by the intended v3 paths. Browser review confirms the requested 1972 side preview and 20-inch Torq Thrust option.
+
+## Lowered wheel-lip alignment — September 26, 2026
+
+The 1972 laying-frame preview exposed misregistered 18-inch Rocket Attack rims. Native target ellipses were too narrow and leftward in the front-quarter view; the far rim also sat too high. Full metal-lip measurements correct both quarter views for Torq Thrust II and Rocket Attack in both sizes. The masks cover the previous Rally lip and retain the real tire sidewall outside the chosen rim.
+
+All 192 lowered alternate-wheel scenes now use v4 paths. The Street base scenes, smaller tires, body position and every paint pack remain v3. The far rear-quarter source crop also follows the complete donor rim, excluding a body/background fragment that previously notched the lip. The 18/20 size relationship is preserved. Authoring, magnified old/new comparisons, pixel-preservation checks and release verification are retained in workspace `assets/k5-street-wheel-alignment/`.
+
+Independent verification covers all 192 scenes and 524,720 visible bright Rally-metal pixels with no uncovered remnants. All body/paint pixels, the 48 edge-on front scenes, all 480 prior v3 files and all 1,296 tracked K5 studio files remain unchanged. Magnified review checks the actual metal boundaries at 4–5× scale. All 50 tests pass; comparison with c87c767 preserves every configuration and all renders except the intended lowered alternate-wheel URL versions.
