@@ -691,17 +691,17 @@ for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
   const family = `chevrolet-k5-${sourceYear}`;
   for (const view of views) {
     const pack = vehicle.views[view].studio!;
-    const paintVersion = 3;
     for (const top of ['top-on', 'top-off'] as const) {
+      const repairedRoof = (stance: string) => top === 'top-on' && stance === 'frame' && view === 'rear-quarter';
       const roots = Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) =>
-        [stance, `/designer/studio/${family}-street-stance-v${paintVersion}/${top}/${stance}/${view}`]));
+        [stance, `/designer/studio/${family}-street-stance-v${repairedRoof(stance) ? 4 : 3}/${top}/${stance}/${view}`]));
       if (top === 'top-on') pack.stanceRoots = roots;
       else pack.openTopStanceRoots = roots;
       const wheelScenes = top === 'top-on' ? pack.wheelScenes! : pack.openTopWheelScenes!;
       for (const wheel of sizedWheelOptions)
       for (const size of ['18', '20']) wheelScenes[`${wheel.id}-${size}`] = Object.fromEntries(
         ['drop2', 'drop4', 'frame'].map((stance) => [stance,
-          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v4/${top}/${size}/${stance}/${view}.png`]),
+          `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v${repairedRoof(stance) ? 5 : 4}/${top}/${size}/${stance}/${view}.png`]),
       );
     }
   }
