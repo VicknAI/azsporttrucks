@@ -59,7 +59,7 @@ test('all C10 and F-100 ride heights survive sharing and select matching color l
       const pack = vehicle.views[view].studio;
       const root = stance === 'stock' ? pack.root : pack.stanceRoots[stance];
       if (vehicle.model === 'F-100')
-        assert.equal(root, `/designer/studio/ford-f100-${vehicle.year}-${stance === 'stock' ? 'color-v2' : `stance-v2/${stance}`}/${view}`);
+        assert.equal(root, `/designer/studio/ford-f100-${vehicle.year}-${stance === 'stock' ? 'color-v2' : `stance-v${stance === 'frame' ? 3 : 2}/${stance}`}/${view}`);
       assert.ok(svg.includes(pack.wheelScenes?.['street-temp']?.[stance] ?? `${root}/studio.png`));
       assert.ok(svg.includes(`${root}/paint-mask.png`));
       assert.ok(svg.includes(`${root}/center-band-mask.png`));
@@ -732,6 +732,21 @@ test('Bronco and F-100 two-tone trim packs preserve every non-band artwork layer
     assert.equal(band.subarray(1, 4).toString(), 'PNG');
     assert.equal(band.readUInt32BE(16), 768);
     assert.equal(band.readUInt32BE(20), 512);
+  }
+});
+
+test('F-100 laying-frame wheel cleanup preserves all five paint layers including the refined two-tone band', () => {
+  for (const year of [1978, 1979]) {
+    const vehicle = vehicles.find((v) => v.id === `Ford-F-100-${year}`);
+    for (const view of views) {
+      const root = vehicle.views[view].studio.stanceRoots.frame;
+      assert.equal(root, `/designer/studio/ford-f100-${year}-stance-v3/frame/${view}`);
+      for (const file of ['paint-texture', 'paint-mask', 'center-band-mask', 'cab-mask', 'roof-mask']) {
+        const original = readFileSync(new URL(`../public/designer/studio/ford-f100-${year}-stance-v2/frame/${view}/${file}.png`, import.meta.url));
+        const current = readFileSync(new URL(`../public${root}/${file}.png`, import.meta.url));
+        assert.deepEqual(current, original, `Laying-frame wheel cleanup must preserve ${year}/${view}/${file}`);
+      }
+    }
   }
 });
 

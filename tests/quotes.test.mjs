@@ -451,9 +451,9 @@ test('F-100 two-tone quotes preserve height, wheels and contrasting cab paint in
       assert.equal(review.status, 200);
       const html = await review.text();
       for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
-        const root = `/designer/studio/ford-f100-${year}-${stance === 'stock' ? 'color-v2' : `stance-v2/${stance}`}/${view}`;
+        const root = `/designer/studio/ford-f100-${year}-${stance === 'stock' ? 'color-v2' : `stance-v${stance === 'frame' ? 3 : 2}/${stance}`}/${view}`;
         const scene = wheelId === 'street-temp' ? `${root}/studio.png`
-          : `/designer/wheels/ford-f100-${year}-torq-v1/${wheelId.slice(-2)}/${stance}/${view}.png`;
+          : `/designer/wheels/ford-f100-${year}-torq-v${stance === 'frame' ? 2 : 1}/${wheelId.slice(-2)}/${stance}/${view}.png`;
         assert.ok(html.includes(`data-layer="reference-artwork" href="${scene}"`));
         for (const file of ['paint-mask', 'center-band-mask', 'cab-mask', 'roof-mask'])
           assert.ok(html.includes(`${root}/${file}.png`));

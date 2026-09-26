@@ -628,9 +628,10 @@ for (const vehicle of vehicles.filter((v) => (v.model === 'C10' && v.year <= 197
     : vehicle.year;
   const family = vehicle.model === 'C10' ? 'chevrolet-c10' : 'ford-f100';
   const stanceVersion = vehicle.model === 'F-100' || (vehicle.model === 'C10' && sourceYear === 1967) ? 2 : 1;
+  const repairedFrame = (stance: string) => vehicle.model === 'F-100' && stance === 'frame';
   for (const view of views) {
     vehicle.views[view].studio!.stanceRoots = Object.fromEntries(
-      ['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/${family}-${sourceYear}-stance-v${stanceVersion}/${stance}/${view}`]),
+      ['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/${family}-${sourceYear}-stance-v${repairedFrame(stance) ? 3 : stanceVersion}/${stance}/${view}`]),
     );
     // Reuse the approved 1971/72 wheel pack; each other body family is aligned
     // to its own tire positions and stance masks.
@@ -638,7 +639,7 @@ for (const vehicle of vehicles.filter((v) => (v.model === 'C10' && v.year <= 197
       ? 'c10-1971' : `${family}-${sourceYear}`;
     vehicle.views[view].studio!.wheelScenes = Object.fromEntries(
       ['18', '20'].map((size) => [`torq-thrust-${size}`, Object.fromEntries(
-        ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/wheels/${wheelFamily}-torq-v1/${size}/${stance}/${view}.png`]),
+        ['stock', 'drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/wheels/${wheelFamily}-torq-v${repairedFrame(stance) ? 2 : 1}/${size}/${stance}/${view}.png`]),
       )]),
     );
     if (vehicle.model === 'C10') {
