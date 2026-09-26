@@ -441,7 +441,7 @@ for (const [model, assetModel] of [['F-100', 'f100'], ['F-150', 'f150']])
   for (const year of [1978, 1979]) {
     const fordStudio = vehicles.find((v) => v.id === `Ford-${model}-${year}`)!;
     for (const view of views) fordStudio.views[view].studio = {
-      root: `/designer/studio/ford-${assetModel}-${year}-color-v1/${view}`,
+      root: `/designer/studio/ford-${assetModel}-${year}-color-v${model === 'F-100' ? 2 : 1}/${view}`,
       paintScene: true,
       width: 768, height: 512, viewport: [0, 0, 768, 512],
       shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
@@ -627,7 +627,7 @@ for (const vehicle of vehicles.filter((v) => (v.model === 'C10' && v.year <= 197
     ? vehicle.year <= 1968 ? vehicle.year : vehicle.year <= 1970 ? 1970 : 1971
     : vehicle.year;
   const family = vehicle.model === 'C10' ? 'chevrolet-c10' : 'ford-f100';
-  const stanceVersion = vehicle.model === 'C10' && sourceYear === 1967 ? 2 : 1;
+  const stanceVersion = vehicle.model === 'F-100' || (vehicle.model === 'C10' && sourceYear === 1967) ? 2 : 1;
   for (const view of views) {
     vehicle.views[view].studio!.stanceRoots = Object.fromEntries(
       ['drop2', 'drop4', 'frame'].map((stance) => [stance, `/designer/studio/${family}-${sourceYear}-stance-v${stanceVersion}/${stance}/${view}`]),
@@ -803,8 +803,8 @@ const bronco1979: Vehicle = {
     foregroundMask: null,
     anchors: geometry[view].anchors.map((anchor) => ({ ...anchor })),
     studio: {
-      root: `/designer/studio/ford-bronco-1979-color-v${view === 'front' ? 2 : 3}/top-on/${view}`,
-      openTopRoot: `/designer/studio/ford-bronco-1979-color-v2/top-off/${view}`,
+      root: `/designer/studio/ford-bronco-1979-color-v4/top-on/${view}`,
+      openTopRoot: `/designer/studio/ford-bronco-1979-color-v4/top-off/${view}`,
       paintScene: true,
       width: 768,
       height: 512,

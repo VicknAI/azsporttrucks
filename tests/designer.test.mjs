@@ -58,8 +58,11 @@ test('all C10 and F-100 ride heights survive sharing and select matching color l
       const svg = renderSvg(c, view);
       const pack = vehicle.views[view].studio;
       const root = stance === 'stock' ? pack.root : pack.stanceRoots[stance];
+      if (vehicle.model === 'F-100')
+        assert.equal(root, `/designer/studio/ford-f100-${vehicle.year}-${stance === 'stock' ? 'color-v2' : `stance-v2/${stance}`}/${view}`);
       assert.ok(svg.includes(pack.wheelScenes?.['street-temp']?.[stance] ?? `${root}/studio.png`));
       assert.ok(svg.includes(`${root}/paint-mask.png`));
+      assert.ok(svg.includes(`${root}/center-band-mask.png`));
       assert.ok(svg.includes(`${root}/cab-mask.png`));
       const embedded = await embedArtwork(svg, async (path) => {
         const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
@@ -649,8 +652,8 @@ test('1979 Bronco wheels and rear hardtops retain paint and saved choices in eve
       for (const view of views) {
         const pack = bronco.views[view].studio;
         assert.equal(pack.stanceRoots, undefined);
-        assert.equal(pack.root, `/designer/studio/ford-bronco-1979-color-v${view === 'front' ? 2 : 3}/top-on/${view}`);
-        assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v2/top-off/${view}`);
+        assert.equal(pack.root, `/designer/studio/ford-bronco-1979-color-v4/top-on/${view}`);
+        assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v4/top-off/${view}`);
         const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
         const scene = wheelPack
           ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v${view === 'front-quarter' ? 2 : 1}/${roof === 'Top off' ? 'top-off' : 'top-on'}/${view}.png`
@@ -703,6 +706,35 @@ test('1979 Bronco wheels and rear hardtops retain paint and saved choices in eve
   }
 });
 
+test('Bronco and F-100 two-tone trim packs preserve every non-band artwork layer', () => {
+  const roots = [];
+  for (const year of [1978, 1979])
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame'])
+  for (const view of views) {
+    const family = `/designer/studio/ford-f100-${year}`;
+    roots.push(stance === 'stock'
+      ? [`${family}-color-v1/${view}`, `${family}-color-v2/${view}`]
+      : [`${family}-stance-v1/${stance}/${view}`, `${family}-stance-v2/${stance}/${view}`]);
+  }
+  for (const top of ['top-on', 'top-off'])
+  for (const view of views) roots.push([
+    `/designer/studio/ford-bronco-1979-color-v${top === 'top-off' || view === 'front' ? 2 : 3}/${top}/${view}`,
+    `/designer/studio/ford-bronco-1979-color-v4/${top}/${view}`,
+  ]);
+  assert.equal(roots.length, 40);
+  for (const [previous, current] of roots) {
+    for (const file of ['studio', 'paint-texture', 'paint-mask', 'cab-mask', 'roof-mask']) {
+      const original = readFileSync(new URL(`../public${previous}/${file}.png`, import.meta.url));
+      const updated = readFileSync(new URL(`../public${current}/${file}.png`, import.meta.url));
+      assert.deepEqual(updated, original, `Only center-band coverage may change: ${current}/${file}.png`);
+    }
+    const band = readFileSync(new URL(`../public${current}/center-band-mask.png`, import.meta.url));
+    assert.equal(band.subarray(1, 4).toString(), 'PNG');
+    assert.equal(band.readUInt32BE(16), 768);
+    assert.equal(band.readUInt32BE(20), 512);
+  }
+});
+
 test('1979 F-100 finishes preserve two-tone and cab colors across shares and exports', async () => {
   const vehicle = vehicles.find((v) => v.id === 'Ford-F-100-1979');
   assert.equal(defaultConfiguration(vehicle).paintMode, 'Solid');
@@ -715,7 +747,7 @@ test('1979 F-100 finishes preserve two-tone and cab colors across shares and exp
   assert.deepEqual(readShare(shareHash(c)), c);
   for (const view of views) {
     const svg = renderSvg(c, view);
-    assert.ok(svg.includes('/ford-f100-1979-color-v1/'));
+    assert.ok(svg.includes('/ford-f100-1979-color-v2/'));
     assert.notEqual(svg, renderSvg({ ...c, color: '#ff0000' }, view));
     assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#000000' }, view));
     assert.notEqual(svg, renderSvg({ ...c, roofColor: '#000000' }, view));
@@ -725,7 +757,7 @@ test('1979 F-100 finishes preserve two-tone and cab colors across shares and exp
     assert.equal(renderSvg(solid, view), renderSvg({ ...solid, secondaryColor: '#000000', roofColor: '#000000' }, view));
     for (const file of ['studio.png', 'paint-texture.png', 'paint-mask.png']) {
       const previous = readFileSync(new URL(`../public/designer/studio/ford-f100-1979-solid-v2/${view}/${file}`, import.meta.url));
-      const current = readFileSync(new URL(`../public/designer/studio/ford-f100-1979-color-v1/${view}/${file}`, import.meta.url));
+      const current = readFileSync(new URL(`../public/designer/studio/ford-f100-1979-color-v2/${view}/${file}`, import.meta.url));
       assert.deepEqual(current, previous, `Existing solid appearance must be preserved: ${view}/${file}`);
     }
     const embedded = await embedArtwork(svg, async (path) => {
@@ -1074,6 +1106,7 @@ test('1971–1972 K10 Center band and Rocker paint retain the refined rear pack 
 
 test('1978 Ford studio variants preserve finishes, shares and offline artwork', async () => {
   for (const [model, asset] of [['F-100', 'f100'], ['F-150', 'f150']]) {
+    const version = model === 'F-100' ? 2 : 1;
     const vehicle = vehicles.find((v) => v.id === `Ford-${model}-1978`);
     const initial = defaultConfiguration(vehicle);
     assert.equal(initial.color, '#1678ba');
@@ -1086,14 +1119,14 @@ test('1978 Ford studio variants preserve finishes, shares and offline artwork', 
     const scenes = new Set();
     for (const view of views) {
       const svg = renderSvg(c, view);
-      assert.ok(svg.includes(`/ford-${asset}-1978-color-v1/`));
+      assert.ok(svg.includes(`/ford-${asset}-1978-color-v${version}/`));
       for (const change of [{ color: '#ff0000' }, { secondaryColor: '#0000ff' }, { roofColor: '#ffffff' }, { finish: 'Gloss' }])
         assert.notEqual(svg, renderSvg({ ...c, ...change }, view));
       const solid = normalize({ ...c, paintMode: 'Solid', contrastRoof: false });
       assert.equal(renderSvg(solid, view), renderSvg({ ...solid, secondaryColor: '#ff00ff', roofColor: '#000000' }, view));
       for (const file of ['studio.png', 'paint-texture.png', 'paint-mask.png', 'center-band-mask.png', 'cab-mask.png', 'roof-mask.png']) {
-        const bytes = readFileSync(new URL(`../public/designer/studio/ford-${asset}-1978-color-v1/${view}/${file}`, import.meta.url));
-        const previous = readFileSync(new URL(`../public/designer/studio/ford-${asset}-1979-color-v1/${view}/${file}`, import.meta.url));
+        const bytes = readFileSync(new URL(`../public/designer/studio/ford-${asset}-1978-color-v${version}/${view}/${file}`, import.meta.url));
+        const previous = readFileSync(new URL(`../public/designer/studio/ford-${asset}-1979-color-v${version}/${view}/${file}`, import.meta.url));
         if (view === 'side' || view === 'rear-quarter' || file === 'paint-texture.png') assert.deepEqual(bytes, previous);
         if ((view === 'front' || view === 'front-quarter') && file === 'studio.png') assert.notDeepEqual(bytes, previous);
       }

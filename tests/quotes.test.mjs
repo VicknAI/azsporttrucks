@@ -427,6 +427,41 @@ test('K5 quotes retain stock off-road builds and lowered street wheels across ro
   }
 });
 
+test('F-100 two-tone quotes preserve height, wheels and contrasting cab paint in the revised packs', async () => {
+  for (const year of [1978, 1979])
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame'])
+  for (const wheelId of ['street-temp', 'torq-thrust-18', 'torq-thrust-20'])
+  for (const contrastRoof of [false, true]) {
+    const h = harness();
+    try {
+      const configuration = {
+        vehicleId: `Ford-F-100-${year}`, stance, wheelId, contrastRoof,
+        color: '#386c47', secondaryColor: '#e8dfca', roofColor: '#ddbb88',
+        paintMode: 'Two-tone', finish: 'Satin', cabPaint: 'Roof and pillars',
+      };
+      const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+      assert.equal(response.status, 201);
+      await h.settle();
+      const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+      const saved = JSON.parse(row.configuration_json);
+      for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
+      assert.ok(h.sent[0].text.includes(`${year} Ford F-100`));
+      assert.ok(h.sent[0].text.includes(`Contrasting roof: ${contrastRoof ? '#ddbb88' : 'No'}`));
+      const review = await h.request(new Request(await privateLink(h.env, row.id)));
+      assert.equal(review.status, 200);
+      const html = await review.text();
+      for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+        const root = `/designer/studio/ford-f100-${year}-${stance === 'stock' ? 'color-v2' : `stance-v2/${stance}`}/${view}`;
+        const scene = wheelId === 'street-temp' ? `${root}/studio.png`
+          : `/designer/wheels/ford-f100-${year}-torq-v1/${wheelId.slice(-2)}/${stance}/${view}.png`;
+        assert.ok(html.includes(`data-layer="reference-artwork" href="${scene}"`));
+        for (const file of ['paint-mask', 'center-band-mask', 'cab-mask', 'roof-mask'])
+          assert.ok(html.includes(`${root}/${file}.png`));
+      }
+    } finally { await h.close(); }
+  }
+});
+
 test('1979 Bronco quotes preserve wheel and rear hardtop choices in all four private review views', async () => {
   const wheelChoices = {
     'street-temp': ['Stock', null],
@@ -470,13 +505,14 @@ test('1979 Bronco quotes preserve wheel and rear hardtop choices in all four pri
     assert.equal((html.match(/<figure>/g) || []).length, 4);
     const top = roof === 'Top off' ? 'top-off' : 'top-on';
     for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
-      const version = roof === 'Top off' || view === 'front' ? 2 : 3;
+      const root = `/designer/studio/ford-bronco-1979-color-v4/${top}/${view}`;
       const scene = wheelPack
         ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v${view === 'front-quarter' ? 2 : 1}/${top}/${view}.png`
-        : `/designer/studio/ford-bronco-1979-color-v${version}/${top}/${view}/studio.png`;
+        : `${root}/studio.png`;
       assert.ok(html.includes(`data-layer="reference-artwork" href="${scene}"`));
-      assert.ok(html.includes(`/ford-bronco-1979-color-v${version}/${top}/${view}/paint-mask.png`));
-      assert.ok(html.includes(`/ford-bronco-1979-color-v${version}/${top}/${view}/roof-mask.png`));
+      assert.ok(html.includes(`${root}/paint-mask.png`));
+      assert.ok(html.includes(`${root}/center-band-mask.png`));
+      assert.ok(html.includes(`${root}/roof-mask.png`));
     }
     assert.equal((html.match(/data-layer="detail-overlay"/g) || []).length, wheelPack ? 0 : 3);
     assert.equal(html.includes('/ford-bronco-1979-color-v2/wheel-details.png'), !wheelPack);
