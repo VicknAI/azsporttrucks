@@ -427,6 +427,54 @@ test('K5 quotes retain stock off-road builds and lowered street wheels across ro
   }
 });
 
+test('1973–1975 K5 quotes retain grouped years, roofs, heights and wheel selections in all private views', async () => {
+  const stockWheels = {
+    'street-temp': null, 'baja-polished': 'baja', 'baja-black': 'baja-black',
+    'kmc-impact-monoblock-machined': 'kmc-impact-monoblock',
+    'kmc-impact-beadlock-machined': 'kmc-impact-beadlock',
+  };
+  for (const years of ['1973-1974', '1975'])
+  for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off'])
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame'])
+  for (const wheelId of stance === 'stock' ? Object.keys(stockWheels)
+    : ['street-temp', 'torq-thrust-18', 'torq-thrust-20', 'rocket-attack-18', 'rocket-attack-20']) {
+    const h = harness();
+    try {
+      const configuration = {
+        vehicleId: `Chevrolet-K5-${years}`, roof, stance, wheelId,
+        color: '#386c47', secondaryColor: '#e8dfca', paintMode: 'Two-tone', finish: 'Satin',
+      };
+      const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+      assert.equal(response.status, 201);
+      await h.settle();
+      const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+      const saved = JSON.parse(row.configuration_json);
+      for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
+      assert.ok(h.sent[0].text.includes(`${years.replace('-', '–')} Chevrolet K5`));
+      assert.ok(h.sent[0].text.includes(`K5 roof: ${roof}`));
+      assert.ok(h.sent[0].text.includes('Blue upholstery and a white roll bar'));
+      const review = await h.request(new Request(await privateLink(h.env, row.id)));
+      assert.equal(review.status, 200);
+      const html = await review.text();
+      assert.equal((html.match(/<figure>/g) || []).length, 4);
+      const top = roof === 'Top off' ? 'top-off' : 'top-on';
+      for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
+        const root = stance === 'stock'
+          ? `/designer/studio/chevrolet-k5-${years}-color-v1/${top}/${view}`
+          : `/designer/studio/chevrolet-k5-${years}-street-stance-v1/${top}/${stance}/${view}`;
+        const scene = wheelId === 'street-temp' ? `${root}/studio.png`
+          : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${years}-${stockWheels[wheelId]}-v1/${top}/${view}.png`
+          : `/designer/wheels/chevrolet-k5-${years}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v1/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+        assert.ok(html.includes(`data-layer="reference-artwork" href="${scene}"`));
+        for (const file of ['paint-mask', 'center-band-mask', 'cab-mask', 'roof-mask'])
+          assert.ok(html.includes(`${root}/${file}.png`));
+      }
+      assert.ok(!html.includes(`/${roof === 'Top off' ? 'top-on' : 'top-off'}/`));
+      assert.ok(!html.includes('chevrolet-k5-1970-') && !html.includes('chevrolet-k5-1972-'));
+    } finally { await h.close(); }
+  }
+});
+
 test('F-100 two-tone quotes preserve height, wheels and contrasting cab paint in the revised packs', async () => {
   for (const year of [1978, 1979])
   for (const stance of ['stock', 'drop2', 'drop4', 'frame'])

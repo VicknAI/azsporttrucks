@@ -177,6 +177,9 @@ export function Designer({ children }: { children?: ReactNode }) {
     return () => abort.abort();
   }, []);
   const vehicle = vehicles.find((v) => v.id === config.vehicleId)!;
+  const modelVehicles = vehicles.filter(
+    (v) => v.manufacturer === vehicle.manufacturer && v.model === vehicle.model,
+  );
   const availableWheels = availableWheelIds(vehicle, config);
   const sizedWheel = sizedWheelOptions.find((wheel) => config.wheelId.startsWith(`${wheel.id}-`));
   const availableSizedWheels = sizedWheelOptions.filter((wheel) => availableWheels.includes(`${wheel.id}-18`));
@@ -543,18 +546,12 @@ export function Designer({ children }: { children?: ReactNode }) {
                 }
               />
               <Choice
-                label={['C10', 'K10'].includes(vehicle.model) ? 'Year / year group' : 'Exact model year'}
+                label={modelVehicles.some((v) => v.yearEnd) ? 'Year / year group' : 'Exact model year'}
                 value={vehicle.id}
-                options={vehicles
-                  .filter(
-                    (v) =>
-                      v.manufacturer === vehicle.manufacturer &&
-                      v.model === vehicle.model,
-                  )
-                  .map((v) => ({
-                    id: v.id,
-                    label: v.yearEnd ? `${v.year}–${v.yearEnd}` : String(v.year),
-                  }))}
+                options={modelVehicles.map((v) => ({
+                  id: v.id,
+                  label: v.yearEnd ? `${v.year}–${v.yearEnd}` : String(v.year),
+                }))}
                 onChange={changeVehicle}
               />
               {vehicle.manufacturer === 'Ford' && !vehicle.views.side.studio && (
@@ -573,7 +570,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                 </p>
               ) : (
                 <>
-                  {['C10', 'K10', 'Bronco'].includes(vehicle.model) && (
+                  {(['C10', 'K10', 'Bronco'].includes(vehicle.model) || vehicle.referencePaint) && (
                     <button
                       className="design-button"
                       onClick={() =>
@@ -585,7 +582,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                           twoToneStyle: 'Center band',
                           contrastRoof: vehicle.referencePaint.contrastRoof,
                           cabPaint: vehicle.roofOptions.length ? 'Roof only' : 'Roof and pillars',
-                          ...(vehicle.model === 'Bronco' ? { roof: 'White top' } : {}),
+                          ...(vehicle.roofOptions.length ? { roof: 'White top' } : {}),
                         }) : update({
                           color: blueSquarebodyPickup ? '#237cae' : vehicle.id === 'Chevrolet-K10-1967' ? '#087ca2' : vehicle.id === 'Chevrolet-K10-1968' ? '#20584b' : vehicle.id === 'Chevrolet-C10-1967' ? '#63aba6' : vehicle.id === 'Chevrolet-C10-1968' ? '#087fb8' : '#d34b20',
                           secondaryColor: '#f1eee5',
@@ -690,11 +687,11 @@ export function Designer({ children }: { children?: ReactNode }) {
                         onChange={(value) => update({ roof: value })}
                       />
                       <p className="design-note">
-                        {vehicle.model === 'Bronco'
+                        {vehicle.roofDescription ?? (vehicle.model === 'Bronco'
                           ? 'Choose a white, black, or body-color rear hardtop, or Top off to reveal the black vinyl interior. The fixed steel front cab stays body color.'
                           : vehicle.views.side.studio?.openTopRoot
                           ? 'Choose a white, black, or body-color full hardtop, or remove it to reveal the open cabin. Black dash and roll bar, with gray/black patterned seat centers.'
-                          : 'Top off uses a separate interior and bed-rail placeholder. Final seating, shadows, and roof details are pending artwork.'}
+                          : 'Top off uses a separate interior and bed-rail placeholder. Final seating, shadows, and roof details are pending artwork.')}
                       </p>
                     </>
                   )}
@@ -746,7 +743,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                          ? config.stance === 'frame'
                            ? 'Laying frame shows the Blazer parked with air suspension fully lowered and street tires.'
                            : 'Lowered previews use street tires with the selected wheels. Nick will confirm suspension and fitment.'
-                         : 'As pictured keeps the original off-road tires and wheel choices. Choose a lower ride height to compare street wheels and tires.'
+                         : vehicle.picturedStanceDescription ?? 'As pictured keeps the original off-road tires and wheel choices. Choose a lower ride height to compare street wheels and tires.'
                        : config.stance === 'frame'
                       ? 'Laying frame shows the truck parked with air suspension fully lowered.'
                       : squarebodyC10 && config.stance === 'stock'

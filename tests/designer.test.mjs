@@ -161,7 +161,7 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
     'kmc-impact-beadlock-machined': ['KMC Impact Forged Beadlock - Raw Machined', '-kmc-impact-beadlock-v1/'],
   };
   const supported = vehicles.filter((v) => Object.keys(wheelExpectations).some((id) => v.views.side.studio?.wheelScenes?.[id]));
-  assert.equal(supported.filter((v) => v.model !== 'Bronco').length, 17);
+  assert.equal(supported.filter((v) => v.model !== 'Bronco').length, 19);
   for (const vehicle of supported.filter((v) => v.model !== 'Bronco')) {
     assert.ok(Object.keys(wheelExpectations).every((id) => vehicle.views.side.studio.wheelScenes[id]));
   }
@@ -179,7 +179,8 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       const pack = v.views[view].studio;
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
-      const version = (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && view === 'side') ? 'v2' : v.year === 1973 ? 'v4' : [1975, 1977].includes(v.year) ? 'v2' : 'v1';
+      const version = (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && v.year <= 1972 && view === 'side')
+        ? 'v2' : v.model === 'K10' && v.year === 1973 ? 'v4' : v.model === 'K10' && [1975, 1977].includes(v.year) ? 'v2' : 'v1';
       const expectedFolder = folder.replace('-v1/', `-${version}/`);
       assert.ok(scenes[wheelId].stock.includes(expectedFolder));
       const svg = renderSvg(c, view);
@@ -265,13 +266,13 @@ process.on('exit', () => {
   )
     rmSync(resolved, { recursive: true, force: true });
 });
-test('exact years and pickup year groups have distinct manifests and four anchor packs', () => {
-  assert.equal(vehicles.length, 31);
-  assert.equal(new Set(vehicles.map((v) => v.id)).size, 31);
+test('exact years and vehicle year groups have distinct manifests and four anchor packs', () => {
+  assert.equal(vehicles.length, 33);
+  assert.equal(new Set(vehicles.map((v) => v.id)).size, 33);
   for (const [model, years] of [
     ['C10', [1967, 1968, 1980]],
     ['K10', [1967, 1968, 1980]],
-    ['K5', [1969, 1970, 1971, 1972]],
+    ['K5', [1969, 1970, 1971, 1972, 1975]],
     ['F-100', [1978, 1979]],
     ['F-150', [1978, 1979]],
     ['Bronco', [1979]],
@@ -579,6 +580,90 @@ test('all lowered K5 years retain street wheels and roof-specific paint layers i
         }
       }
     }
+  } finally {
+    if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage);
+    else delete globalThis.localStorage;
+  }
+});
+
+test('1973–1975 K5 selections retain independent roof, height and wheel artwork in saved builds and exports', async () => {
+  const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
+  const stockWheels = {
+    'street-temp': null, 'baja-polished': 'baja', 'baja-black': 'baja-black',
+    'kmc-impact-monoblock-machined': 'kmc-impact-monoblock',
+    'kmc-impact-beadlock-machined': 'kmc-impact-beadlock',
+  };
+  const streetWheels = ['street-temp', 'torq-thrust-18', 'torq-thrust-20', 'rocket-attack-18', 'rocket-attack-20'];
+  const previousStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  let savedDraft;
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
+    getItem(key) { assert.equal(key, draftKey); return savedDraft; },
+  } });
+  const exportedAssets = new Set();
+  try {
+    for (const years of ['1973-1974', '1975']) {
+      const vehicle = vehicles.find((v) => v.id === `Chevrolet-K5-${years}`);
+      assert.ok(vehicle);
+      assert.equal(vehicle.year, Number(years.slice(0, 4)));
+      assert.equal(vehicle.yearEnd, years === '1973-1974' ? 1974 : undefined);
+      const initial = defaultConfiguration(vehicle);
+      assert.equal(initial.stance, 'stock');
+      assert.equal(initial.wheelId, 'street-temp');
+      assert.equal(initial.roof, 'White top');
+      assert.equal(initial.color, '#176572');
+      assert.equal(initial.secondaryColor, '#f1eee5');
+      assert.equal(initial.paintMode, 'Two-tone');
+      assert.equal(initial.twoToneStyle, 'Center band');
+      assert.equal(summary(initial)['Ride height'], 'As pictured');
+      assert.equal(summary(initial).Interior, 'Blue upholstery and a white roll bar');
+      for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off'])
+      for (const stance of ['stock', 'drop2', 'drop4', 'frame'])
+      for (const wheelId of stance === 'stock' ? Object.keys(stockWheels) : streetWheels)
+      for (const paintMode of ['Solid', 'Two-tone']) {
+        const c = normalize({ ...initial, roof, stance, wheelId, paintMode,
+          color: '#386c47', secondaryColor: '#e8dfca', finish: paintMode === 'Solid' ? 'Gloss' : 'Satin' });
+        assert.equal(c.vehicleId, vehicle.id);
+        assert.equal(c.stance, stance);
+        assert.equal(c.wheelId, wheelId);
+        assert.equal(c.roof, roof);
+        assert.deepEqual(availableWheelIds(vehicle, c), stance === 'stock' ? Object.keys(stockWheels) : streetWheels);
+        assert.deepEqual(readShare(shareHash(c)), c);
+        savedDraft = JSON.stringify(c);
+        assert.deepEqual(readDraft(), c);
+        assert.equal(summary(c).Vehicle, `${years.replace('-', '–')} Chevrolet K5`);
+        const top = roof === 'Top off' ? 'top-off' : 'top-on';
+        for (const view of views) {
+          const root = stance === 'stock'
+            ? `/designer/studio/chevrolet-k5-${years}-color-v1/${top}/${view}`
+            : `/designer/studio/chevrolet-k5-${years}-street-stance-v1/${top}/${stance}/${view}`;
+          const scene = wheelId === 'street-temp' ? `${root}/studio.png`
+            : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${years}-${stockWheels[wheelId]}-v1/${top}/${view}.png`
+            : `/designer/wheels/chevrolet-k5-${years}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v1/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
+          const svg = renderSvg(c, view);
+          assert.ok(svg.includes(`data-layer="reference-artwork" href="${scene}"`));
+          for (const file of ['paint-texture', 'paint-mask', 'center-band-mask', 'cab-mask', 'roof-mask'])
+            assert.ok(svg.includes(`${root}/${file}.png`));
+          assert.ok(!svg.includes(`/${roof === 'Top off' ? 'top-on' : 'top-off'}/`));
+          assert.ok(!svg.includes('chevrolet-k5-1970-') && !svg.includes('chevrolet-k5-1972-'));
+          assert.notEqual(svg, renderSvg({ ...c, color: '#dd5500' }, view));
+          assert.notEqual(svg, renderSvg({ ...c, roof: roof === 'Top off' ? 'White top' : 'Top off' }, view));
+          if (paintMode === 'Two-tone') assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#111111' }, view));
+          else assert.equal(svg, renderSvg({ ...c, secondaryColor: '#111111' }, view));
+          if (['White top', 'Top off'].includes(roof) && paintMode === 'Two-tone') {
+            const embedded = await embedArtwork(svg, async (path) => {
+              exportedAssets.add(path);
+              const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+              assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+              assert.equal(bytes.readUInt32BE(16), 768);
+              assert.equal(bytes.readUInt32BE(20), 512);
+              return `data:image/png;base64,${bytes.toString('base64')}`;
+            });
+            assert.ok(!embedded.includes('/designer/'));
+          }
+        }
+      }
+    }
+    assert.equal(exportedAssets.size, 640);
   } finally {
     if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage);
     else delete globalThis.localStorage;

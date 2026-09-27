@@ -211,6 +211,9 @@ export type Vehicle = {
   directions: Direction[];
   contrastingRoof: boolean;
   roofOptions: string[];
+  roofDescription?: string;
+  interiorDescription?: string;
+  picturedStanceDescription?: string;
   trim: typeof trimOptions;
   packages: {
     id: string;
@@ -708,6 +711,64 @@ for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
   }
 }
 
+// Add the later Blazers after early-K5 wheel/stance registration, so none of
+// their views can inherit the 1970/1972 body or suspension artwork.
+const laterK5Template = vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K5-1972')!;
+const laterK5s: Vehicle[] = [1973, 1975].map((year) => {
+  const years = year === 1973 ? '1973-1974' : '1975';
+  const family = `chevrolet-k5-${years}`;
+  const stockWheels = [
+    { id: 'baja-polished', pack: 'baja-v1' },
+    { id: 'baja-black', pack: 'baja-black-v1' },
+    ...kmcWheelOptions,
+  ];
+  return {
+    ...laterK5Template,
+    id: `Chevrolet-K5-${years}`,
+    year,
+    yearEnd: year === 1973 ? 1974 : undefined,
+    label: `${years.replace('-', '–')} K5`,
+    contrastingRoof: false,
+    roofOptions: [...roofs],
+    roofDescription: 'Choose a white, black, or body-color full hardtop, or Top off to reveal the blue interior and white roll bar.',
+    interiorDescription: 'Blue upholstery and a white roll bar',
+    picturedStanceDescription: 'As pictured keeps the reference factory-style height and thin-whitewall street tires. Choose a lower ride height to compare street wheels and tires.',
+    referencePaint: {
+      label: 'Teal / white reference look', color: '#176572', secondaryColor: '#f1eee5',
+      contrastRoof: false, paintMode: 'Two-tone',
+    },
+    views: Object.fromEntries(views.map((view): [View, ViewManifest] => {
+      const stanceRoots = (top: string) => Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) =>
+        [stance, `/designer/studio/${family}-street-stance-v1/${top}/${stance}/${view}`]));
+      const wheelScenes = (top: string): NonNullable<StudioPack['wheelScenes']> => ({
+        ...Object.fromEntries(stockWheels.map((wheel) => [wheel.id, {
+          stock: `/designer/wheels/${family}-${wheel.pack}/${top}/${view}.png`,
+        }])),
+        ...Object.fromEntries(sizedWheelOptions.flatMap((wheel) => ['18', '20'].map((size) => [
+          `${wheel.id}-${size}`,
+          Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) => [stance,
+            `/designer/wheels/${family}-${wheel.id === 'torq-thrust' ? 'torq' : 'rocket-attack'}-v1/${top}/${size}/${stance}/${view}.png`,
+          ])),
+        ]))),
+      });
+      return [view, {
+        ...laterK5Template.views[view],
+        assetRoot: `/designer/final/Chevrolet/K5/${years}/${view}`,
+        anchors: laterK5Template.views[view].anchors.map((anchor) => ({ ...anchor })),
+        studio: {
+          root: `/designer/studio/${family}-color-v1/top-on/${view}`,
+          openTopRoot: `/designer/studio/${family}-color-v1/top-off/${view}`,
+          stanceRoots: stanceRoots('top-on'), openTopStanceRoots: stanceRoots('top-off'),
+          wheelScenes: wheelScenes('top-on'), openTopWheelScenes: wheelScenes('top-off'),
+          paintScene: true, width: 768, height: 512, viewport: [0, 0, 768, 512],
+          shadow: { cx: 0, cy: 0, rx: 0, ry: 0 }, wheels: [],
+        },
+      }];
+    })) as Record<View, ViewManifest>,
+  };
+});
+vehicles.splice(vehicles.indexOf(laterK5Template) + 1, 0, ...laterK5s);
+
 // Register cab corrections after related packs are constructed, keeping each
 // contour local to the specific model group and view that it was traced for.
 squarebody1976.views['rear-quarter'].studio!.cabMaskExtension =
@@ -930,7 +991,7 @@ export function defaultConfiguration(vehicle = vehicles[0]): Configuration {
     roofColor: vehicle.referencePaint?.secondaryColor ?? '#e5e7e7',
     finish: 'Gloss',
     paintMode: vehicle.referencePaint?.paintMode ?? (fordStudio || vehicle.views.side.studio?.solidOnly || blueK10 || greenK10 || seafoam1967 || blue1968 || (vehicle.model === 'K5' && vehicle.year <= 1970) ? 'Solid' : vehicle.views.side.studio?.paintScene ? 'Two-tone' : 'Solid'),
-    twoToneStyle: fordStudio || vehicle.model === 'Bronco' || ['C10', 'K10'].includes(vehicle.model)
+    twoToneStyle: fordStudio || vehicle.model === 'Bronco' || (vehicle.model === 'K5' && vehicle.year >= 1973) || ['C10', 'K10'].includes(vehicle.model)
       ? 'Center band'
       : 'Lower body',
     cabPaint: fordStudio || ['C10', 'K10'].includes(vehicle.model)
@@ -1063,7 +1124,7 @@ export function summary(c: Configuration): Record<string, string> {
       : v.views.side.studio?.wheelScenes ? 'Stock' : 'As pictured; fitment to be discussed'),
     Tires: (v.model === 'C10' && v.year >= 1973) || (v.model === 'K5' && c.stance !== 'stock') ? 'Street tires; size to be discussed' : 'As pictured; size to be discussed',
     [v.roofOptions.length && v.model !== 'K5' ? 'Rear hardtop' : 'K5 roof']: v.roofOptions.length ? c.roof : 'Not applicable',
-    ...(v.model === 'K5' ? { Interior: 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),
+    ...(v.model === 'K5' ? { Interior: v.interiorDescription ?? 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),
     ...(v.model === 'Bronco' ? { Interior: 'Black vinyl upholstery' } : {}),
   };
 }
