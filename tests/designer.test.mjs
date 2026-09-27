@@ -1149,7 +1149,7 @@ test('1971–1972 K10 Center band and Rocker paint retain the refined rear pack 
   for (const view of views)
     assert.equal(target.views[view].studio.root, `/designer/studio/chevrolet-k10-1972-color-v${view === 'rear-quarter' ? 5 : 4}/${view}`);
   for (const vehicle of vehicles) {
-    const supported = vehicle.id === target.id;
+    const supported = vehicle.id === target.id || vehicle.model === 'K5';
     assert.equal(normalize({ vehicleId: vehicle.id, twoToneStyle: 'Rocker' }).twoToneStyle, supported ? 'Rocker' : 'Center band');
     for (const view of views) assert.equal(!!vehicle.views[view].studio.rockerPaint, supported);
   }
@@ -1202,6 +1202,55 @@ test('1971–1972 K10 Center band and Rocker paint retain the refined rear pack 
     }
   }
   assert.deepEqual(rearAssets, new Set(['studio.png', 'paint-texture.png', 'paint-mask.png', 'center-band-mask.png', 'cab-mask.png', 'roof-mask.png', 'rocker-mask.png']));
+});
+
+test('every K5 Rocker pattern follows the selected roof, height and wheels in shares and exports', async () => {
+  const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
+  const exportedRoots = new Set();
+  const blazers = vehicles.filter((vehicle) => vehicle.model === 'K5');
+  assert.equal(blazers.length, 6);
+  for (const vehicle of blazers)
+  for (const roof of vehicle.roofOptions)
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame']) {
+    const base = normalize({ vehicleId: vehicle.id, roof, stance, paintMode: 'Two-tone', twoToneStyle: 'Rocker', color: '#3c6254', secondaryColor: '#f1eee5' });
+    assert.equal(base.twoToneStyle, 'Rocker');
+    assert.equal(base.roof, roof);
+    assert.equal(base.stance, stance);
+    assert.equal(summary(base)['Two-tone pattern'], 'Rocker');
+    for (const wheelId of availableWheelIds(vehicle, base)) {
+      const c = normalize({ ...base, wheelId });
+      assert.equal(c.wheelId, wheelId);
+      assert.deepEqual(readShare(shareHash(c)), c);
+      for (const view of views) {
+        const pack = vehicle.views[view].studio;
+        const open = roof === 'Top off';
+        const root = open ? pack.openTopStanceRoots?.[stance] ?? pack.openTopRoot : pack.stanceRoots?.[stance] ?? pack.root;
+        const wheelScenes = open ? pack.openTopWheelScenes : pack.wheelScenes;
+        const scene = wheelScenes?.[wheelId]?.[stance] ?? `${root}/studio.png`;
+        const svg = renderSvg(c, view);
+        assert.ok(svg.includes(`${root}/rocker-mask.png`));
+        assert.ok(svg.includes(`href="${scene}"`));
+        assert.ok(/<filter id="[^"]+-rocker-tint"/.test(svg));
+        assert.ok(!/<filter id="[^"]+-center-band-tint"/.test(svg));
+        assert.equal(svg.includes('-roof-tint"'), !open);
+        assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#bd252c' }, view));
+        assert.ok(!renderSvg({ ...c, paintMode: 'Solid' }, view).includes('rocker-mask.png'));
+        assert.ok(!renderSvg({ ...c, twoToneStyle: 'Center band' }, view).includes('rocker-mask.png'));
+        if (!exportedRoots.has(root)) {
+          const embedded = await embedArtwork(svg, async (path) => {
+            const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+            assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+            assert.equal(bytes.readUInt32BE(16), 768);
+            assert.equal(bytes.readUInt32BE(20), 512);
+            return `data:image/png;base64,${bytes.toString('base64')}`;
+          });
+          assert.ok(!embedded.includes('/designer/'));
+          exportedRoots.add(root);
+        }
+      }
+    }
+  }
+  assert.equal(exportedRoots.size, 128);
 });
 
 test('1978 Ford studio variants preserve finishes, shares and offline artwork', async () => {

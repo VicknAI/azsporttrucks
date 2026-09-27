@@ -652,7 +652,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                   />
                   {config.paintMode === 'Two-tone' && (
                     <>
-                      {['C10', 'K10'].includes(vehicle.model) && (
+                      {(vehicle.views.side.studio?.rockerPaint || ['C10', 'K10'].includes(vehicle.model)) && (
                         <Choice
                           label="Two-tone pattern"
                           value={config.twoToneStyle}

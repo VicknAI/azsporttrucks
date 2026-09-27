@@ -606,6 +606,35 @@ test('1971–1972 K10 quote reviews preserve Center band and Rocker paint with t
   }
 });
 
+test('K5 quote requests retain Rocker paint on closed and open tops at every ride height', async () => {
+  for (const year of ['1969', '1970', '1971', '1972', '1973-1974', '1975'])
+  for (const roof of ['Body-color top', 'Top off'])
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame']) {
+    const h = harness();
+    const configuration = {
+      vehicleId: `Chevrolet-K5-${year}`, roof, stance,
+      paintMode: 'Two-tone', twoToneStyle: 'Rocker', color: '#3c6254', secondaryColor: '#f1eee5',
+      wheelId: stance === 'stock' ? 'baja-black' : 'rocket-attack-20',
+    };
+    try {
+      const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+      assert.equal(response.status, 201);
+      await h.settle();
+      const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+      const saved = JSON.parse(row.configuration_json);
+      for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
+      assert.ok(h.sent[0].text.includes('Two-tone pattern: Rocker'));
+      const review = await h.request(new Request(await privateLink(h.env, row.id)));
+      assert.equal(review.status, 200);
+      const html = await review.text();
+      assert.equal((html.match(/<figure>/g) || []).length, 4);
+      assert.equal((html.match(/\/rocker-mask\.png/g) || []).length, 4);
+      assert.ok(!html.includes(`/${roof === 'Top off' ? 'top-on' : 'top-off'}/`));
+      if (stance !== 'stock') assert.ok(html.includes(`/${stance}/side/rocker-mask.png`));
+    } finally { await h.close(); }
+  }
+});
+
 test('a free database limit never confirms receipt or sends mail; retry recovers the same reservation', async () => {
   const h = harness({ failSave: true });
   const key = crypto.randomUUID();
