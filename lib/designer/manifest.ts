@@ -81,7 +81,7 @@ export const colors = [
 ];
 // Screen approximations of the requested period Chevrolet paint shades.
 const classicChevroletColors = [
-  { name: 'Medium Blue', hex: '#497385' },
+  { name: 'Medium Blue', hex: '#1882af' },
   { name: 'Hugger Orange', hex: '#e45125' },
   { name: 'Dark Green', hex: '#254b3c' },
   { name: 'Red', hex: '#c42b27' },
