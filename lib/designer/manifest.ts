@@ -928,6 +928,21 @@ rockerK10.views['rear-quarter'].studio!.detailOverlay = {
   saturation: 0,
 };
 
+// Full lower-panel coverage follows the square-body molding through corners
+// and below the tailgate. Apply after C10 copies to keep the 2WD packs separate.
+for (const vehicle of vehicles.filter((vehicle) => vehicle.model === 'K10' && vehicle.year >= 1973)) {
+  const version = vehicle.year === 1973 ? 'v5' : [1975, 1977].includes(vehicle.year) ? 'v3' : 'v2';
+  for (const view of views) {
+    const pack = vehicle.views[view].studio!;
+    pack.root = pack.root.replace(/-color-v\d+\//, `-color-${version}/`);
+    // Later square bodies use their own stock rims and same-angle replacement
+    // faces. Rear views must never reuse a mirrored front-view wheel.
+    if (vehicle.year >= 1981)
+      for (const scene of Object.values(pack.wheelScenes!))
+        scene.stock = scene.stock.replace(/-v1\//, '-v2/');
+  }
+}
+
 // Pair the early C10 selections only after their exact-year paint, stance and
 // wheel packs are wired. Each pair already shares identical artwork/defaults.
 for (const firstYear of [1969, 1971]) {

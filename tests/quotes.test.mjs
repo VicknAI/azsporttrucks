@@ -256,7 +256,8 @@ test('square-body quotes preserve the year group, paint and wheel artwork', asyn
     ['1981-1982', '#e5e7e7', false],
     ['1985-1987', '#17191c', false],
   ]) {
-    const version = years === '1977-1979' ? 'v2' : 'v1';
+    const version = years === '1977-1979' ? 'v3' : 'v2';
+    const wheelVersion = years === '1980' ? 'v1' : 'v2';
     const h = harness();
     const configuration = {
       vehicleId: `Chevrolet-K10-${years}`,
@@ -277,7 +278,7 @@ test('square-body quotes preserve the year group, paint and wheel artwork', asyn
     const html = await review.text();
     for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
       assert.ok(html.includes(`/chevrolet-k10-${years}-color-${version}/${view}/paint-mask.png`));
-      assert.ok(html.includes(`/chevrolet-k10-${years}-kmc-impact-beadlock-${version}/${view}.png`));
+      assert.ok(html.includes(`/chevrolet-k10-${years}-kmc-impact-beadlock-${wheelVersion}/${view}.png`));
     }
     await h.close();
   }

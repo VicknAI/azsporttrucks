@@ -180,7 +180,7 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
       const version = (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && v.year <= 1972 && view === 'side')
-        ? 'v2' : v.model === 'K10' && v.year === 1973 ? 'v4' : v.model === 'K10' && [1975, 1977].includes(v.year) ? 'v2' : 'v1';
+        ? 'v2' : v.model === 'K10' && v.year === 1973 ? 'v4' : v.model === 'K10' && ([1975, 1977].includes(v.year) || v.year >= 1981) ? 'v2' : 'v1';
       const expectedFolder = folder.replace('-v1/', `-${version}/`);
       assert.ok(scenes[wheelId].stock.includes(expectedFolder));
       const svg = renderSvg(c, view);
@@ -940,13 +940,13 @@ test('1979 F-150 finishes preserve two-tone and cab colors without changing appr
 
 test('square-body K10 groups retain their own paint, artwork and summaries', () => {
   for (const [first, last, version, color, contrastRoof] of [
-    [1973, 1974, 'v4', '#237cae', true],
-    [1975, 1976, 'v2', '#d34b20', false],
-    [1977, 1979, 'v2', '#c4a574', true],
-    [1980, undefined, 'v1', '#1678ba', false],
-    [1981, 1982, 'v1', '#e5e7e7', false],
-    [1983, 1984, 'v1', '#263d58', false],
-    [1985, 1987, 'v1', '#17191c', false],
+    [1973, 1974, 'v5', '#237cae', true],
+    [1975, 1976, 'v3', '#d34b20', false],
+    [1977, 1979, 'v3', '#c4a574', true],
+    [1980, undefined, 'v2', '#1678ba', false],
+    [1981, 1982, 'v2', '#e5e7e7', false],
+    [1983, 1984, 'v2', '#263d58', false],
+    [1985, 1987, 'v2', '#17191c', false],
   ]) {
     const years = last ? `${first}-${last}` : `${first}`;
     const label = last ? `${first}–${last}` : `${first}`;
