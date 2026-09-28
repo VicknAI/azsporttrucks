@@ -606,6 +606,34 @@ test('1971–1972 K10 quote reviews preserve Center band and Rocker paint with t
   }
 });
 
+test('every K10 year group retains Rocker and independent roof and wheel choices in quote reviews', async () => {
+  for (const years of ['1967', '1968', '1969-1970', '1971-1972', '1973-1974', '1975-1976', '1977-1979', '1980', '1981-1982', '1983-1984', '1985-1987'])
+  for (const contrastRoof of [false, true]) {
+    const h = harness();
+    const configuration = {
+      vehicleId: `Chevrolet-K10-${years}`, paintMode: 'Two-tone', twoToneStyle: 'Rocker',
+      color: '#205381', secondaryColor: '#f1eee5', contrastRoof, roofColor: '#eeeeee',
+      wheelId: contrastRoof ? 'kmc-impact-beadlock-machined' : 'baja-black',
+    };
+    try {
+      const response = await h.request(post(payload({ configuration: JSON.stringify(configuration) })));
+      assert.equal(response.status, 201);
+      await h.settle();
+      const row = h.sqlite.prepare('SELECT * FROM quote_requests').get();
+      const saved = JSON.parse(row.configuration_json);
+      for (const [key, value] of Object.entries(configuration)) assert.equal(saved[key], value);
+      assert.ok(h.sent[0].text.includes('Two-tone pattern: Rocker'));
+      const review = await h.request(new Request(await privateLink(h.env, row.id)));
+      assert.equal(review.status, 200);
+      const html = await review.text();
+      assert.equal((html.match(/<figure>/g) || []).length, 4);
+      assert.equal((html.match(/\/rocker-mask\.png/g) || []).length, 4);
+      assert.equal((html.match(/-(?:roof|cab)-tint"/g) || []).length, contrastRoof ? 4 : 0);
+      assert.ok(!/<filter id="[^"]+-center-band-tint"/.test(html));
+    } finally { await h.close(); }
+  }
+});
+
 test('K5 quote requests retain Rocker paint on closed and open tops at every ride height', async () => {
   for (const year of ['1969', '1970', '1971', '1972', '1973-1974', '1975'])
   for (const roof of ['Body-color top', 'Top off'])

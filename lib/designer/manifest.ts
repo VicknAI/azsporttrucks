@@ -911,10 +911,9 @@ for (const view of views) {
 
 // Register aligned Rocker masks after copied packs are constructed so other
 // vehicle families cannot inherit a paint region traced for a different body.
-for (const vehicle of vehicles.filter((vehicle) => vehicle.model === 'K5'))
+for (const vehicle of vehicles.filter((vehicle) => ['K10', 'K5'].includes(vehicle.model)))
   for (const view of views) vehicle.views[view].studio!.rockerPaint = true;
 const rockerK10 = vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K10-1971-1972')!;
-for (const view of views) rockerK10.views[view].studio!.rockerPaint = true;
 // Refined rear cab and Rocker edges use a separate pack; other views and
 // alternative wheel scenes retain their approved sources.
 rockerK10.views['rear-quarter'].studio!.root =

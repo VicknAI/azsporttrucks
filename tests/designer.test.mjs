@@ -1170,7 +1170,7 @@ test('1971–1972 K10 Center band and Rocker paint retain the refined rear pack 
   for (const view of views)
     assert.equal(target.views[view].studio.root, `/designer/studio/chevrolet-k10-1972-color-v${view === 'rear-quarter' ? 5 : 4}/${view}`);
   for (const vehicle of vehicles) {
-    const supported = vehicle.id === target.id || vehicle.model === 'K5';
+    const supported = ['K10', 'K5'].includes(vehicle.model);
     assert.equal(normalize({ vehicleId: vehicle.id, twoToneStyle: 'Rocker' }).twoToneStyle, supported ? 'Rocker' : 'Center band');
     for (const view of views) assert.equal(!!vehicle.views[view].studio.rockerPaint, supported);
   }
@@ -1223,6 +1223,54 @@ test('1971–1972 K10 Center band and Rocker paint retain the refined rear pack 
     }
   }
   assert.deepEqual(rearAssets, new Set(['studio.png', 'paint-texture.png', 'paint-mask.png', 'center-band-mask.png', 'cab-mask.png', 'roof-mask.png', 'rocker-mask.png']));
+});
+
+test('all 1967–1987 K10 groups retain Rocker across year changes, cab colors, wheels and exports', async () => {
+  const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
+  const trucks = vehicles.filter((vehicle) => vehicle.model === 'K10');
+  assert.equal(trucks.length, 11);
+  const exportedRoots = new Set();
+  let lastBuild = normalize({ vehicleId: trucks[0].id, paintMode: 'Two-tone', twoToneStyle: 'Rocker' });
+  for (const vehicle of trucks) {
+    lastBuild = normalize({ ...lastBuild, vehicleId: vehicle.id });
+    assert.equal(lastBuild.twoToneStyle, 'Rocker', `Year transition lost Rocker: ${vehicle.id}`);
+    assert.equal(defaultConfiguration(vehicle).twoToneStyle, 'Center band');
+    for (const contrastRoof of [false, true])
+    for (const wheelId of availableWheelIds(vehicle, lastBuild)) {
+      const c = normalize({ ...lastBuild, wheelId, contrastRoof, color: '#205381', secondaryColor: '#f1eee5', roofColor: '#e5e7e7' });
+      assert.equal(c.wheelId, wheelId);
+      assert.equal(c.contrastRoof, contrastRoof);
+      assert.deepEqual(readShare(shareHash(c)), c);
+      assert.equal(summary(c)['Two-tone pattern'], 'Rocker');
+      for (const view of views) {
+        const pack = vehicle.views[view].studio;
+        const scene = pack.wheelScenes?.[wheelId]?.stock ?? `${pack.root}/studio.png`;
+        const svg = renderSvg(c, view);
+        assert.ok(svg.includes(`${pack.root}/rocker-mask.png`));
+        assert.ok(svg.includes(`href="${scene}"`));
+        assert.ok(/<filter id="[^"]+-rocker-tint"/.test(svg));
+        assert.ok(!/<filter id="[^"]+-center-band-tint"/.test(svg));
+        assert.equal(/-(?:roof|cab)-tint"/.test(svg), contrastRoof);
+        assert.notEqual(svg, renderSvg({ ...c, secondaryColor: '#bc252c' }, view));
+        for (const other of [{ ...c, paintMode: 'Solid' }, { ...c, twoToneStyle: 'Center band' }])
+          assert.ok(!renderSvg(other, view).includes('rocker-mask.png'));
+        if (!exportedRoots.has(pack.root)) {
+          const embedded = await embedArtwork(svg, async (path) => {
+            const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+            assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+            assert.equal(bytes.readUInt32BE(16), 768);
+            assert.equal(bytes.readUInt32BE(20), 512);
+            return `data:image/png;base64,${bytes.toString('base64')}`;
+          });
+          assert.ok(!embedded.includes('/designer/'));
+          exportedRoots.add(pack.root);
+        }
+      }
+    }
+  }
+  assert.equal(exportedRoots.size, 44);
+  for (const year of [1969, 1970, 1971, 1972])
+    assert.equal(normalize({ vehicleId: `Chevrolet-K10-${year}`, twoToneStyle: 'Rocker' }).twoToneStyle, 'Rocker');
 });
 
 test('every K5 Rocker pattern follows the selected roof, height and wheels in shares and exports', async () => {
