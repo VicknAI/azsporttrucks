@@ -965,6 +965,15 @@ for (const firstYear of [1969, 1971]) {
   });
 }
 
+// Carry the 1971–1972 rear center band to the lower side molding and bottom
+// of the tailgate. The paint mask protects chrome, lights, tires and insert;
+// offsets match the existing lowered-body packs, leaving wheel scenes intact.
+vehicles.find((vehicle) => vehicle.id === 'Chevrolet-C10-1971-1972')!
+  .views['rear-quarter'].studio!.centerBandMaskExtension = {
+    path: 'M80 240H424V260H80Z M450 240H706V254L660 255.5L582 257.5L552 256.5L500 254.5L450 254.5Z',
+    stanceOffsets: { stock: 0, drop2: 10, drop4: 20, frame: 48 },
+  };
+
 /** Resolve supported current IDs and explicit legacy aliases without a fallback. */
 export function resolveVehicleId(value: unknown): string | undefined {
   if (typeof value !== 'string') return undefined;
