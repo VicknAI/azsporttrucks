@@ -460,8 +460,8 @@ test('1973–1975 K5 quotes retain grouped years, roofs, heights and wheel selec
       const top = roof === 'Top off' ? 'top-off' : 'top-on';
       for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
         const root = stance === 'stock'
-          ? `/designer/studio/chevrolet-k5-${years}-color-v1/${top}/${view}`
-          : `/designer/studio/chevrolet-k5-${years}-street-stance-v1/${top}/${stance}/${view}`;
+          ? `/designer/studio/chevrolet-k5-${years}-color-v2/${top}/${view}`
+          : `/designer/studio/chevrolet-k5-${years}-street-stance-v2/${top}/${stance}/${view}`;
         const scene = wheelId === 'street-temp' ? `${root}/studio.png`
           : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${years}-${stockWheels[wheelId]}-v1/${top}/${view}.png`
           : `/designer/wheels/chevrolet-k5-${years}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v1/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;

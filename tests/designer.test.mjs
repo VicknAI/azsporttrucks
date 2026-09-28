@@ -634,8 +634,8 @@ test('1973–1975 K5 selections retain independent roof, height and wheel artwor
         const top = roof === 'Top off' ? 'top-off' : 'top-on';
         for (const view of views) {
           const root = stance === 'stock'
-            ? `/designer/studio/chevrolet-k5-${years}-color-v1/${top}/${view}`
-            : `/designer/studio/chevrolet-k5-${years}-street-stance-v1/${top}/${stance}/${view}`;
+            ? `/designer/studio/chevrolet-k5-${years}-color-v2/${top}/${view}`
+            : `/designer/studio/chevrolet-k5-${years}-street-stance-v2/${top}/${stance}/${view}`;
           const scene = wheelId === 'street-temp' ? `${root}/studio.png`
             : stance === 'stock' ? `/designer/wheels/chevrolet-k5-${years}-${stockWheels[wheelId]}-v1/${top}/${view}.png`
             : `/designer/wheels/chevrolet-k5-${years}-${wheelId.startsWith('torq-thrust') ? 'torq' : 'rocket-attack'}-v1/${top}/${wheelId.slice(-2)}/${stance}/${view}.png`;
@@ -667,6 +667,27 @@ test('1973–1975 K5 selections retain independent roof, height and wheel artwor
   } finally {
     if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage);
     else delete globalThis.localStorage;
+  }
+});
+
+test('1973–1975 K5 trim corrections preserve source artwork, Rocker paint and open-top framing', () => {
+  for (const year of ['1973-1974', '1975'])
+  for (const top of ['top-on', 'top-off'])
+  for (const stance of ['stock', 'drop2', 'drop4', 'frame'])
+  for (const view of views) {
+    const family = `/designer/studio/chevrolet-k5-${year}`;
+    const root = (version) => stance === 'stock'
+      ? `${family}-color-v${version}/${top}/${view}`
+      : `${family}-street-stance-v${version}/${top}/${stance}/${view}`;
+    const files = ['studio', 'paint-texture', 'rocker-mask'];
+    if (top === 'top-off' || view === 'rear-quarter')
+      files.push('paint-mask', 'roof-mask', 'cab-mask');
+    if (view === 'rear-quarter' || view === 'front') files.push('center-band-mask');
+    for (const file of files) {
+      const original = readFileSync(new URL(`../public${root(1)}/${file}.png`, import.meta.url));
+      const updated = readFileSync(new URL(`../public${root(2)}/${file}.png`, import.meta.url));
+      assert.deepEqual(updated, original, `Unrelated artwork changed: ${root(2)}/${file}`);
+    }
   }
 });
 

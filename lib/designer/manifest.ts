@@ -739,7 +739,7 @@ const laterK5s: Vehicle[] = [1973, 1975].map((year) => {
     },
     views: Object.fromEntries(views.map((view): [View, ViewManifest] => {
       const stanceRoots = (top: string) => Object.fromEntries(['drop2', 'drop4', 'frame'].map((stance) =>
-        [stance, `/designer/studio/${family}-street-stance-v1/${top}/${stance}/${view}`]));
+        [stance, `/designer/studio/${family}-street-stance-v2/${top}/${stance}/${view}`]));
       const wheelScenes = (top: string): NonNullable<StudioPack['wheelScenes']> => ({
         ...Object.fromEntries(stockWheels.map((wheel) => [wheel.id, {
           stock: `/designer/wheels/${family}-${wheel.pack}/${top}/${view}.png`,
@@ -756,8 +756,8 @@ const laterK5s: Vehicle[] = [1973, 1975].map((year) => {
         assetRoot: `/designer/final/Chevrolet/K5/${years}/${view}`,
         anchors: laterK5Template.views[view].anchors.map((anchor) => ({ ...anchor })),
         studio: {
-          root: `/designer/studio/${family}-color-v1/top-on/${view}`,
-          openTopRoot: `/designer/studio/${family}-color-v1/top-off/${view}`,
+          root: `/designer/studio/${family}-color-v2/top-on/${view}`,
+          openTopRoot: `/designer/studio/${family}-color-v2/top-off/${view}`,
           stanceRoots: stanceRoots('top-on'), openTopStanceRoots: stanceRoots('top-off'),
           wheelScenes: wheelScenes('top-on'), openTopWheelScenes: wheelScenes('top-off'),
           paintScene: true, width: 768, height: 512, viewport: [0, 0, 768, 512],
