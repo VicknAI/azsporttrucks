@@ -554,9 +554,9 @@ test('1979 Bronco quotes preserve wheel and rear hardtop choices in all four pri
     assert.equal((html.match(/<figure>/g) || []).length, 4);
     const top = roof === 'Top off' ? 'top-off' : 'top-on';
     for (const view of ['side', 'front-quarter', 'rear-quarter', 'front']) {
-      const root = `/designer/studio/ford-bronco-1979-color-v4/${top}/${view}`;
+      const root = `/designer/studio/ford-bronco-1979-color-v${top === 'top-off' && view === 'rear-quarter' ? 5 : 4}/${top}/${view}`;
       const scene = wheelPack
-        ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v${view === 'front-quarter' ? 2 : 1}/${top}/${view}.png`
+        ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v${top === 'top-off' && view === 'rear-quarter' ? 3 : view === 'front-quarter' ? 2 : 1}/${top}/${view}.png`
         : `${root}/studio.png`;
       assert.ok(html.includes(`data-layer="reference-artwork" href="${scene}"`));
       assert.ok(html.includes(`${root}/paint-mask.png`));

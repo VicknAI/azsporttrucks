@@ -1,5 +1,22 @@
 # 1979 Ford Bronco designer
 
+## Top-off rear interior correction — September 28, 2026
+
+The rear-quarter Top off view had duplicated seat tops and an unclear fixed-cab
+opening. A built-in image-generation edit rebuilds the upper interior around
+two front bucket-seat backs, one rear bench and a cleaner fixed steel roof.
+The black upholstery follows the original listing reference. The removable
+rear shell and tailgate glass remain absent.
+
+The corrected rear Top off pack is `ford-bronco-1979-color-v5`; other packs
+remain v4. All four optional rear Top off wheel scenes use v3 so changing
+wheels cannot restore the old interior. Only the upper edit region and its
+body-paint texture/mask change. The spare, wheels, tires, lower body, center
+band and top-on artwork are preserved. The roof still follows the body color;
+seats and glass are excluded from paint. Authoring, exact prompt, generation
+source, color reviews and pixel checks are retained in workspace
+`assets/bronco-top-off-interior-v5/`.
+
 ## Requested scope — September 24, 2026
 
 Nick requested the [1979 Ford Bronco Custom in this listing](https://bringatrailer.com/listing/1979-ford-bronco-250/), with separate top colors like the Chevrolet K5, and explicitly confirmed **Top off**. This addition covers 1979 only. It follows the pictured Bronco's lifted stance and off-road tires; the earlier factory-height/street-tire instruction applied to the square-body C10 expansion.

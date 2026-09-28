@@ -866,7 +866,7 @@ const bronco1979: Vehicle = {
     anchors: geometry[view].anchors.map((anchor) => ({ ...anchor })),
     studio: {
       root: `/designer/studio/ford-bronco-1979-color-v4/top-on/${view}`,
-      openTopRoot: `/designer/studio/ford-bronco-1979-color-v4/top-off/${view}`,
+      openTopRoot: `/designer/studio/ford-bronco-1979-color-v${view === 'rear-quarter' ? 5 : 4}/top-off/${view}`,
       paintScene: true,
       width: 768,
       height: 512,
@@ -894,7 +894,7 @@ for (const view of views) {
   const pack = bronco1979.views[view].studio!;
   for (const top of ['top-on', 'top-off'] as const) {
     const scenes = Object.fromEntries(broncoWheelPacks.map((wheel) => [wheel.id, {
-      stock: `/designer/wheels/ford-bronco-1979-${wheel.pack.replace(/-v1$/, view === 'front-quarter' ? '-v2' : '-v1')}/${top}/${view}.png`,
+      stock: `/designer/wheels/ford-bronco-1979-${wheel.pack.replace(/-v1$/, top === 'top-off' && view === 'rear-quarter' ? '-v3' : view === 'front-quarter' ? '-v2' : '-v1')}/${top}/${view}.png`,
     }]));
     if (top === 'top-on') pack.wheelScenes = scenes;
     else pack.openTopWheelScenes = scenes;

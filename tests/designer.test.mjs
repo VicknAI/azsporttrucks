@@ -179,7 +179,7 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       const pack = v.views[view].studio;
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
-      const version = v.model === 'K10' && v.year >= 1981 && view === 'front-quarter' && wheelId === 'baja-polished'
+      const version = (v.model === 'K10' && v.year >= 1981 && view === 'front-quarter' && wheelId === 'baja-polished') || (v.model === 'Bronco' && roof === 'Top off' && view === 'rear-quarter')
         ? 'v3' : (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && v.year <= 1972 && view === 'side')
         ? 'v2' : v.model === 'K10' && v.year === 1973 ? 'v4' : v.model === 'K10' && ([1975, 1977].includes(v.year) || v.year >= 1981) ? 'v2' : 'v1';
       const expectedFolder = folder.replace('-v1/', `-${version}/`);
@@ -760,10 +760,10 @@ test('1979 Bronco wheels and rear hardtops retain paint and saved choices in eve
         const pack = bronco.views[view].studio;
         assert.equal(pack.stanceRoots, undefined);
         assert.equal(pack.root, `/designer/studio/ford-bronco-1979-color-v4/top-on/${view}`);
-        assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v4/top-off/${view}`);
+        assert.equal(pack.openTopRoot, `/designer/studio/ford-bronco-1979-color-v${view === 'rear-quarter' ? 5 : 4}/top-off/${view}`);
         const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
         const scene = wheelPack
-          ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v${view === 'front-quarter' ? 2 : 1}/${roof === 'Top off' ? 'top-off' : 'top-on'}/${view}.png`
+          ? `/designer/wheels/ford-bronco-1979-${wheelPack}-v${roof === 'Top off' && view === 'rear-quarter' ? 3 : view === 'front-quarter' ? 2 : 1}/${roof === 'Top off' ? 'top-off' : 'top-on'}/${view}.png`
           : `${root}/studio.png`;
         const svg = renderSvg(c, view);
         assert.ok(svg.includes(`data-layer="reference-artwork" href="${scene}"`));
