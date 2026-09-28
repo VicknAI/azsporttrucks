@@ -7,6 +7,8 @@ export type StudioPack = {
   /** This pack includes an aligned mask below the lower body molding. */
   rockerPaint?: boolean;
   solidOnly?: boolean;
+  /** Precisely traced missing body paint, in this pack's source coordinates. */
+  paintMaskExtension?: string;
   /** Additional cab coverage in source coordinates, bounded by the body paint mask. */
   cabMaskExtension?: string;
   /** Extra center-band coverage, clipped to painted metal at each ride height. */
@@ -76,12 +78,15 @@ export function renderStudio(
       const extension = roofTint && pack.cabMaskExtension && (name === 'cab' || name === 'roof')
         ? `<path d="${pack.cabMaskExtension}" fill="white" mask="url(#${prefix}-paint-mask)"/>`
         : '';
+      const paintExtension = name === 'paint' && pack.paintMaskExtension
+        ? `<path d="${pack.paintMaskExtension}" fill="white"/>`
+        : '';
       const band = pack.centerBandMaskExtension;
       const bandOffset = band?.stanceOffsets[c.stance];
       const bandExtension = name === 'center-band' && band && bandOffset !== undefined
         ? `<g mask="url(#${prefix}-paint-mask)"><path d="${band.path}" transform="translate(0 ${bandOffset})" fill="white"/></g>`
         : '';
-      return `<mask id="${prefix}-${name}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}" style="mask-type:alpha"><image href="${root}/${name}-mask.png" width="${width}" height="${height}"/>${extension}${bandExtension}</mask>`;
+      return `<mask id="${prefix}-${name}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}" style="mask-type:alpha"><image href="${root}/${name}-mask.png" width="${width}" height="${height}"/>${paintExtension}${extension}${bandExtension}</mask>`;
     }).join('');
     const tint = (name: string, color: string) => {
       const channels = [1, 3, 5].map(

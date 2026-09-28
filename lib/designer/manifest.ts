@@ -965,6 +965,15 @@ for (const firstYear of [1969, 1971]) {
   });
 }
 
+// Fill the exposed source paint above the 1969–1970 K10 side molding.
+// The three contours follow the fender, door and bed separately, preserving
+// their seams and the chrome strip below; other views retain their own masks.
+vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K10-1969-1970')!
+  .views.side.studio!.paintMaskExtension = [
+    'M59 216H263V221.5C204 221.2 127 222.2 70 225.4Q64 225.7 59.5 227.8Z',
+    'M264 216H425V221.2L410 221H264Z',
+    'M430 215H731L733.5 220.7L729 220H565L480 220.2H430Z',
+  ].join(' ');
 // Carry the 1971–1972 rear center band to the lower side molding and bottom
 // of the tailgate. The paint mask protects chrome, lights, tires and insert;
 // offsets match the existing lowered-body packs, leaving wheel scenes intact.
