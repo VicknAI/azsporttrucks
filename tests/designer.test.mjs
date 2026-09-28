@@ -179,7 +179,8 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       const pack = v.views[view].studio;
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
-      const version = (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && v.year <= 1972 && view === 'side')
+      const version = v.model === 'K10' && v.year >= 1981 && view === 'front-quarter' && wheelId === 'baja-polished'
+        ? 'v3' : (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && v.year <= 1972 && view === 'side')
         ? 'v2' : v.model === 'K10' && v.year === 1973 ? 'v4' : v.model === 'K10' && ([1975, 1977].includes(v.year) || v.year >= 1981) ? 'v2' : 'v1';
       const expectedFolder = folder.replace('-v1/', `-${version}/`);
       assert.ok(scenes[wheelId].stock.includes(expectedFolder));
