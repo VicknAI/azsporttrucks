@@ -1038,5 +1038,460 @@
         "area": "Wyoming · Regional listings"
       }
     ]
+  },
+  "MI": {
+    "name": "Michigan",
+    "regions": [
+      {
+        "name": "Ann Arbor",
+        "host": "annarbor",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Battle Creek",
+        "host": "battlecreek",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Central Michigan",
+        "host": "centralmich",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Detroit Metro",
+        "host": "detroit",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Flint",
+        "host": "flint",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Grand Rapids",
+        "host": "grandrapids",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Holland",
+        "host": "holland",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Jackson",
+        "host": "jxn",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Kalamazoo",
+        "host": "kalamazoo",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Lansing",
+        "host": "lansing",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Monroe",
+        "host": "monroemi",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Muskegon",
+        "host": "muskegon",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Northern Michigan",
+        "host": "nmi",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Port Huron",
+        "host": "porthuron",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Saginaw-Midland-Baycity",
+        "host": "saginaw",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Southwest Michigan",
+        "host": "swmi",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "The Thumb",
+        "host": "thumb",
+        "area": "Michigan · Regional listings"
+      },
+      {
+        "name": "Upper Peninsula",
+        "host": "up",
+        "area": "Michigan · Regional listings"
+      }
+    ]
+  },
+  "WI": {
+    "name": "Wisconsin",
+    "regions": [
+      {
+        "name": "Appleton-Oshkosh-FDL",
+        "host": "appleton",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Eau Claire",
+        "host": "eauclaire",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Green Bay",
+        "host": "greenbay",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Janesville",
+        "host": "janesville",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Kenosha-Racine",
+        "host": "racine",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "La Crosse",
+        "host": "lacrosse",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Madison",
+        "host": "madison",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Milwaukee",
+        "host": "milwaukee",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Northern WI",
+        "host": "northernwi",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Sheboygan",
+        "host": "sheboygan",
+        "area": "Wisconsin · Regional listings"
+      },
+      {
+        "name": "Wausau",
+        "host": "wausau",
+        "area": "Wisconsin · Regional listings"
+      }
+    ]
+  },
+  "IL": {
+    "name": "Illinois",
+    "regions": [
+      {
+        "name": "Bloomington-Normal",
+        "host": "bn",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Champaign Urbana",
+        "host": "chambana",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Chicago",
+        "host": "chicago",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Decatur",
+        "host": "decatur",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "La Salle Co",
+        "host": "lasalle",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Mattoon-Charleston",
+        "host": "mattoon",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Peoria",
+        "host": "peoria",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Rockford",
+        "host": "rockford",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Southern Illinois",
+        "host": "carbondale",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Springfield",
+        "host": "springfieldil",
+        "area": "Illinois · Regional listings"
+      },
+      {
+        "name": "Western IL",
+        "host": "quincy",
+        "area": "Illinois · Regional listings"
+      }
+    ]
+  },
+  "OH": {
+    "name": "Ohio",
+    "regions": [
+      {
+        "name": "Akron / Canton",
+        "host": "akroncanton",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Ashtabula",
+        "host": "ashtabula",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Athens",
+        "host": "athensohio",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Chillicothe",
+        "host": "chillicothe",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Cincinnati",
+        "host": "cincinnati",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Cleveland",
+        "host": "cleveland",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Columbus",
+        "host": "columbus",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Dayton / Springfield",
+        "host": "dayton",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Lima / Findlay",
+        "host": "limaohio",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Mansfield",
+        "host": "mansfield",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Sandusky",
+        "host": "sandusky",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Toledo",
+        "host": "toledo",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Tuscarawas Co",
+        "host": "tuscarawas",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Youngstown",
+        "host": "youngstown",
+        "area": "Ohio · Regional listings"
+      },
+      {
+        "name": "Zanesville / Cambridge",
+        "host": "zanesville",
+        "area": "Ohio · Regional listings"
+      }
+    ]
+  },
+  "IN": {
+    "name": "Indiana",
+    "regions": [
+      {
+        "name": "Bloomington",
+        "host": "bloomington",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "Evansville",
+        "host": "evansville",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "Fort Wayne",
+        "host": "fortwayne",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "Indianapolis",
+        "host": "indianapolis",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "Kokomo",
+        "host": "kokomo",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "Lafayette / West Lafayette",
+        "host": "tippecanoe",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "Muncie / Anderson",
+        "host": "muncie",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "Richmond",
+        "host": "richmondin",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "South Bend / Michiana",
+        "host": "southbend",
+        "area": "Indiana · Regional listings"
+      },
+      {
+        "name": "Terre Haute",
+        "host": "terrehaute",
+        "area": "Indiana · Regional listings"
+      }
+    ]
+  },
+  "FL": {
+    "name": "Florida",
+    "regions": [
+      {
+        "name": "South Florida",
+        "host": "miami",
+        "area": "Miami, Fort Lauderdale & Palm Beach"
+      },
+      {
+        "name": "Daytona Beach",
+        "host": "daytona",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Florida Keys",
+        "host": "keys",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Ft. Myers / SW Florida",
+        "host": "fortmyers",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Gainesville",
+        "host": "gainesville",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Heartland Florida",
+        "host": "cfl",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Jacksonville",
+        "host": "jacksonville",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Lakeland",
+        "host": "lakeland",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "North Central FL",
+        "host": "lakecity",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Ocala",
+        "host": "ocala",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Okaloosa / Walton",
+        "host": "okaloosa",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Orlando",
+        "host": "orlando",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Panama City",
+        "host": "panamacity",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Pensacola",
+        "host": "pensacola",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Sarasota-Bradenton",
+        "host": "sarasota",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Space Coast",
+        "host": "spacecoast",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "St. Augustine",
+        "host": "staugustine",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Tallahassee",
+        "host": "tallahassee",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Tampa Bay Area",
+        "host": "tampa",
+        "area": "Florida · Regional listings"
+      },
+      {
+        "name": "Treasure Coast",
+        "host": "treasure",
+        "area": "Florida · Regional listings"
+      }
+    ]
   }
 }
