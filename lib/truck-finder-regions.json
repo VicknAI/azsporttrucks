@@ -1,0 +1,1042 @@
+{
+  "AZ": {
+    "name": "Arizona",
+    "regions": [
+      {
+        "name": "Phoenix",
+        "host": "phoenix",
+        "area": "Phoenix metro & the Valley"
+      },
+      {
+        "name": "Tucson",
+        "host": "tucson",
+        "area": "Tucson & surrounding communities"
+      },
+      {
+        "name": "Flagstaff / Sedona",
+        "host": "flagstaff",
+        "area": "Northern Arizona"
+      },
+      {
+        "name": "Prescott",
+        "host": "prescott",
+        "area": "Prescott & the Quad Cities"
+      },
+      {
+        "name": "Mohave County",
+        "host": "mohave",
+        "area": "Kingman, Lake Havasu & Bullhead City"
+      },
+      {
+        "name": "Show Low",
+        "host": "showlow",
+        "area": "White Mountains"
+      },
+      {
+        "name": "Sierra Vista",
+        "host": "sierravista",
+        "area": "Southeastern Arizona"
+      },
+      {
+        "name": "Yuma",
+        "host": "yuma",
+        "area": "Southwestern Arizona"
+      }
+    ]
+  },
+  "AR": {
+    "name": "Arkansas",
+    "regions": [
+      {
+        "name": "Fayetteville",
+        "host": "fayar",
+        "area": "Arkansas · Regional listings"
+      },
+      {
+        "name": "Fort Smith",
+        "host": "fortsmith",
+        "area": "Arkansas · Regional listings"
+      },
+      {
+        "name": "Jonesboro",
+        "host": "jonesboro",
+        "area": "Arkansas · Regional listings"
+      },
+      {
+        "name": "Little Rock",
+        "host": "littlerock",
+        "area": "Arkansas · Regional listings"
+      },
+      {
+        "name": "Texarkana",
+        "host": "texarkana",
+        "area": "Arkansas · Regional listings"
+      }
+    ]
+  },
+  "CA": {
+    "name": "California",
+    "regions": [
+      {
+        "name": "Bakersfield",
+        "host": "bakersfield",
+        "area": "Bakersfield & Kern County"
+      },
+      {
+        "name": "Chico",
+        "host": "chico",
+        "area": "Chico & surrounding communities"
+      },
+      {
+        "name": "Fresno / Madera",
+        "host": "fresno",
+        "area": "Fresno & Madera counties"
+      },
+      {
+        "name": "Gold Country",
+        "host": "goldcountry",
+        "area": "Sierra Nevada foothills"
+      },
+      {
+        "name": "Hanford / Corcoran",
+        "host": "hanford",
+        "area": "Kings County"
+      },
+      {
+        "name": "Humboldt County",
+        "host": "humboldt",
+        "area": "Eureka, Arcata & the North Coast"
+      },
+      {
+        "name": "Imperial County",
+        "host": "imperial",
+        "area": "El Centro & the Imperial Valley"
+      },
+      {
+        "name": "Inland Empire",
+        "host": "inlandempire",
+        "area": "Riverside & San Bernardino"
+      },
+      {
+        "name": "Los Angeles",
+        "host": "losangeles",
+        "area": "Los Angeles County"
+      },
+      {
+        "name": "Mendocino County",
+        "host": "mendocino",
+        "area": "Ukiah, Fort Bragg & surrounding communities"
+      },
+      {
+        "name": "Merced",
+        "host": "merced",
+        "area": "Merced County"
+      },
+      {
+        "name": "Modesto",
+        "host": "modesto",
+        "area": "Modesto & Stanislaus County"
+      },
+      {
+        "name": "Monterey Bay",
+        "host": "monterey",
+        "area": "Monterey, Salinas & surrounding communities"
+      },
+      {
+        "name": "Orange County",
+        "host": "orangecounty",
+        "area": "Orange County communities"
+      },
+      {
+        "name": "Palm Springs",
+        "host": "palmsprings",
+        "area": "Coachella Valley"
+      },
+      {
+        "name": "Redding",
+        "host": "redding",
+        "area": "Redding & surrounding communities"
+      },
+      {
+        "name": "Sacramento",
+        "host": "sacramento",
+        "area": "Sacramento metro area"
+      },
+      {
+        "name": "San Diego",
+        "host": "sandiego",
+        "area": "San Diego County"
+      },
+      {
+        "name": "San Francisco Bay Area",
+        "host": "sfbay",
+        "area": "San Francisco, East Bay & South Bay"
+      },
+      {
+        "name": "San Luis Obispo",
+        "host": "slo",
+        "area": "San Luis Obispo County"
+      },
+      {
+        "name": "Santa Barbara",
+        "host": "santabarbara",
+        "area": "Santa Barbara & surrounding communities"
+      },
+      {
+        "name": "Santa Maria",
+        "host": "santamaria",
+        "area": "Santa Maria Valley"
+      },
+      {
+        "name": "Siskiyou County",
+        "host": "siskiyou",
+        "area": "Yreka, Mount Shasta & surrounding communities"
+      },
+      {
+        "name": "Stockton",
+        "host": "stockton",
+        "area": "Stockton & San Joaquin County"
+      },
+      {
+        "name": "Susanville",
+        "host": "susanville",
+        "area": "Susanville & Lassen County"
+      },
+      {
+        "name": "Ventura County",
+        "host": "ventura",
+        "area": "Ventura, Oxnard & surrounding communities"
+      },
+      {
+        "name": "Visalia / Tulare",
+        "host": "visalia",
+        "area": "Tulare County"
+      },
+      {
+        "name": "Yuba / Sutter",
+        "host": "yubasutter",
+        "area": "Yuba City, Marysville & surrounding communities"
+      }
+    ]
+  },
+  "CO": {
+    "name": "Colorado",
+    "regions": [
+      {
+        "name": "Boulder",
+        "host": "boulder",
+        "area": "Colorado · Regional listings"
+      },
+      {
+        "name": "Colorado Springs",
+        "host": "cosprings",
+        "area": "Colorado · Regional listings"
+      },
+      {
+        "name": "Denver",
+        "host": "denver",
+        "area": "Colorado · Regional listings"
+      },
+      {
+        "name": "Eastern CO",
+        "host": "eastco",
+        "area": "Colorado · Regional listings"
+      },
+      {
+        "name": "Fort Collins / North CO",
+        "host": "fortcollins",
+        "area": "Colorado · Regional listings"
+      },
+      {
+        "name": "High Rockies",
+        "host": "rockies",
+        "area": "Colorado · Regional listings"
+      },
+      {
+        "name": "Pueblo",
+        "host": "pueblo",
+        "area": "Colorado · Regional listings"
+      },
+      {
+        "name": "Western Slope",
+        "host": "westslope",
+        "area": "Colorado · Regional listings"
+      }
+    ]
+  },
+  "ID": {
+    "name": "Idaho",
+    "regions": [
+      {
+        "name": "Boise",
+        "host": "boise",
+        "area": "Idaho · Regional listings"
+      },
+      {
+        "name": "East Idaho",
+        "host": "eastidaho",
+        "area": "Idaho · Regional listings"
+      },
+      {
+        "name": "Lewiston / Clarkston",
+        "host": "lewiston",
+        "area": "Idaho · Regional listings"
+      },
+      {
+        "name": "Twin Falls",
+        "host": "twinfalls",
+        "area": "Idaho · Regional listings"
+      }
+    ]
+  },
+  "IA": {
+    "name": "Iowa",
+    "regions": [
+      {
+        "name": "Ames",
+        "host": "ames",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Cedar Rapids",
+        "host": "cedarrapids",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Des Moines",
+        "host": "desmoines",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Dubuque",
+        "host": "dubuque",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Fort Dodge",
+        "host": "fortdodge",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Iowa City",
+        "host": "iowacity",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Mason City",
+        "host": "masoncity",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Quad Cities",
+        "host": "quadcities",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Sioux City",
+        "host": "siouxcity",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Southeast IA",
+        "host": "ottumwa",
+        "area": "Iowa · Regional listings"
+      },
+      {
+        "name": "Waterloo / Cedar Falls",
+        "host": "waterloo",
+        "area": "Iowa · Regional listings"
+      }
+    ]
+  },
+  "KS": {
+    "name": "Kansas",
+    "regions": [
+      {
+        "name": "Lawrence",
+        "host": "lawrence",
+        "area": "Kansas · Regional listings"
+      },
+      {
+        "name": "Manhattan",
+        "host": "ksu",
+        "area": "Kansas · Regional listings"
+      },
+      {
+        "name": "Northwest KS",
+        "host": "nwks",
+        "area": "Kansas · Regional listings"
+      },
+      {
+        "name": "Salina",
+        "host": "salina",
+        "area": "Kansas · Regional listings"
+      },
+      {
+        "name": "Southeast KS",
+        "host": "seks",
+        "area": "Kansas · Regional listings"
+      },
+      {
+        "name": "Southwest KS",
+        "host": "swks",
+        "area": "Kansas · Regional listings"
+      },
+      {
+        "name": "Topeka",
+        "host": "topeka",
+        "area": "Kansas · Regional listings"
+      },
+      {
+        "name": "Wichita",
+        "host": "wichita",
+        "area": "Kansas · Regional listings"
+      }
+    ]
+  },
+  "LA": {
+    "name": "Louisiana",
+    "regions": [
+      {
+        "name": "Baton Rouge",
+        "host": "batonrouge",
+        "area": "Louisiana · Regional listings"
+      },
+      {
+        "name": "Central Louisiana",
+        "host": "cenla",
+        "area": "Louisiana · Regional listings"
+      },
+      {
+        "name": "Houma",
+        "host": "houma",
+        "area": "Louisiana · Regional listings"
+      },
+      {
+        "name": "Lafayette",
+        "host": "lafayette",
+        "area": "Louisiana · Regional listings"
+      },
+      {
+        "name": "Lake Charles",
+        "host": "lakecharles",
+        "area": "Louisiana · Regional listings"
+      },
+      {
+        "name": "Monroe",
+        "host": "monroe",
+        "area": "Louisiana · Regional listings"
+      },
+      {
+        "name": "New Orleans",
+        "host": "neworleans",
+        "area": "Louisiana · Regional listings"
+      },
+      {
+        "name": "Shreveport",
+        "host": "shreveport",
+        "area": "Louisiana · Regional listings"
+      }
+    ]
+  },
+  "MN": {
+    "name": "Minnesota",
+    "regions": [
+      {
+        "name": "Bemidji",
+        "host": "bemidji",
+        "area": "Minnesota · Regional listings"
+      },
+      {
+        "name": "Brainerd",
+        "host": "brainerd",
+        "area": "Minnesota · Regional listings"
+      },
+      {
+        "name": "Duluth / Superior",
+        "host": "duluth",
+        "area": "Minnesota · Regional listings"
+      },
+      {
+        "name": "Mankato",
+        "host": "mankato",
+        "area": "Minnesota · Regional listings"
+      },
+      {
+        "name": "Minneapolis / St. Paul",
+        "host": "minneapolis",
+        "area": "Minnesota · Regional listings"
+      },
+      {
+        "name": "Rochester",
+        "host": "rmn",
+        "area": "Minnesota · Regional listings"
+      },
+      {
+        "name": "Southwest MN",
+        "host": "marshall",
+        "area": "Minnesota · Regional listings"
+      },
+      {
+        "name": "St. Cloud",
+        "host": "stcloud",
+        "area": "Minnesota · Regional listings"
+      }
+    ]
+  },
+  "MO": {
+    "name": "Missouri",
+    "regions": [
+      {
+        "name": "Columbia / Jeff City",
+        "host": "columbiamo",
+        "area": "Missouri · Regional listings"
+      },
+      {
+        "name": "Joplin",
+        "host": "joplin",
+        "area": "Missouri · Regional listings"
+      },
+      {
+        "name": "Kansas City",
+        "host": "kansascity",
+        "area": "Missouri · Regional listings"
+      },
+      {
+        "name": "Kirksville",
+        "host": "kirksville",
+        "area": "Missouri · Regional listings"
+      },
+      {
+        "name": "Lake Of The Ozarks",
+        "host": "loz",
+        "area": "Missouri · Regional listings"
+      },
+      {
+        "name": "Southeast Missouri",
+        "host": "semo",
+        "area": "Missouri · Regional listings"
+      },
+      {
+        "name": "Springfield",
+        "host": "springfield",
+        "area": "Missouri · Regional listings"
+      },
+      {
+        "name": "St. Joseph",
+        "host": "stjoseph",
+        "area": "Missouri · Regional listings"
+      },
+      {
+        "name": "St. Louis",
+        "host": "stlouis",
+        "area": "Missouri · Regional listings"
+      }
+    ]
+  },
+  "MT": {
+    "name": "Montana",
+    "regions": [
+      {
+        "name": "Billings",
+        "host": "billings",
+        "area": "Montana · Regional listings"
+      },
+      {
+        "name": "Bozeman",
+        "host": "bozeman",
+        "area": "Montana · Regional listings"
+      },
+      {
+        "name": "Butte",
+        "host": "butte",
+        "area": "Montana · Regional listings"
+      },
+      {
+        "name": "Great Falls",
+        "host": "greatfalls",
+        "area": "Montana · Regional listings"
+      },
+      {
+        "name": "Helena",
+        "host": "helena",
+        "area": "Montana · Regional listings"
+      },
+      {
+        "name": "Kalispell",
+        "host": "kalispell",
+        "area": "Montana · Regional listings"
+      },
+      {
+        "name": "Missoula",
+        "host": "missoula",
+        "area": "Montana · Regional listings"
+      },
+      {
+        "name": "Eastern Montana",
+        "host": "montana",
+        "area": "Montana · Regional listings"
+      }
+    ]
+  },
+  "NE": {
+    "name": "Nebraska",
+    "regions": [
+      {
+        "name": "Grand Island",
+        "host": "grandisland",
+        "area": "Nebraska · Regional listings"
+      },
+      {
+        "name": "Lincoln",
+        "host": "lincoln",
+        "area": "Nebraska · Regional listings"
+      },
+      {
+        "name": "North Platte",
+        "host": "northplatte",
+        "area": "Nebraska · Regional listings"
+      },
+      {
+        "name": "Omaha / Council Bluffs",
+        "host": "omaha",
+        "area": "Nebraska · Regional listings"
+      },
+      {
+        "name": "Scottsbluff / Panhandle",
+        "host": "scottsbluff",
+        "area": "Nebraska · Regional listings"
+      }
+    ]
+  },
+  "NV": {
+    "name": "Nevada",
+    "regions": [
+      {
+        "name": "Elko",
+        "host": "elko",
+        "area": "Nevada · Regional listings"
+      },
+      {
+        "name": "Las Vegas",
+        "host": "lasvegas",
+        "area": "Nevada · Regional listings"
+      },
+      {
+        "name": "Reno / Tahoe",
+        "host": "reno",
+        "area": "Nevada · Regional listings"
+      }
+    ]
+  },
+  "NM": {
+    "name": "New Mexico",
+    "regions": [
+      {
+        "name": "Albuquerque",
+        "host": "albuquerque",
+        "area": "New Mexico · Regional listings"
+      },
+      {
+        "name": "Clovis / Portales",
+        "host": "clovis",
+        "area": "New Mexico · Regional listings"
+      },
+      {
+        "name": "Farmington",
+        "host": "farmington",
+        "area": "New Mexico · Regional listings"
+      },
+      {
+        "name": "Las Cruces",
+        "host": "lascruces",
+        "area": "New Mexico · Regional listings"
+      },
+      {
+        "name": "Roswell / Carlsbad",
+        "host": "roswell",
+        "area": "New Mexico · Regional listings"
+      },
+      {
+        "name": "Santa Fe / Taos",
+        "host": "santafe",
+        "area": "New Mexico · Regional listings"
+      }
+    ]
+  },
+  "ND": {
+    "name": "North Dakota",
+    "regions": [
+      {
+        "name": "Bismarck",
+        "host": "bismarck",
+        "area": "North Dakota · Regional listings"
+      },
+      {
+        "name": "Fargo / Moorhead",
+        "host": "fargo",
+        "area": "North Dakota · Regional listings"
+      },
+      {
+        "name": "Grand Forks",
+        "host": "grandforks",
+        "area": "North Dakota · Regional listings"
+      },
+      {
+        "name": "North Dakota",
+        "host": "nd",
+        "area": "North Dakota · Regional listings"
+      }
+    ]
+  },
+  "OK": {
+    "name": "Oklahoma",
+    "regions": [
+      {
+        "name": "Lawton",
+        "host": "lawton",
+        "area": "Oklahoma · Regional listings"
+      },
+      {
+        "name": "Northwest OK",
+        "host": "enid",
+        "area": "Oklahoma · Regional listings"
+      },
+      {
+        "name": "Oklahoma City",
+        "host": "oklahomacity",
+        "area": "Oklahoma · Regional listings"
+      },
+      {
+        "name": "Stillwater",
+        "host": "stillwater",
+        "area": "Oklahoma · Regional listings"
+      },
+      {
+        "name": "Tulsa",
+        "host": "tulsa",
+        "area": "Oklahoma · Regional listings"
+      }
+    ]
+  },
+  "OR": {
+    "name": "Oregon",
+    "regions": [
+      {
+        "name": "Bend",
+        "host": "bend",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "Corvallis/Albany",
+        "host": "corvallis",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "East Oregon",
+        "host": "eastoregon",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "Eugene",
+        "host": "eugene",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "Klamath Falls",
+        "host": "klamath",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "Medford-Ashland",
+        "host": "medford",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "Oregon Coast",
+        "host": "oregoncoast",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "Portland",
+        "host": "portland",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "Roseburg",
+        "host": "roseburg",
+        "area": "Oregon · Regional listings"
+      },
+      {
+        "name": "Salem",
+        "host": "salem",
+        "area": "Oregon · Regional listings"
+      }
+    ]
+  },
+  "SD": {
+    "name": "South Dakota",
+    "regions": [
+      {
+        "name": "Northeast SD",
+        "host": "nesd",
+        "area": "South Dakota · Regional listings"
+      },
+      {
+        "name": "Pierre / Central SD",
+        "host": "csd",
+        "area": "South Dakota · Regional listings"
+      },
+      {
+        "name": "Rapid City / West SD",
+        "host": "rapidcity",
+        "area": "South Dakota · Regional listings"
+      },
+      {
+        "name": "Sioux Falls / SE SD",
+        "host": "siouxfalls",
+        "area": "South Dakota · Regional listings"
+      },
+      {
+        "name": "South Dakota",
+        "host": "sd",
+        "area": "South Dakota · Regional listings"
+      }
+    ]
+  },
+  "TX": {
+    "name": "Texas",
+    "regions": [
+      {
+        "name": "Abilene",
+        "host": "abilene",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Amarillo",
+        "host": "amarillo",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Austin",
+        "host": "austin",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Beaumont / Port Arthur",
+        "host": "beaumont",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Brownsville",
+        "host": "brownsville",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "College Station",
+        "host": "collegestation",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Corpus Christi",
+        "host": "corpuschristi",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Dallas / Fort Worth",
+        "host": "dallas",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Deep East Texas",
+        "host": "nacogdoches",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Del Rio / Eagle Pass",
+        "host": "delrio",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "El Paso",
+        "host": "elpaso",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Galveston",
+        "host": "galveston",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Houston",
+        "host": "houston",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Killeen / Temple / Ft. Hood",
+        "host": "killeen",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Laredo",
+        "host": "laredo",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Lubbock",
+        "host": "lubbock",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Mcallen / Edinburg",
+        "host": "mcallen",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Odessa / Midland",
+        "host": "odessa",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "San Angelo",
+        "host": "sanangelo",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "San Antonio",
+        "host": "sanantonio",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "San Marcos",
+        "host": "sanmarcos",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Southwest TX",
+        "host": "bigbend",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Texoma",
+        "host": "texoma",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Tyler / East TX",
+        "host": "easttexas",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Victoria",
+        "host": "victoriatx",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Waco",
+        "host": "waco",
+        "area": "Texas · Regional listings"
+      },
+      {
+        "name": "Wichita Falls",
+        "host": "wichitafalls",
+        "area": "Texas · Regional listings"
+      }
+    ]
+  },
+  "UT": {
+    "name": "Utah",
+    "regions": [
+      {
+        "name": "Logan",
+        "host": "logan",
+        "area": "Utah · Regional listings"
+      },
+      {
+        "name": "Ogden-Clearfield",
+        "host": "ogden",
+        "area": "Utah · Regional listings"
+      },
+      {
+        "name": "Provo / Orem",
+        "host": "provo",
+        "area": "Utah · Regional listings"
+      },
+      {
+        "name": "Salt Lake City",
+        "host": "saltlakecity",
+        "area": "Utah · Regional listings"
+      },
+      {
+        "name": "St. George",
+        "host": "stgeorge",
+        "area": "Utah · Regional listings"
+      }
+    ]
+  },
+  "WA": {
+    "name": "Washington",
+    "regions": [
+      {
+        "name": "Bellingham",
+        "host": "bellingham",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Kennewick-Pasco-Richland",
+        "host": "kpr",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Moses Lake",
+        "host": "moseslake",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Olympic Peninsula",
+        "host": "olympic",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Pullman / Moscow",
+        "host": "pullman",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Seattle-Tacoma",
+        "host": "seattle",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Skagit / Island / SJI",
+        "host": "skagit",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Spokane / Coeur D'Alene",
+        "host": "spokane",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Wenatchee",
+        "host": "wenatchee",
+        "area": "Washington · Regional listings"
+      },
+      {
+        "name": "Yakima",
+        "host": "yakima",
+        "area": "Washington · Regional listings"
+      }
+    ]
+  },
+  "WY": {
+    "name": "Wyoming",
+    "regions": [
+      {
+        "name": "Wyoming",
+        "host": "wyoming",
+        "area": "Wyoming · Regional listings"
+      }
+    ]
+  }
+}
