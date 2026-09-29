@@ -13,7 +13,7 @@ export function SiteHeader() {
         <DropdownMenuContent className="nav-menu" sideOffset={14}>
           <DropdownMenuItem className="nav-menu-item" render={<a href="/for-sale/trucks" aria-label="Trucks For Sale" aria-current={pathname === '/for-sale/trucks' ? 'page' : undefined} />}>Trucks For Sale</DropdownMenuItem>
           <DropdownMenuItem className="nav-menu-item" render={<a href="/for-sale/parts" aria-label="Parts" aria-current={pathname === '/for-sale/parts' ? 'page' : undefined} />}>Parts</DropdownMenuItem>
-          <DropdownMenuItem className="nav-menu-item" render={<a href="/for-sale/truck-finder" aria-label="Arizona Truck Finder" aria-current={pathname === '/for-sale/truck-finder' ? 'page' : undefined} />}>Arizona Truck Finder</DropdownMenuItem>
+          <DropdownMenuItem className="nav-menu-item" render={<a href="/for-sale/truck-finder" aria-label="Craigslist Truck Finder" aria-current={pathname === '/for-sale/truck-finder' ? 'page' : undefined} />}>Craigslist Truck Finder</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <a href="/#approach">Our approach</a>
