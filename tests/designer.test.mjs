@@ -182,7 +182,8 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       const retouchedKmc = v.model === 'K10' && v.year >= 1981 && wheelId.startsWith('kmc-impact-') && (view === 'front-quarter' || view === 'rear-quarter');
       const retouchedBaja = v.model === 'K10' && v.year >= 1981 && wheelId === 'baja-polished' && (view === 'front-quarter' || view === 'rear-quarter');
       const retouchedBlackBaja = v.model === 'K10' && v.year >= 1981 && wheelId === 'baja-black' && (view === 'front-quarter' || view === 'rear-quarter');
-      const version = retouchedBaja ? 'v4' : retouchedKmc || retouchedBlackBaja || (v.model === 'Bronco' && roof === 'Top off' && view === 'rear-quarter')
+      const retouchedEarlySquarebody = v.model === 'K10' && v.year >= 1973 && v.year <= 1980 && (view === 'front-quarter' || view === 'rear-quarter');
+      const version = retouchedEarlySquarebody ? 'v5' : retouchedBaja ? 'v4' : retouchedKmc || retouchedBlackBaja || (v.model === 'Bronco' && roof === 'Top off' && view === 'rear-quarter')
         ? 'v3' : (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && v.year <= 1972 && view === 'side')
         ? 'v2' : v.model === 'K10' && v.year === 1973 ? 'v4' : v.model === 'K10' && ([1975, 1977].includes(v.year) || v.year >= 1981) ? 'v2' : 'v1';
       const expectedFolder = folder.replace('-v1/', `-${version}/`);

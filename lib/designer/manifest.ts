@@ -937,6 +937,9 @@ for (const vehicle of vehicles.filter((vehicle) => vehicle.model === 'K10' && ve
     pack.root = pack.root.replace(/-color-v\d+\//, `-color-${version}/`);
     // Later square bodies use their own stock rims and same-angle replacement
     // faces. Rear views must never reuse a mirrored front-view wheel.
+    if (vehicle.year <= 1980 && (view === 'front-quarter' || view === 'rear-quarter'))
+      for (const scene of Object.values(pack.wheelScenes!))
+        scene.stock = scene.stock.replace(/-v\d+\//, '-v5/').replace(/\.png$/, '.webp');
     if (vehicle.year >= 1981)
       for (const scene of Object.values(pack.wheelScenes!))
         scene.stock = scene.stock.replace(/-v1\//, '-v2/');
