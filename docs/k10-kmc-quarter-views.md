@@ -1,6 +1,6 @@
 # Late K10 KMC quarter-view rendering
 
-The 1981-1982, 1983-1984 and 1985-1987 K10 KMC quarter-view
+The 1981–1982, 1983–1984 and 1985–1987 K10 KMC quarter-view
 scenes contain soft, stretched wheel faces. The renderer now starts with the
 aligned stock scene and projects the existing clean side-view metal rims into
 individually calibrated ellipses for the two visible wheels. Front and rear

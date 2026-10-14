@@ -162,4 +162,3 @@ export function renderStudio(
     <g data-layer="roof">${c.contrastRoof ? tint(c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', c.roofColor) : ''}</g>
     <g data-layer="trim">${frontTrim === 'Black' || frontTrim === 'Body color' ? tint('grille', trimColor(frontTrim)) : ''}${c.trim.bumper === 'Black' || c.trim.bumper === 'Body color' ? tint('bumper', trimColor(c.trim.bumper)) : ''}</g></g>${detailOverlay}</svg>`;
 }
-

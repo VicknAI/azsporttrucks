@@ -49,7 +49,7 @@ test('all C10 and F-100 ride heights survive sharing and select matching color l
   const supported = vehicles.filter((v) => v.model === 'C10' || v.model === 'F-100');
   assert.equal(supported.length, 13);
   for (const vehicle of supported)
-  for (const [stance, label] of [['stock', 'Stock'], ['drop2', '2? lower'], ['drop4', '4? lower'], ['frame', 'Laying frame']]) {
+  for (const [stance, label] of [['stock', 'Stock'], ['drop2', '2″ lower'], ['drop4', '4″ lower'], ['frame', 'Laying frame']]) {
     const c = normalize({ vehicleId: vehicle.id, stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true, roofColor: '#ffffff' });
     assert.equal(c.stance, stance);
     assert.equal(summary(c)['Ride height'], label);
@@ -127,7 +127,7 @@ test('Rocket Attack 18 and 20 inch C10 wheels retain size, paint, stance and fou
     const c = normalize({ vehicleId: vehicle.id, wheelId, stance, color: '#3c6254', paintMode: 'Two-tone', secondaryColor: '#eeeeee', contrastRoof: true });
     assert.equal(c.wheelId, wheelId);
     assert.deepEqual(readShare(shareHash(c)), c);
-    assert.equal(summary(c).Wheels, `Rocket Racing Attack � Titanium/Machined � ${size}?`);
+    assert.equal(summary(c).Wheels, `Rocket Racing Attack · Titanium/Machined · ${size}″`);
     for (const view of views) {
       const pack = vehicle.views[view].studio;
       const root = pack.stanceRoots[stance] ?? pack.root;
@@ -155,7 +155,7 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
   const { shareHash, readShare } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const wheelExpectations = {
-    'baja-polished': ['American Racing Baja � Polished', '-baja-v1/'],
+    'baja-polished': ['American Racing Baja · Polished', '-baja-v1/'],
     'baja-black': ['American Racing Baja - Black', '-baja-black-v1/'],
     'kmc-impact-monoblock-machined': ['KMC Impact Forged Monoblock - Raw Machined', '-kmc-impact-monoblock-v1/'],
     'kmc-impact-beadlock-machined': ['KMC Impact Forged Beadlock - Raw Machined', '-kmc-impact-beadlock-v1/'],
@@ -209,7 +209,7 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
     }
   }
 });
-test('1967 and 1971-1972 C10 have complete, distinct studio packs with valid PNG assets', () => {
+test('1967 and 1971–1972 C10 have complete, distinct studio packs with valid PNG assets', () => {
   const roots = new Set();
   for (const id of ['Chevrolet-C10-1967', 'Chevrolet-C10-1971-1972']) {
     const vehicle = vehicles.find((v) => v.id === id);
@@ -540,7 +540,7 @@ test('all lowered K5 years retain street wheels and roof-specific paint layers i
   try {
     for (const year of [1969, 1970, 1971, 1972])
     for (const roof of ['White top', 'Black top', 'Body-color top', 'Top off'])
-    for (const [stance, label] of [['drop2', '2? lower'], ['drop4', '4? lower'], ['frame', 'Laying frame']])
+    for (const [stance, label] of [['drop2', '2″ lower'], ['drop4', '4″ lower'], ['frame', 'Laying frame']])
     for (const wheelId of ['street-temp', 'torq-thrust-18', 'torq-thrust-20', 'rocket-attack-18', 'rocket-attack-20'])
     for (const paintMode of ['Solid', 'Two-tone']) {
       const input = {
@@ -589,7 +589,7 @@ test('all lowered K5 years retain street wheels and roof-specific paint layers i
   }
 });
 
-test('1973-1975 K5 selections retain independent roof, height and wheel artwork in saved builds and exports', async () => {
+test('1973–1975 K5 selections retain independent roof, height and wheel artwork in saved builds and exports', async () => {
   const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const stockWheels = {
     'street-temp': null, 'baja-polished': 'baja', 'baja-black': 'baja-black',
@@ -633,7 +633,7 @@ test('1973-1975 K5 selections retain independent roof, height and wheel artwork 
         assert.deepEqual(readShare(shareHash(c)), c);
         savedDraft = JSON.stringify(c);
         assert.deepEqual(readDraft(), c);
-        assert.equal(summary(c).Vehicle, `${years.replace('-', '-')} Chevrolet K5`);
+        assert.equal(summary(c).Vehicle, `${years.replace('-', '–')} Chevrolet K5`);
         const top = roof === 'Top off' ? 'top-off' : 'top-on';
         for (const view of views) {
           const root = stance === 'stock'
@@ -673,7 +673,7 @@ test('1973-1975 K5 selections retain independent roof, height and wheel artwork 
   }
 });
 
-test('1973-1975 K5 trim corrections preserve source artwork, Rocker paint and open-top framing', () => {
+test('1973–1975 K5 trim corrections preserve source artwork, Rocker paint and open-top framing', () => {
   for (const year of ['1973-1974', '1975'])
   for (const top of ['top-on', 'top-off'])
   for (const stance of ['stock', 'drop2', 'drop4', 'frame'])
@@ -699,7 +699,7 @@ test('1979 Bronco wheels and rear hardtops retain paint and saved choices in eve
   const bronco = vehicles.find((vehicle) => vehicle.id === 'Ford-Bronco-1979');
   const wheelChoices = {
     'street-temp': ['Stock', null],
-    'baja-polished': ['American Racing Baja � Polished', 'baja'],
+    'baja-polished': ['American Racing Baja · Polished', 'baja'],
     'baja-black': ['American Racing Baja - Black', 'baja-black'],
     'kmc-impact-monoblock-machined': ['KMC Impact Forged Monoblock - Raw Machined', 'kmc-impact-monoblock'],
     'kmc-impact-beadlock-machined': ['KMC Impact Forged Beadlock - Raw Machined', 'kmc-impact-beadlock'],
@@ -952,7 +952,7 @@ test('square-body K10 groups retain their own paint, artwork and summaries', () 
     [1985, 1987, 'v2', '#17191c', false],
   ]) {
     const years = last ? `${first}-${last}` : `${first}`;
-    const label = last ? `${first}-${last}` : `${first}`;
+    const label = last ? `${first}–${last}` : `${first}`;
     const group = vehicles.find((v) => v.id === `Chevrolet-K10-${years}`);
     assert.equal(group.label, `${label} K10`);
     assert.equal(group.yearEnd, last);
@@ -1007,7 +1007,7 @@ test('square-body C10 groups use independent 2WD art and keep their defaults, pa
     const source = vehicles.find((v) => v.id === `Chevrolet-K10-${years}`);
     assert.equal(vehicle.year, first);
     assert.equal(vehicle.yearEnd, last);
-    assert.equal(vehicle.label, `${years.replace('-', '-')} C10`);
+    assert.equal(vehicle.label, `${years.replace('-', '–')} C10`);
     assert.deepEqual(vehicle.directions, ['Lowered']);
     if (last) assert.ok(!vehicles.some((v) => [`Chevrolet-C10-${first}`, `Chevrolet-C10-${last}`].includes(v.id)));
     const initial = defaultConfiguration(vehicle);
@@ -1095,7 +1095,7 @@ test('paired C10 years migrate legacy builds without changing paint, wheels, hei
           savedDraft = JSON.stringify(selection);
           assert.deepEqual(readDraft(), c);
           assert.deepEqual(readShare(shareHash(c)), c);
-          assert.equal(summary(c).Vehicle, `${firstYear}-${firstYear + 1} Chevrolet C10`);
+          assert.equal(summary(c).Vehicle, `${firstYear}–${firstYear + 1} Chevrolet C10`);
           for (const view of views) {
             const svg = renderSvg(c, view);
             const root = `/designer/studio/chevrolet-c10-${sourceYear}-${stance === 'stock' ? `color-v${colorVersion}` : `stance-v1/${stance}`}/${view}`;
@@ -1124,7 +1124,7 @@ test('paired C10 years migrate legacy builds without changing paint, wheels, hei
 test('paired K10 years load legacy shared links and saved drafts without losing customization', async () => {
   const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   assert.deepEqual(vehicles.filter((v) => v.model === 'K10').map((v) => v.label), [
-    '1967 K10', '1968 K10', '1969-1970 K10', '1971-1972 K10', '1973-1974 K10', '1975-1976 K10', '1977-1979 K10', '1980 K10', '1981-1982 K10', '1983-1984 K10', '1985-1987 K10',
+    '1967 K10', '1968 K10', '1969–1970 K10', '1971–1972 K10', '1973–1974 K10', '1975–1976 K10', '1977–1979 K10', '1980 K10', '1981–1982 K10', '1983–1984 K10', '1985–1987 K10',
   ]);
   const previousStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
   let savedDraft;
@@ -1151,7 +1151,7 @@ test('paired K10 years load legacy shared links and saved drafts without losing 
       savedDraft = JSON.stringify(selection);
       assert.deepEqual(readDraft(), c);
       assert.deepEqual(readShare(shareHash(c)), c);
-      assert.equal(summary(c).Vehicle, `${pair.replace('-', '-')} Chevrolet K10`);
+      assert.equal(summary(c).Vehicle, `${pair.replace('-', '–')} Chevrolet K10`);
       assert.equal(summary(c)['Cab paint coverage'], 'Roof and pillars');
       for (const view of views) {
         const svg = renderSvg(c, view);
@@ -1165,7 +1165,7 @@ test('paired K10 years load legacy shared links and saved drafts without losing 
   }
 });
 
-test('1971-1972 K10 Center band and Rocker paint retain the refined rear pack in saved builds and exports', async () => {
+test('1971–1972 K10 Center band and Rocker paint retain the refined rear pack in saved builds and exports', async () => {
   const { readDraft, draftKey } = await import(pathToFileURL(join(temporary, 'storage.mjs')).href);
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const target = vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K10-1971-1972');
@@ -1228,7 +1228,7 @@ test('1971-1972 K10 Center band and Rocker paint retain the refined rear pack in
   assert.deepEqual(rearAssets, new Set(['studio.png', 'paint-texture.png', 'paint-mask.png', 'center-band-mask.png', 'cab-mask.png', 'roof-mask.png', 'rocker-mask.png']));
 });
 
-test('all 1967-1987 K10 groups retain Rocker across year changes, cab colors, wheels and exports', async () => {
+test('all 1967–1987 K10 groups retain Rocker across year changes, cab colors, wheels and exports', async () => {
   const { embedArtwork } = await import(pathToFileURL(join(temporary, 'export.mjs')).href);
   const trucks = vehicles.filter((vehicle) => vehicle.model === 'K10');
   assert.equal(trucks.length, 11);
@@ -1408,4 +1408,3 @@ test('approved pickup scenes preserve editable paints across shares and offline 
       }
     }
 });
-
