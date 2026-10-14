@@ -945,6 +945,8 @@ for (const vehicle of vehicles.filter((vehicle) => vehicle.model === 'K10' && ve
     if (vehicle.year >= 1981 && (view === 'front-quarter' || view === 'rear-quarter')) {
       const polished = pack.wheelScenes!['baja-polished'];
       polished.stock = polished.stock.replace('-baja-v2/', '-baja-v4/').replace(/\.png$/, '.webp');
+      const black = pack.wheelScenes!['baja-black'];
+      black.stock = black.stock.replace('-baja-black-v2/', '-baja-black-v3/').replace(/\.png$/, '.webp');
     }
     // Retouched same-angle KMC artwork preserves the original body and tires.
     // Separate quarter-view assets keep rim depth and lighting in perspective.
