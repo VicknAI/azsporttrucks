@@ -179,7 +179,8 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       const pack = v.views[view].studio;
       const root = roof === 'Top off' ? pack.openTopRoot : pack.root;
       const scenes = roof === 'Top off' ? pack.openTopWheelScenes : pack.wheelScenes;
-      const version = (v.model === 'K10' && v.year >= 1981 && view === 'front-quarter' && wheelId === 'baja-polished') || (v.model === 'Bronco' && roof === 'Top off' && view === 'rear-quarter')
+      const retouchedKmc = v.model === 'K10' && v.year >= 1981 && wheelId.startsWith('kmc-impact-') && (view === 'front-quarter' || view === 'rear-quarter');
+      const version = retouchedKmc || (v.model === 'K10' && v.year >= 1981 && view === 'front-quarter' && wheelId === 'baja-polished') || (v.model === 'Bronco' && roof === 'Top off' && view === 'rear-quarter')
         ? 'v3' : (v.model === 'Bronco' && view === 'front-quarter') || (v.model === 'K5' && v.year <= 1972 && view === 'side')
         ? 'v2' : v.model === 'K10' && v.year === 1973 ? 'v4' : v.model === 'K10' && ([1975, 1977].includes(v.year) || v.year >= 1981) ? 'v2' : 'v1';
       const expectedFolder = folder.replace('-v1/', `-${version}/`);
@@ -194,6 +195,14 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       assert.ok(!stock.includes('-kmc-impact-'));
       const embedded = await embedArtwork(svg, async (path) => {
         const bytes = readFileSync(new URL(`../public${path}`, import.meta.url));
+        if (path.endsWith('.webp')) {
+          assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
+          assert.equal(bytes.toString('ascii', 8, 12), 'WEBP');
+          assert.equal(bytes.toString('ascii', 12, 16), 'VP8 ');
+          assert.equal(bytes.readUInt16LE(26) & 0x3fff, 1536);
+          assert.equal(bytes.readUInt16LE(28) & 0x3fff, 1024);
+          return `data:image/webp;base64,${bytes.toString('base64')}`;
+        }
         assert.equal(bytes.readUInt32BE(16), 768);
         assert.equal(bytes.readUInt32BE(20), 512);
         return `data:image/png;base64,${bytes.toString('base64')}`;
@@ -1405,3 +1414,4 @@ test('approved pickup scenes preserve editable paints across shares and offline 
       }
     }
 });
+

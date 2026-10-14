@@ -946,6 +946,13 @@ for (const vehicle of vehicles.filter((vehicle) => vehicle.model === 'K10' && ve
       const polished = pack.wheelScenes!['baja-polished'];
       polished.stock = polished.stock.replace('-baja-v2/', '-baja-v3/');
     }
+    // Retouched same-angle KMC artwork preserves the original body and tires.
+    // Separate quarter-view assets keep rim depth and lighting in perspective.
+    if (vehicle.year >= 1981 && (view === 'front-quarter' || view === 'rear-quarter'))
+      for (const wheel of kmcWheelOptions) {
+        const scene = pack.wheelScenes![wheel.id];
+        scene.stock = scene.stock.replace('-v2/', '-v3/').replace(/\.png$/, '.webp');
+      }
   }
 }
 
@@ -1170,3 +1177,4 @@ export function summary(c: Configuration): Record<string, string> {
 }
 export const fitmentNotice =
   'Final wheel fitment, backspacing, brake clearance, suspension geometry, and tire sizing must be confirmed by AZ Sport Trucks.';
+
