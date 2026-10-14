@@ -185,9 +185,7 @@ test('available Baja and KMC wheels remain selected across 4WD years, paint layo
       const expectedFolder = folder.replace('-v1/', `-${version}/`);
       assert.ok(scenes[wheelId].stock.includes(expectedFolder));
       const svg = renderSvg(c, view);
-      const projection = pack.wheelFaceOverlays?.[wheelId];
-      assert.ok(svg.includes(projection ? `${root}/studio.png` : scenes[wheelId].stock));
-      if (projection) assert.ok(svg.includes(projection.source));
+      assert.ok(svg.includes(scenes[wheelId].stock));
       assert.ok(svg.includes(`${root}/paint-mask.png`));
       const stock = renderSvg(normalize({ ...c, wheelId: 'street-temp' }), view);
       assert.ok(stock.includes(`${root}/studio.png`));
@@ -1247,8 +1245,7 @@ test('all 1967–1987 K10 groups retain Rocker across year changes, cab colors, 
       assert.equal(summary(c)['Two-tone pattern'], 'Rocker');
       for (const view of views) {
         const pack = vehicle.views[view].studio;
-        const projection = pack.wheelFaceOverlays?.[wheelId];
-        const scene = projection ? `${pack.root}/studio.png` : pack.wheelScenes?.[wheelId]?.stock ?? `${pack.root}/studio.png`;
+        const scene = pack.wheelScenes?.[wheelId]?.stock ?? `${pack.root}/studio.png`;
         const svg = renderSvg(c, view);
         assert.ok(svg.includes(`${pack.root}/rocker-mask.png`));
         assert.ok(svg.includes(`href="${scene}"`));
