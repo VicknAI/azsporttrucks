@@ -26,8 +26,8 @@ export const stances = [
 ];
 export const pickupStanceOptions = [
   { id: 'stock', label: 'Stock' },
-  { id: 'drop2', label: '2″ lower' },
-  { id: 'drop4', label: '4″ lower' },
+  { id: 'drop2', label: '2? lower' },
+  { id: 'drop4', label: '4? lower' },
   { id: 'frame', label: 'Laying frame' },
 ];
 export const kmcWheelOptions = [
@@ -36,7 +36,7 @@ export const kmcWheelOptions = [
 ];
 export const sizedWheelOptions = [
   { id: 'torq-thrust', label: 'Torq Thrust II', summary: 'American Racing Torq Thrust II' },
-  { id: 'rocket-attack', label: 'Rocket Racing Attack — Titanium/Machined', summary: 'Rocket Racing Attack · Titanium/Machined' },
+  { id: 'rocket-attack', label: 'Rocket Racing Attack - Titanium/Machined', summary: 'Rocket Racing Attack � Titanium/Machined' },
 ];
 export const trimFields = [
   'grille',
@@ -249,7 +249,7 @@ export const vehicles: Vehicle[] = [
   packages: [
     {
       id: 'unverified',
-      label: 'Factory-style placeholder — unverified',
+      label: 'Factory-style placeholder - unverified',
       verified: false,
       selections: baseTrim,
     },
@@ -458,7 +458,7 @@ const squarebodyK10: Vehicle = {
   id: 'Chevrolet-K10-1973-1974',
   year: 1973,
   yearEnd: 1974,
-  label: '1973–1974 K10',
+  label: '1973-1974 K10',
   views: Object.fromEntries(views.map((view): [View, ViewManifest] => [view, {
     ...squarebodyTemplate.views[view],
     assetRoot: `/designer/final/Chevrolet/K10/1973-1974/${view}`,
@@ -479,7 +479,7 @@ const squarebody1976: Vehicle = {
   id: 'Chevrolet-K10-1975-1976',
   year: 1975,
   yearEnd: 1976,
-  label: '1975–1976 K10',
+  label: '1975-1976 K10',
   views: Object.fromEntries(views.map((view) => [view, {
     ...squarebodyK10.views[view],
     assetRoot: `/designer/final/Chevrolet/K10/1975-1976/${view}`,
@@ -495,7 +495,7 @@ const squarebody1977: Vehicle = {
   id: 'Chevrolet-K10-1977-1979',
   year: 1977,
   yearEnd: 1979,
-  label: '1977–1979 K10',
+  label: '1977-1979 K10',
   referencePaint: {
     label: 'Tan / white reference look',
     color: '#c4a574',
@@ -540,7 +540,7 @@ const squarebody1983: Vehicle = {
   id: 'Chevrolet-K10-1983-1984',
   year: 1983,
   yearEnd: 1984,
-  label: '1983–1984 K10',
+  label: '1983-1984 K10',
   referencePaint: {
     label: 'Navy / silver reference look',
     color: '#263d58',
@@ -562,7 +562,7 @@ const squarebody1981: Vehicle = {
   id: 'Chevrolet-K10-1981-1982',
   year: 1981,
   yearEnd: 1982,
-  label: '1981–1982 K10',
+  label: '1981-1982 K10',
   referencePaint: {
     label: 'White reference look',
     color: '#e5e7e7',
@@ -585,7 +585,7 @@ const squarebody1986: Vehicle = {
   id: 'Chevrolet-K10-1985-1987',
   year: 1985,
   yearEnd: 1987,
-  label: '1985–1987 K10',
+  label: '1985-1987 K10',
   referencePaint: {
     label: 'Black reference look',
     color: '#17191c',
@@ -619,7 +619,7 @@ for (const firstYear of [1969, 1971]) {
     ...first,
     id,
     yearEnd: lastYear,
-    label: `${firstYear}–${lastYear} K10`,
+    label: `${firstYear}-${lastYear} K10`,
   });
 }
 
@@ -727,7 +727,7 @@ const laterK5s: Vehicle[] = [1973, 1975].map((year) => {
     id: `Chevrolet-K5-${years}`,
     year,
     yearEnd: year === 1973 ? 1974 : undefined,
-    label: `${years.replace('-', '–')} K5`,
+    label: `${years.replace('-', '-')} K5`,
     contrastingRoof: false,
     roofOptions: [...roofs],
     roofDescription: 'Choose a white, black, or body-color full hardtop, or Top off to reveal the blue interior and white roll bar.',
@@ -801,7 +801,7 @@ const squarebodyC10Groups: Vehicle[] = [
     ...source,
     id: `Chevrolet-C10-${years}`,
     model: 'C10',
-    label: `${years.replace('-', '–')} C10`,
+    label: `${years.replace('-', '-')} C10`,
     directions: ['Lowered'],
     referencePaint,
     views: Object.fromEntries(views.map((view): [View, ViewManifest] => [view, {
@@ -845,7 +845,7 @@ const bronco1979: Vehicle = {
   contrastingRoof: false,
   roofOptions: [...roofs],
   trim: trimOptions,
-  packages: [{ id: 'unverified', label: 'Factory-style placeholder — unverified', verified: false, selections: { ...baseTrim } }],
+  packages: [{ id: 'unverified', label: 'Factory-style placeholder - unverified', verified: false, selections: { ...baseTrim } }],
   referencePaint: {
     label: 'Blue / white reference look',
     color: '#1f4e73',
@@ -949,6 +949,27 @@ for (const vehicle of vehicles.filter((vehicle) => vehicle.model === 'K10' && ve
   }
 }
 
+// The late K10s share tire geometry, but their baked KMC quarter-view faces
+// were stretched and softened. Project the clean side-view metal rims into
+// each camera's measured ellipse; keep the front locking hub on its axle.
+for (const vehicle of vehicles.filter((v) => v.model === 'K10' && v.year >= 1981)) {
+  for (const view of ['front-quarter', 'rear-quarter'] as const) {
+    const pack = vehicle.views[view].studio!;
+    const faces: NonNullable<StudioPack['wheelFaceOverlays']>[string]['faces'] = view === 'front-quarter' ? [
+      { source: [130, 331, 37, 37], target: [418, 360, 28, 46] },
+      { source: [593, 331, 36, 36], target: [669, 327, 18, 37] },
+    ] : [
+      { source: [593, 331, 36, 36], target: [487, 324, 24, 47] },
+      { source: [130, 331, 37, 37], target: [704, 292, 17, 37] },
+    ];
+    pack.wheelFaceOverlays = Object.fromEntries(kmcWheelOptions.map((wheel) => [wheel.id, {
+      stance: 'stock',
+      source: vehicle.views.side.studio!.wheelScenes![wheel.id].stock,
+      faces,
+    }]));
+  }
+}
+
 // Pair the early C10 selections only after their exact-year paint, stance and
 // wheel packs are wired. Each pair already shares identical artwork/defaults.
 for (const firstYear of [1969, 1971]) {
@@ -961,11 +982,11 @@ for (const firstYear of [1969, 1971]) {
     ...first,
     id,
     yearEnd: lastYear,
-    label: `${firstYear}–${lastYear} C10`,
+    label: `${firstYear}-${lastYear} C10`,
   });
 }
 
-// Fill the exposed source paint above the 1969–1970 K10 side molding.
+// Fill the exposed source paint above the 1969-1970 K10 side molding.
 // The three contours follow the fender, door and bed separately, preserving
 // their seams and the chrome strip below; other views retain their own masks.
 vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K10-1969-1970')!
@@ -974,7 +995,7 @@ vehicles.find((vehicle) => vehicle.id === 'Chevrolet-K10-1969-1970')!
     'M264 216H425V221.2L410 221H264Z',
     'M430 215H731L733.5 220.7L729 220H565L480 220.2H430Z',
   ].join(' ');
-// Carry the 1971–1972 rear center band to the lower side molding and bottom
+// Carry the 1971-1972 rear center band to the lower side molding and bottom
 // of the tailgate. The paint mask protects chrome, lights, tires and insert;
 // offsets match the existing lowered-body packs, leaving wheel scenes intact.
 vehicles.find((vehicle) => vehicle.id === 'Chevrolet-C10-1971-1972')!
@@ -1142,14 +1163,14 @@ export function normalize(input: unknown): Configuration {
 export function summary(c: Configuration): Record<string, string> {
   const v = vehicles.find((v) => v.id === c.vehicleId)!;
   return {
-    Vehicle: `${v.year}${v.yearEnd ? `–${v.yearEnd}` : ''} ${v.manufacturer} ${v.model}`,
+    Vehicle: `${v.year}${v.yearEnd ? `-${v.yearEnd}` : ''} ${v.manufacturer} ${v.model}`,
     'Exterior trim': 'As pictured; custom requests to be discussed',
     'Ride height': v.model === 'K5' && c.stance === 'stock' ? 'As pictured' : v.views.side.studio?.stanceRoots
       ? pickupStanceOptions.find((s) => s.id === c.stance)?.label || 'Stock'
       : v.model === 'Bronco' ? 'As pictured (lifted)' : 'As pictured',
     Paint: v.views.side.studio?.fixedAppearance
       ? 'Red / white center band, red cab - as pictured'
-      : `${c.color} · ${c.finish} · ${c.paintMode}${c.paintMode === 'Two-tone' ? ` / ${c.secondaryColor}` : ''}`,
+      : `${c.color} � ${c.finish} � ${c.paintMode}${c.paintMode === 'Two-tone' ? ` / ${c.secondaryColor}` : ''}`,
     'Two-tone pattern':
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     [v.model === 'Bronco' ? 'Front cab roof' : 'Contrasting roof']: v.model === 'Bronco' ? 'Body color (fixed steel roof)' : c.contrastRoof ? c.roofColor : 'No',
@@ -1157,9 +1178,9 @@ export function summary(c: Configuration): Record<string, string> {
     Wheels: kmcWheelOptions.find((wheel) => wheel.id === c.wheelId)?.label ?? (c.wheelId === 'baja-black'
       ? 'American Racing Baja - Black'
       : c.wheelId === 'baja-polished'
-      ? 'American Racing Baja · Polished'
+      ? 'American Racing Baja � Polished'
       : v.views.side.studio?.wheelScenes && sizedWheelOptions.some((wheel) => c.wheelId.startsWith(`${wheel.id}-`))
-      ? `${sizedWheelOptions.find((wheel) => c.wheelId.startsWith(`${wheel.id}-`))!.summary} · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
+      ? `${sizedWheelOptions.find((wheel) => c.wheelId.startsWith(`${wheel.id}-`))!.summary} � ${c.wheelId.endsWith('20') ? '20' : '18'}?`
       : v.model === 'K5' && c.stance !== 'stock' ? 'Street wheels'
       : v.views.side.studio?.wheelScenes ? 'Stock' : 'As pictured; fitment to be discussed'),
     Tires: (v.model === 'C10' && v.year >= 1973) || (v.model === 'K5' && c.stance !== 'stock') ? 'Street tires; size to be discussed' : 'As pictured; size to be discussed',
@@ -1170,3 +1191,4 @@ export function summary(c: Configuration): Record<string, string> {
 }
 export const fitmentNotice =
   'Final wheel fitment, backspacing, brake clearance, suspension geometry, and tire sizing must be confirmed by AZ Sport Trucks.';
+
