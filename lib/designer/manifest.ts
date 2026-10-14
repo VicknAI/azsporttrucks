@@ -940,11 +940,11 @@ for (const vehicle of vehicles.filter((vehicle) => vehicle.model === 'K10' && ve
     if (vehicle.year >= 1981)
       for (const scene of Object.values(pack.wheelScenes!))
         scene.stock = scene.stock.replace(/-v1\//, '-v2/');
-    // The distant Baja rim in this angle needs its own rebuilt face and bead
-    // edge; reusing the donor left a doubled rim and distorted rear hub.
-    if (vehicle.year >= 1981 && view === 'front-quarter') {
+    // Each Baja quarter view has its own rim perspective and axle hardware.
+    // Keep the original body and tire geometry around the rebuilt wheel faces.
+    if (vehicle.year >= 1981 && (view === 'front-quarter' || view === 'rear-quarter')) {
       const polished = pack.wheelScenes!['baja-polished'];
-      polished.stock = polished.stock.replace('-baja-v2/', '-baja-v3/');
+      polished.stock = polished.stock.replace('-baja-v2/', '-baja-v4/').replace(/\.png$/, '.webp');
     }
     // Retouched same-angle KMC artwork preserves the original body and tires.
     // Separate quarter-view assets keep rim depth and lighting in perspective.
