@@ -30,6 +30,18 @@ export type StudioPack = {
   openTopStanceRoots?: Record<string, string>;
   wheelScenes?: Record<string, Record<string, string>>;
   openTopWheelScenes?: Record<string, Record<string, string>>;
+  /** Clean rim faces projected into a view without resampling tires or bodywork. */
+  wheelFaceOverlays?: Record<string, {
+    stance: string;
+    source: string;
+    faces: {
+      /** Center and radii of the metal rim in the source scene. */
+      source: [number, number, number, number];
+      /** Center and radii of the metal rim in this camera view. */
+      target: [number, number, number, number];
+      rotation?: number;
+    }[];
+  }>;
   openTopRoot?: string;
   width: number;
   height: number;
@@ -60,6 +72,16 @@ export function renderStudio(
     : pack.stanceRoots?.[c.stance] ?? pack.root;
   const wheelScenes = openTop ? pack.openTopWheelScenes : pack.wheelScenes;
   const wheelScene = wheelScenes?.[c.wheelId]?.[c.stance];
+  const faceOverlay = !openTop && pack.wheelFaceOverlays?.[c.wheelId];
+  const projectedFaces = faceOverlay && faceOverlay.stance === c.stance ? faceOverlay : undefined;
+  const wheelFaces = projectedFaces
+    ? `<g data-layer="wheel-faces">${projectedFaces.faces.map((face, index) => {
+      const [sx, sy, srX, srY] = face.source;
+      const [x, y, rx, ry] = face.target;
+      const id = `${prefix}-wheel-face-${index}`;
+      return `<g transform="translate(${x} ${y}) rotate(${face.rotation ?? 0}) scale(${rx} ${ry})"><defs><clipPath id="${id}" clipPathUnits="userSpaceOnUse"><circle r="1"/></clipPath></defs><g clip-path="url(#${id})"><svg x="-1" y="-1" width="2" height="2" viewBox="${sx - srX} ${sy - srY} ${srX * 2} ${srY * 2}" preserveAspectRatio="none"><image href="${projectedFaces.source}" width="${width}" height="${height}"/></svg></g></g>`;
+    }).join('')}</g>`
+    : '';
   const overlay = pack.detailOverlay?.baseSceneOnly && wheelScene ? undefined : pack.detailOverlay;
   const detailTone = overlay?.saturation === undefined ? ''
     : `<filter id="${prefix}-detail-tone" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="${overlay.saturation}"/></filter>`;
@@ -67,7 +89,9 @@ export function renderStudio(
     ? `<g data-layer="detail-overlay"><defs><clipPath id="${prefix}-detail-clip" clipPathUnits="userSpaceOnUse">${overlay.clipPath}</clipPath>${detailTone}</defs><image href="${overlay.file}" x="${overlay.offset[0]}" y="${overlay.offset[1]}" width="${overlay.size[0]}" height="${overlay.size[1]}" clip-path="url(#${prefix}-detail-clip)"${detailTone ? ` filter="url(#${prefix}-detail-tone)"` : ''}/></g>`
     : '';
   if (pack.paintScene) {
-    const scene = wheelScene ?? `${root}/studio.png`;
+    // Start with the aligned stock scene so an old, oversized rim cannot show
+    // around the new face. The projection is clipped to the metal rim only.
+    const scene = projectedFaces ? `${root}/studio.png` : wheelScene ?? `${root}/studio.png`;
     const rocker = c.paintMode === 'Two-tone' && c.twoToneStyle === 'Rocker' && pack.rockerPaint;
     const masks = ['paint', 'center-band', 'cab', 'roof', ...(rocker ? ['rocker'] : [])];
     const roofColor = pack.openTopRoot
@@ -95,7 +119,7 @@ export function renderStudio(
       const filter = `<filter id="${prefix}-${name}-tint" color-interpolation-filters="sRGB"><feComponentTransfer>${channels.map((n, i) => `<feFunc${['R', 'G', 'B'][i]} type="table" tableValues="0 ${n / 3} ${(n * 2) / 3} ${n} ${c.finish === 'Gloss' ? 1 : n + (1 - n) * 0.45}"/>`).join('')}</feComponentTransfer></filter>`;
       return `${filter}<g mask="url(#${prefix}-${name}-mask)"><use href="#${prefix}-texture" filter="url(#${prefix}-${name}-tint)"/></g>`;
     };
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} customizable studio artwork"><defs><image id="${prefix}-texture" href="${root}/paint-texture.png" width="${width}" height="${height}"/>${maskDefinitions}</defs><image data-layer="reference-artwork" href="${scene}" width="${width}" height="${height}"/><g data-layer="paint-mask">${tint('paint', c.color)}${c.paintMode === 'Two-tone' ? tint(rocker ? 'rocker' : 'center-band', c.secondaryColor) : ''}</g><g data-layer="roof">${roofTint ? tint(!pack.openTopRoot && c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', roofColor) : ''}</g>${detailOverlay}</svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} customizable studio artwork"><defs><image id="${prefix}-texture" href="${root}/paint-texture.png" width="${width}" height="${height}"/>${maskDefinitions}</defs><image data-layer="reference-artwork" href="${scene}" width="${width}" height="${height}"/>${wheelFaces}<g data-layer="paint-mask">${tint('paint', c.color)}${c.paintMode === 'Two-tone' ? tint(rocker ? 'rocker' : 'center-band', c.secondaryColor) : ''}</g><g data-layer="roof">${roofTint ? tint(!pack.openTopRoot && c.cabPaint === 'Roof and pillars' ? 'cab' : 'roof', roofColor) : ''}</g>${detailOverlay}</svg>`;
   }
   if (pack.fixedAppearance) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${pack.viewport.join(' ')}" role="img" aria-label="${ariaLabel} red and white reference artwork"><image data-layer="reference-artwork" href="${root}/studio.png" width="${width}" height="${height}"/>${detailOverlay}</svg>`;

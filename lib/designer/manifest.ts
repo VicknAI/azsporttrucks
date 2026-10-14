@@ -949,6 +949,27 @@ for (const vehicle of vehicles.filter((vehicle) => vehicle.model === 'K10' && ve
   }
 }
 
+// The late K10s share tire geometry, but their baked KMC quarter-view faces
+// were stretched and softened. Project the clean side-view metal rims into
+// each camera's measured ellipse; keep the front locking hub on its axle.
+for (const vehicle of vehicles.filter((v) => v.model === 'K10' && v.year >= 1981)) {
+  for (const view of ['front-quarter', 'rear-quarter'] as const) {
+    const pack = vehicle.views[view].studio!;
+    const faces: NonNullable<StudioPack['wheelFaceOverlays']>[string]['faces'] = view === 'front-quarter' ? [
+      { source: [130, 331, 37, 37], target: [418, 360, 28, 46] },
+      { source: [593, 331, 36, 36], target: [669, 327, 18, 37] },
+    ] : [
+      { source: [593, 331, 36, 36], target: [487, 324, 24, 47] },
+      { source: [130, 331, 37, 37], target: [704, 292, 17, 37] },
+    ];
+    pack.wheelFaceOverlays = Object.fromEntries(kmcWheelOptions.map((wheel) => [wheel.id, {
+      stance: 'stock',
+      source: vehicle.views.side.studio!.wheelScenes![wheel.id].stock,
+      faces,
+    }]));
+  }
+}
+
 // Pair the early C10 selections only after their exact-year paint, stance and
 // wheel packs are wired. Each pair already shares identical artwork/defaults.
 for (const firstYear of [1969, 1971]) {
