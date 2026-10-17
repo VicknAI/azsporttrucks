@@ -25,6 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   paintPresetsFor,
   kmcWheelOptions,
+  titan7Packages,
   sizedWheelOptions,
   pickupStanceOptions,
   availableWheelIds,
@@ -181,6 +182,7 @@ export function Designer({ children }: { children?: ReactNode }) {
     (v) => v.manufacturer === vehicle.manufacturer && v.model === vehicle.model,
   );
   const availableWheels = availableWheelIds(vehicle, config);
+  const titan7Package = titan7Packages.find((wheelPackage) => wheelPackage.id === config.wheelId);
   const sizedWheel = sizedWheelOptions.find((wheel) => config.wheelId.startsWith(`${wheel.id}-`));
   const availableSizedWheels = sizedWheelOptions.filter((wheel) => availableWheels.includes(`${wheel.id}-18`));
   const loweredK5 = vehicle.model === 'K5' && config.stance !== 'stock';
@@ -449,7 +451,9 @@ export function Designer({ children }: { children?: ReactNode }) {
                   ? 'Preview paint, two-tone, roof color, four ride heights, and wheel options.'
                   : 'Preview paint, two-tone, roof color, and four ride heights. OEM wheels and chrome trim stay with your build.'
               : vehicle.views.side.studio?.wheelScenes
-                ? 'Preview paint, two-tone, roof color, and wheel options with the pictured tires and stance.'
+                ? titan7Package
+                  ? 'Preview paint, two-tone, and roof color with Titan7 T-AK1 wheels and your selected 37-inch BFGoodrich Baja T/A tires.'
+                  : 'Preview paint, two-tone, roof color, and wheel options with the pictured tires and stance.'
               : studioView
                 ? 'Studio artwork study: preview paint, two-tone, and roof color. Exterior trim, wheels, tires, and stance stay as pictured. Details are not factory-verified.'
                 : 'Schematic preview artwork is shared across these years. Grilles, lighting, trim, and proportions are not factory-accurate.'}
@@ -763,7 +767,7 @@ export function Designer({ children }: { children?: ReactNode }) {
                   label="Wheel style"
                   value={sizedWheel?.id ?? config.wheelId}
                   options={[{ id: 'street-temp', label: loweredK5 ? 'Street' : 'Stock' },
-                    ...[{ id: 'baja-polished', label: 'American Racing Baja — Polished' }, { id: 'baja-black', label: 'American Racing Baja - Black' }, ...kmcWheelOptions].filter((wheel) => availableWheels.includes(wheel.id)),
+                    ...[{ id: 'baja-polished', label: 'American Racing Baja — Polished' }, { id: 'baja-black', label: 'American Racing Baja - Black' }, ...kmcWheelOptions, ...titan7Packages].filter((wheel) => availableWheels.includes(wheel.id)),
                     ...availableSizedWheels]}
                   onChange={(style) => update({ wheelId: availableSizedWheels.some((wheel) => wheel.id === style) ? `${style}-${config.wheelId.endsWith('-20') ? '20' : '18'}` : style })}
                 />
@@ -774,7 +778,11 @@ export function Designer({ children }: { children?: ReactNode }) {
                   onChange={(wheelId) => update({ wheelId })} />
               )}
               <p className="design-note">
-                {availableWheels.includes('baja-polished')
+                {titan7Package
+                  ? `17″ Titan7 T-AK1 wheels in Satin Titanium with ${titan7Package.tire} tires. This package changes both wheels and tires in all four views.`
+                  : titan7Packages.some((wheelPackage) => availableWheels.includes(wheelPackage.id))
+                  ? 'Compare Stock, American Racing Baja, KMC Impact, or Titan7 T-AK1 with 37″ BFG Project or KR EVO 2.0 tires.'
+                  : availableWheels.includes('baja-polished')
                   ? 'Compare Stock, American Racing Baja, and KMC Impact wheels. Tire size and ride height stay as pictured.'
                   : availableWheels.includes('rocket-attack-18')
                   ? `Compare ${loweredK5 ? 'Street' : 'Stock'}, Torq Thrust II, and Rocket Racing Attack. Choose 18″ or 20″ wheels; the 20″ option has a shorter tire sidewall. Nick will confirm final sizes and fitment.`
@@ -784,6 +792,9 @@ export function Designer({ children }: { children?: ReactNode }) {
               </p>
               {config.wheelId === 'kmc-impact-beadlock-machined' && (
                 <p className="design-note">KMC designates the Forged Beadlock for off-road use only. Nick can help confirm fitment for your build.</p>
+              )}
+              {titan7Package && (
+                <p className="design-note">These Baja T/A KR tires are non-DOT competition tires. Wheel fitment and clearance for 37″ tires require a custom build; Nick will confirm the hub pattern, suspension, and clearances.</p>
               )}
             </Category>
           </Accordion>

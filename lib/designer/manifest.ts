@@ -38,6 +38,21 @@ export const sizedWheelOptions = [
   { id: 'torq-thrust', label: 'Torq Thrust II', summary: 'American Racing Torq Thrust II' },
   { id: 'rocket-attack', label: 'Rocket Racing Attack — Titanium/Machined', summary: 'Rocket Racing Attack · Titanium/Machined' },
 ];
+export const titan7ProjectPackage = {
+  id: 'titan7-tak1-satin-titanium-bfg-project-37',
+  label: 'Titan7 T-AK1 — Satin Titanium / 37″ BFG Project',
+  wheel: 'Titan7 T-AK1 — Satin Titanium · 17″',
+  tire: 'BFGoodrich Baja T/A KR Project · 37×12.50R17',
+  artwork: 'ford-f150-1979-titan7-project-v1',
+};
+export const titan7EvoPackage = {
+  id: 'titan7-tak1-satin-titanium-bfg-kr-evo2-37',
+  label: 'Titan7 T-AK1 — Satin Titanium / 37″ BFG KR EVO 2.0',
+  wheel: titan7ProjectPackage.wheel,
+  tire: 'BFGoodrich Desert Racing Baja T/A KR EVO 2.0 · 37×12.50R17',
+  artwork: 'ford-f150-1979-titan7-kr-evo2-v1',
+};
+export const titan7Packages = [titan7ProjectPackage, titan7EvoPackage];
 export const trimFields = [
   'grille',
   'headlights',
@@ -688,6 +703,15 @@ for (const vehicle of vehicles.filter((v) => ['K10', 'K5', 'F-150'].includes(v.m
   }
 }
 
+// This wheel-and-tire package belongs only to the 1979 F-150. All four
+// scenes retain the existing body and paint masks and replace the tire regions.
+const titan7F150 = vehicles.find((vehicle) => vehicle.id === 'Ford-F-150-1979')!;
+for (const view of views) for (const wheelPackage of titan7Packages) {
+  titan7F150.views[view].studio!.wheelScenes![wheelPackage.id] = {
+    stock: `/designer/wheels/${wheelPackage.artwork}/${view}.webp`,
+  };
+}
+
 // Lowered K5 packs preserve the existing stock/off-road scenes and supply
 // separate street-tire paint layers for each hardtop state and ride height.
 for (const vehicle of vehicles.filter((v) => v.model === 'K5')) {
@@ -1141,7 +1165,7 @@ export function normalize(input: unknown): Configuration {
   c.trimPackage = 'unverified';
   c.trim = { ...baseTrim };
   c.wheelId = pick(raw.wheelId, availableWheelIds(v, c), 'street-temp');
-  c.tire = 'Street performance';
+  c.tire = titan7Packages.find((wheelPackage) => wheelPackage.id === c.wheelId)?.tire ?? 'Street performance';
   if (v.views.side.studio?.paintScene) c.twoToneStyle = v.views.side.studio.rockerPaint
     ? pick(raw.twoToneStyle, ['Center band', 'Rocker'], 'Center band')
     : 'Center band';
@@ -1153,6 +1177,7 @@ export function normalize(input: unknown): Configuration {
 }
 export function summary(c: Configuration): Record<string, string> {
   const v = vehicles.find((v) => v.id === c.vehicleId)!;
+  const titan7Package = titan7Packages.find((wheelPackage) => wheelPackage.id === c.wheelId);
   return {
     Vehicle: `${v.year}${v.yearEnd ? `–${v.yearEnd}` : ''} ${v.manufacturer} ${v.model}`,
     'Exterior trim': 'As pictured; custom requests to be discussed',
@@ -1166,7 +1191,7 @@ export function summary(c: Configuration): Record<string, string> {
       c.paintMode === 'Two-tone' ? c.twoToneStyle : 'Not applicable',
     [v.model === 'Bronco' ? 'Front cab roof' : 'Contrasting roof']: v.model === 'Bronco' ? 'Body color (fixed steel roof)' : c.contrastRoof ? c.roofColor : 'No',
     'Cab paint coverage': c.contrastRoof ? ['C10', 'K10'].includes(v.model) && v.year >= 1973 ? 'Roof and cab back; door window frames stay body color' : c.cabPaint : 'Body color',
-    Wheels: kmcWheelOptions.find((wheel) => wheel.id === c.wheelId)?.label ?? (c.wheelId === 'baja-black'
+    Wheels: titan7Package?.wheel ?? kmcWheelOptions.find((wheel) => wheel.id === c.wheelId)?.label ?? (c.wheelId === 'baja-black'
       ? 'American Racing Baja - Black'
       : c.wheelId === 'baja-polished'
       ? 'American Racing Baja · Polished'
@@ -1174,7 +1199,7 @@ export function summary(c: Configuration): Record<string, string> {
       ? `${sizedWheelOptions.find((wheel) => c.wheelId.startsWith(`${wheel.id}-`))!.summary} · ${c.wheelId.endsWith('20') ? '20' : '18'}″`
       : v.model === 'K5' && c.stance !== 'stock' ? 'Street wheels'
       : v.views.side.studio?.wheelScenes ? 'Stock' : 'As pictured; fitment to be discussed'),
-    Tires: (v.model === 'C10' && v.year >= 1973) || (v.model === 'K5' && c.stance !== 'stock') ? 'Street tires; size to be discussed' : 'As pictured; size to be discussed',
+    Tires: titan7Package?.tire ?? ((v.model === 'C10' && v.year >= 1973) || (v.model === 'K5' && c.stance !== 'stock') ? 'Street tires; size to be discussed' : 'As pictured; size to be discussed'),
     [v.roofOptions.length && v.model !== 'K5' ? 'Rear hardtop' : 'K5 roof']: v.roofOptions.length ? c.roof : 'Not applicable',
     ...(v.model === 'K5' ? { Interior: v.interiorDescription ?? 'Black dash and roll bar; gray/black patterned seat centers with light outer upholstery' } : {}),
     ...(v.model === 'Bronco' ? { Interior: 'Black vinyl upholstery' } : {}),
