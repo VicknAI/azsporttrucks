@@ -50,7 +50,7 @@ export const titan7EvoPackage = {
   label: 'Titan7 T-AK1 — Satin Titanium / 37″ BFG KR EVO 2.0',
   wheel: titan7ProjectPackage.wheel,
   tire: 'BFGoodrich Desert Racing Baja T/A KR EVO 2.0 · 37×12.50R17',
-  artwork: 'ford-f150-1979-titan7-kr-evo2-v1',
+  artwork: 'ford-f150-1979-titan7-kr-evo2-v2',
 };
 export const titan7Packages = [titan7ProjectPackage, titan7EvoPackage];
 export const trimFields = [
