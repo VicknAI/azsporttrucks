@@ -1,6 +1,7 @@
 'use client';
 import { ChevronDown } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { SocialLinks } from '@/components/social-links';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 export function SiteHeader() {
   const pathname = usePathname();
@@ -24,7 +25,7 @@ export function SiteHeader() {
         </DropdownMenuContent>
       </DropdownMenu>
     </nav>
-    <span className="header-tag">OLD-SCHOOL SOUL.<br /><b>BUILT TO PERFORM.</b></span>
+    <SocialLinks />
   </header>;
 }
 
