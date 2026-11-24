@@ -9,7 +9,28 @@ export const metadata: Metadata = {
   description: 'Classic trucks built to be driven hard. AZ Sport Trucks pairs old-school character with modern powertrains, dialed-in suspension, and confident braking for pro-touring and off-road builds.',
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body><a className="skip-link" href="#main">Skip to content</a><SiteHeader />{children}<SiteFooter /></body></html>;
+  return (
+    <html lang="en">
+      <head>
+        <script
+          id="google-tag-init"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());`,
+          }}
+        />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtm.js?id=GTM-T7P4C9L8"
+        />
+      </head>
+      <body>
+        <a className="skip-link" href="#main">Skip to content</a>
+        <SiteHeader />
+        {children}
+        <SiteFooter />
+      </body>
+    </html>
+  );
 }
-
-
