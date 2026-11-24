@@ -28,7 +28,7 @@
 
 .resources-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -56,7 +56,7 @@
 
 .resources-card h2 {
   margin: 32px 0 20px;
-  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-size: clamp(2rem, 3vw, 3.2rem);
   line-height: 1;
 }
 
@@ -88,7 +88,7 @@
   .resources-page { padding-left: 80px; padding-right: 80px; }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1000px) {
   .resources-page { padding-top: 40px; padding-bottom: 60px; }
   .resources-grid { grid-template-columns: 1fr; gap: 16px; }
   .resources-card { padding: 26px; }

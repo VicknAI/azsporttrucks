@@ -1,0 +1,51 @@
+.powertrain-page{max-width:1600px;margin:auto;padding:56px 5% 80px}
+.powertrain-intro{max-width:1100px}
+.powertrain-intro>.eyebrow{margin:0 0 28px;color:#c9c9c9}
+.powertrain-intro h1{font-size:clamp(3rem,6.6vw,6.5rem);line-height:1.02}
+.powertrain-intro h1 em{color:#ef252e}
+.powertrain-intro>p{max-width:780px;color:#bcbcbc;font-size:1.0625rem;line-height:1.8}
+.powertrain-intro h1+p{margin:28px 0 12px;font-size:1.35rem;color:#eee}
+.powertrain-jump-links{display:flex;flex-wrap:wrap;gap:10px;margin:30px 0 0}
+.powertrain-jump-links a{display:inline-flex;align-items:center;gap:20px;min-height:44px;padding:12px 16px;border:1px solid #444;font-size:.8125rem;font-weight:700}
+.powertrain-jump-links a:hover{border-color:#ff6268;color:#ff969a}
+.powertrain-jump-links span{color:#ff6268}
+.powertrain-section{margin-top:64px;padding-top:48px;border-top:1px solid var(--border);scroll-margin-top:24px}
+.powertrain-section-heading{max-width:860px;margin-bottom:30px}
+.powertrain-section-heading>.eyebrow{color:#bcbcbc;margin-bottom:18px}
+.powertrain-section-heading h2{font-size:clamp(2.4rem,4.4vw,4.5rem);line-height:1.04}
+.powertrain-section-heading>p{max-width:760px;margin:20px 0 0;color:#bcbcbc;line-height:1.8}
+.powertrain-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}
+.powertrain-brand{border:1px solid #343434;background:#111;scroll-margin-top:24px}
+.powertrain-brand-heading{padding:28px;background:#191919;border-top:3px solid #e21e26}
+.powertrain-brand-heading>.eyebrow{color:#bbb;margin-bottom:14px}
+.powertrain-brand-heading h3{font-size:clamp(1.8rem,2.5vw,2.65rem);line-height:1.12;max-width:480px;margin-bottom:18px}
+.powertrain-source{display:inline-flex;align-items:center;gap:7px;min-height:32px;font-size:.8125rem;color:#ff9a9e;text-decoration:underline;text-underline-offset:4px;line-height:1.6}
+.powertrain-source:hover{color:#fff}
+.powertrain-source svg{flex-shrink:0}
+.powertrain-lineup{list-style:none;padding:0 28px;margin:0}
+.powertrain-lineup>li{padding:24px 0;border-top:1px solid var(--border)}
+.powertrain-lineup>li:first-child{border-top:0}
+.powertrain-item-title{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.powertrain-item-title h4{margin:0;font-size:1.125rem;font-weight:700}
+.powertrain-badge{border:1px solid #794044;padding:5px 8px;color:#ffb1b5;font-size:.625rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.powertrain-lineup p{color:#aaa;font-size:.875rem;line-height:1.75;margin:8px 0}
+.powertrain-lineup p.powertrain-models{color:#eee;font-weight:600}
+.powertrain-review-date{max-width:900px;font-size:.75rem;line-height:1.7;color:#999;margin:22px 0 0}
+.powertrain-transmission-card,.powertrain-package{padding:30px;background:#171717;border-top:3px solid #e21e26}
+.powertrain-transmission-card>.eyebrow,.powertrain-package>.eyebrow{color:#aaa}
+.powertrain-transmission-card h3,.powertrain-package h3{font-size:2.2rem;line-height:1.1;margin:20px 0 24px}
+.powertrain-transmission-card dl{margin:0}
+.powertrain-transmission-card dl>div{padding:15px 0;border-top:1px solid #383838}
+.powertrain-transmission-card dt{font-size:.875rem;font-weight:700;color:#eee}
+.powertrain-transmission-card dd{font-size:.875rem;line-height:1.75;color:#bbb;margin:7px 0 0}
+.powertrain-transmission-card>p,.powertrain-package>p{font-size:.9375rem;line-height:1.8;color:#bbb;margin:20px 0}
+.powertrain-source-links{display:flex;align-items:flex-start;flex-direction:column;gap:8px}
+.powertrain-planning-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.powertrain-planning-grid>article{border-top:2px solid #555;padding-top:24px}
+.powertrain-planning-grid h3{font-size:1.8rem;line-height:1.1}
+.powertrain-planning-grid p{color:#bbb;line-height:1.8;font-size:.9375rem;margin:18px 0}
+.powertrain-help{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:64px;padding:40px;background:#141414;border-top:3px solid #e21e26}
+.powertrain-help h2{font-size:clamp(2.5rem,4vw,4rem);margin-top:18px}
+.powertrain-help p{color:#bbb;line-height:1.8;margin:0 0 24px}
+@media(min-width:1600px){.powertrain-page{padding-left:80px;padding-right:80px}}
+@media(max-width:760px){.powertrain-page{padding-top:36px;padding-bottom:56px}.powertrain-grid,.powertrain-planning-grid,.powertrain-help{grid-template-columns:1fr}.powertrain-section{margin-top:44px;padding-top:36px}.powertrain-brand-heading{padding:24px}.powertrain-lineup{padding:0 24px}.powertrain-transmission-card,.powertrain-package{padding:24px}.powertrain-help{padding:28px;gap:26px;margin-top:44px}.powertrain-intro h1+p{font-size:1.125rem}.powertrain-jump-links{gap:8px}.powertrain-jump-links a{gap:12px;padding:12px;font-size:.75rem}.powertrain-planning-grid{gap:28px}}

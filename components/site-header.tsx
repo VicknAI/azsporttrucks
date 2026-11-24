@@ -18,9 +18,10 @@ export function SiteHeader() {
         </DropdownMenuContent>
       </DropdownMenu>
       <a href="/#approach">Our approach</a>
-      <DropdownMenu><DropdownMenuTrigger className="nav-menu-trigger" data-active={['/resources', '/chassis', '/tire-calculator'].includes(pathname) || undefined}>Resources <ChevronDown size={15} aria-hidden="true" /></DropdownMenuTrigger>
+      <DropdownMenu><DropdownMenuTrigger className="nav-menu-trigger" data-active={['/resources', '/chassis', '/engine-tranny-guide', '/tire-calculator'].includes(pathname) || undefined}>Resources <ChevronDown size={15} aria-hidden="true" /></DropdownMenuTrigger>
         <DropdownMenuContent className="nav-menu resources-menu" align="end" sideOffset={14}>
           <DropdownMenuItem className="nav-menu-item" render={<a href="/chassis" aria-label="Chassis Guide" aria-current={pathname === '/chassis' ? 'page' : undefined} />}>Chassis Guide</DropdownMenuItem>
+          <DropdownMenuItem className="nav-menu-item" render={<a href="/engine-tranny-guide" aria-label="Engine/Tranny Guide" aria-current={pathname === '/engine-tranny-guide' ? 'page' : undefined} />}>Engine/Tranny Guide</DropdownMenuItem>
           <DropdownMenuItem className="nav-menu-item" render={<a href="/tire-calculator" aria-label="Tire Size Calculator" aria-current={pathname === '/tire-calculator' ? 'page' : undefined} />}>Tire Size Calculator</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
